@@ -3,7 +3,7 @@ root_dir=`dirname $0`/..
 
 defaults="--acl-public --exclude=.DS_Store"
 # beta.windycitypathfinder.com.s3-website-us-east-1.amazonaws.com
-bucket=s3://www.windycitypathfinder.com
+bucket=s3://beta.windycitypathfinder.com
 cd $root_dir
 
 echo "Deploying site to $bucket"
