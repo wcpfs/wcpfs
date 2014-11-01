@@ -5,6 +5,6 @@ bin_dir=`dirname $abspath`
 root_dir=`dirname $bin_dir`
 app_name=`basename $root_dir`
 
-server=`cat .deploy`
+server=${1:-$app_name}
 
 git push $server:git/$app_name.git master

@@ -10,7 +10,7 @@ if [[ $# -ne 1 ]]; then
   exit 1
 fi
 
-server=$1
+server=${1:-$app_name}
 
 if ! ssh $server 'whoami'; then
   echo "Cannot log into $server. Ensure the server is properly configured in ~/.ssh/config"
@@ -55,6 +55,3 @@ fi
 DOC
 
 git push ubuntu@$server:git/$app_name.git master
-
-echo $server > .deploy
-git add .deploy
