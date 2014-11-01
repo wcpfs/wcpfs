@@ -14,23 +14,22 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
   end
 
-  get '/subscribe' do
-    puts params[:email]
-  end
+  #get '/subscribe' do
+  #  puts params[:email]
+  #end
 
-  get '/unsubscribe' do
-    puts params[:email]
-  end
+  #get '/unsubscribe' do
+  #  puts params[:email]
+  #end
 
-  get '/games' do
-    "Returns the list of games as JSON"
-  end
+  #get '/games' do
+  #  "Returns the list of games as JSON"
+  #end
 
   before '/gm/*' do
     if resp = request.env["rack.openid.response"]
       if resp.status == :success
         fields = resp.get_signed_ns("http://openid.net/srv/ax/1.0")
-        session[:fields] = fields #Not sure if this is needed
         session[:user] = {
           :first_name => fields['value.ext1'],
           :last_name => fields['value.ext2'],
@@ -39,28 +38,19 @@ class SchedulerApp < Sinatra::Base
         redirect request.path
       end
     else
-      if not session[:fields]
+      if not session[:user]
         response.headers['WWW-Authenticate'] = Rack::OpenID.build_header(
           :identifier => "https://www.google.com/accounts/o8/id",
           :required => ["http://axschema.org/contact/email",
                         "http://axschema.org/namePerson/first",
-                        "http://axschema.org/namePerson/last"],
+                         "http://axschema.org/namePerson/last"],
                         :method => 'POST')
         throw :halt, [401, 'got openid?']
       end
     end
   end
 
-  post '/gm/newgame' do
-    puts "Game created by #{session[:user][:email]}"
-  end
-
-  get '/gm/mygames' do
-    "List of game created by #{session[:user][:email]}"
-  end
-
   get '/gm/info' do
-    puts session[:fields]
     if session[:user]
       session[:user].to_json
     else
