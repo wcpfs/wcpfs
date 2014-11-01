@@ -5,15 +5,11 @@ bin_dir=`dirname $abspath`
 root_dir=`dirname $bin_dir`
 app_name=`basename $root_dir`
 
-if [[ $# -ne 1 ]]; then
-  echo "Usage $0 <EC2 instance>"
-  exit 1
-fi
-
 server=${1:-$app_name}
 
 if ! ssh $server 'whoami'; then
-  echo "Cannot log into $server. Ensure the server is properly configured in ~/.ssh/config"
+  echo "Cannot log into server named $server. Ensure it is properly configured in ~/.ssh/config."
+  echo "See README.md for details"
   exit 1
 fi
 
