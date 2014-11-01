@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+bin_dir=`dirname $abspath`
+root_dir=`dirname $bin_dir`
+app_name=`basename $root_dir`
+
+server=`cat .deploy`
+
+git push $server:git/$app_name.git master

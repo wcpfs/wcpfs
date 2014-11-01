@@ -1,4 +1,3 @@
-
 # Development 
 
 To get a dev server going:
@@ -9,3 +8,15 @@ $ rackup
 To run tests:
 
 $ bundle exec guard
+
+# Deployment
+
+  0. Get the aws.pem file from someone who has it. Copy it to ~/.ssh/
+  0. Add an entry to your ~/.ssh/config file that looks like this:
+
+  Host schedule
+    HostName 54.225.255.234 # EC2 host IP
+    user ubuntu
+    IdentityFile ~/.ssh/aws.pem
+
+  0. Run ./bin/deploy 

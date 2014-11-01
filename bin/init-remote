@@ -12,6 +12,11 @@ fi
 
 server=$1
 
+if ! ssh $server 'whoami'; then
+  echo "Cannot log into $server. Ensure the server is properly configured in ~/.ssh/config"
+  exit 1
+fi
+
 echo "Deploying $app_name to $server"
 
 # Server setup for running on Amazon EC2. Assumes Ubuntu 14.04.
@@ -19,7 +24,7 @@ ssh $server <<DOC
 if ! git help > /dev/null; then
   sudo apt-get update
   sudo apt-get -y upgrade
-  sudo apt-get -y install make g++ git daemontools build-essential
+  sudo apt-get -y install make g++ git daemontools build-essential ruby1.9.1-dev
   echo "gem: --no-rdoc --no-ri" > ~/.gemrc
   sudo gem install bundler
 fi
@@ -49,4 +54,7 @@ if ! pgrep svscan; then
 fi
 DOC
 
-git push $server:git/$app_name.git master
+git push ubuntu@$server:git/$app_name.git master
+
+echo $server > .deploy
+git add .deploy

@@ -8,6 +8,11 @@ describe SchedulerApp do
   include Rack::Test::Methods
   let (:app) { SchedulerApp.new }
 
+  it "can play ping pong" do
+    get '/ping'
+    expect(last_response.body).to eq "pong"
+  end
+
   it "redirects to login when accessing GM content" do
     expect(Rack::OpenID).to receive(:build_header).with({
       :identifier => "https://www.google.com/accounts/o8/id",

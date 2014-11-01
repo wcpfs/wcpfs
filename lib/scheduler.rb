@@ -25,6 +25,10 @@ class SchedulerApp < Sinatra::Base
   #get '/games' do
   #  "Returns the list of games as JSON"
   #end
+  
+  get '/ping' do
+    "pong"
+  end
 
   before '/gm/*' do
     if resp = request.env["rack.openid.response"]

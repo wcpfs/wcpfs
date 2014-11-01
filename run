@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Redirect STDERR to STDOUT
+exec 2>&1
+
+source .env
+exec bundle exec thin -R config.ru start -p 8080 -e production
