@@ -14,13 +14,13 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
   end
 
-  #get '/subscribe' do
-  #  puts params[:email]
-  #end
+  get '/games/subscribe' do
+    "Subscribed #{params[:email]}"
+  end
 
-  #get '/unsubscribe' do
-  #  puts params[:email]
-  #end
+  get '/games/unsubscribe' do
+    "Unsubscribed #{params[:email]}"
+  end
 
   #get '/games' do
   #  "Returns the list of games as JSON"
