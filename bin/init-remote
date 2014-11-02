@@ -23,6 +23,8 @@ if ! git help > /dev/null; then
   sudo apt-get -y install make g++ git daemontools build-essential ruby1.9.1-dev nginx
   echo "gem: --no-rdoc --no-ri" > ~/.gemrc
   sudo gem install bundler
+  git config --global user.email "scheduler@windycitypathfinder.com"
+  git config --global user.name "Scheduler"
 fi
 if [[ ! -d ~/git/$app_name ]]; then
   mkdir -p ~/git/$app_name.git
