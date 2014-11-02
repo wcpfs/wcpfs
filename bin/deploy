@@ -4,7 +4,7 @@ root_dir=`dirname $0`/..
 
 server=scheduler
 repo_url=`git config remote.origin.url`
-remote_deploy_url=monitoringdev@$server:git/`basename $repo_url`
+remote_deploy_url=$server:git/`basename $repo_url`
 
 echo "Deploying to $remote_deploy_url"
 if [[ ! -n $(git status --porcelain) ]]; then
