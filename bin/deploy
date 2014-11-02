@@ -1,10 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 root_dir=`dirname $0`/..
 
-defaults="--acl-public --exclude=.DS_Store"
-# beta.windycitypathfinder.com.s3-website-us-east-1.amazonaws.com
-bucket=s3://beta.windycitypathfinder.com
-cd $root_dir
+server=scheduler
+repo_url=`git config remote.origin.url`
+remote_deploy_url=$server:git/`basename $repo_url`
 
-echo "Deploying site to $bucket"
-s3cmd sync --no-preserve $defaults public/* $bucket/
+echo "Deploying to $remote_deploy_url"
+if [[ ! -n $(git status --porcelain) ]]; then
+  git push $remote_deploy_url master
+else
+  git status
+fi
