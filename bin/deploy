@@ -3,11 +3,10 @@
 root_dir=`dirname $0`/..
 
 server=scheduler
-repo_url=`git config remote.origin.url`
-remote_deploy_url=$server:git/`basename $repo_url`
+remote_deploy_url=$server:git/wcpfs.git
 
-echo "Deploying to $remote_deploy_url"
 if [[ ! -n $(git status --porcelain) ]]; then
+  echo "Deploying to $remote_deploy_url"
   git push $remote_deploy_url master
 else
   git status
