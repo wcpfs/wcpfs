@@ -9,7 +9,7 @@ sha=$1
 server=${2:-"scheduler"}
 
 ssh $server <<DOC
-cd ~/git/$service_name.git
+cd ~/git/$app_name.git
 if [[ -n "$sha" ]]; then
   GIT_WORK_TREE=~/apps/$app_name git checkout $sha
   svc -t ~/apps/$app_name
