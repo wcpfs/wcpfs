@@ -20,7 +20,7 @@ ssh $server <<DOC
 if ! git help > /dev/null; then
   sudo apt-get update
   sudo apt-get -y upgrade
-  sudo apt-get -y install make g++ git daemontools build-essential ruby1.9.1-dev
+  sudo apt-get -y install make g++ git daemontools build-essential ruby1.9.1-dev nginx
   echo "gem: --no-rdoc --no-ri" > ~/.gemrc
   sudo gem install bundler
 fi
@@ -32,11 +32,19 @@ if [[ ! -d ~/git/$app_name ]]; then
 fi
 DOC
 
+# Add nginx config
+ssh $server "sudo tee /etc/nginx/sites-enabled/schedule" < nginx/scheduler
+ssh $server <<DOC
+  sudo rm /etc/nginx/sites-enabled/default
+  sudo /etc/init.d/nginx restart
+DOC
+
 # Add post receive hook
 ssh $server "cat > ~/git/$app_name.git/hooks/post-receive" <<DOC
 #!/bin/sh
 mkdir -p ~/apps/$app_name
 GIT_WORK_TREE=~/apps/$app_name git checkout -f
+git tag -a \`date "+%Y-%m-%d_%H%M%S"\` -m "Tag created by deploy script"
 cd ~/apps/$app_name
 bundle install --without test
 /usr/bin/svc -t ~/apps/$app_name

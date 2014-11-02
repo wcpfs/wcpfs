@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+log_dir=`dirname $abspath`
+root_dir=`dirname $log_dir`
+app_name=`basename $root_dir`
+
+sha=${1:-"master"}
+server=${2:-"scheduler"}
+
+ssh $server <<DOC
+cd ~/git/$service_name.git
+GIT_WORK_TREE=~/apps/$app_name git checkout $sha
+svc -t ~/apps/$app_name
+svc -u ~/apps/$app_name
+DOC
