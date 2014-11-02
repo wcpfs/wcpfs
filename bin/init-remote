@@ -29,7 +29,7 @@ DOC
 # Add post-receive hook
 ssh $server "cat > ~/git/$app_name.git/hooks/post-receive" <<DOC
 #!/bin/sh
-GIT_WORK_TREE=~/apps/$app_name git checkout -f
+GIT_WORK_TREE=~/web/$app_name git checkout -f
 git tag -a \`date "+%Y-%m-%d_%H%M%S"\` -m "Tag created by deploy script"
 DOC
 
