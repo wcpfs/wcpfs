@@ -3,6 +3,7 @@ $LOAD_PATH << File.join(Dir.getwd, 'lib')
 require 'sinatra'
 require 'json'
 require 'rack/openid'
+require 'games'
 
 class SchedulerApp < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
@@ -22,9 +23,10 @@ class SchedulerApp < Sinatra::Base
     "Unsubscribed #{params[:email]}"
   end
 
-  #get '/games' do
-  #  "Returns the list of games as JSON"
-  #end
+  get '/games' do
+    content_type :json
+    settings.games.all.to_json
+  end
   
   get '/ping' do
     "pong"
@@ -44,8 +46,8 @@ class SchedulerApp < Sinatra::Base
     else
       if not session[:user]
         response.headers['WWW-Authenticate'] = Rack::OpenID.build_header(
-          :identifier => "https://www.google.com/accounts/o8/id",
-          :required => ["http://axschema.org/contact/email",
+          identifier: "https://www.google.com/accounts/o8/id",
+          required:  ["http://axschema.org/contact/email",
                         "http://axschema.org/namePerson/first",
                          "http://axschema.org/namePerson/last"],
                         :method => 'POST')
@@ -60,5 +62,23 @@ class SchedulerApp < Sinatra::Base
     else
       "{}"
     end
+  end
+
+  # ?title=My%20Game&datetime=123456789000&notes=These%20Are%20My%20Notes
+  post '/gm/createGame' do
+    game_info = {
+      GM: gm_email,
+      datetime: params[:datetime].to_i,
+      title: params[:title],
+      notes: params[:notes]
+    }
+    settings.games.create game_info
+    redirect '/games?id=abc123'
+  end
+
+  private
+
+  def gm_email
+    session[:user][:email]
   end
 end

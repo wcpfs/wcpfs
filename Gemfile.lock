@@ -1,6 +1,16 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aws-sdk (2.0.6.pre)
+      aws-sdk-resources (= 2.0.6.pre)
+    aws-sdk-core (2.0.6)
+      builder (~> 3.0)
+      jmespath (~> 1.0)
+      multi_json (~> 1.0)
+      multi_xml (~> 0.5)
+    aws-sdk-resources (2.0.6.pre)
+      aws-sdk-core (= 2.0.6)
+    builder (3.2.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coderay (1.1.0)
@@ -22,12 +32,16 @@ GEM
       guard (~> 2.1)
       rspec (>= 2.14, < 4.0)
     hitimes (1.2.2)
+    jmespath (1.0.1)
+      multi_json (~> 1.0)
     listen (2.7.11)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     lumberjack (1.0.9)
     method_source (0.8.2)
+    multi_json (1.10.1)
+    multi_xml (0.5.5)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -74,6 +88,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk (>= 2.0.5.pre)
   guard
   guard-bundler
   guard-rspec

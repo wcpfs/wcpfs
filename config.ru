@@ -6,4 +6,9 @@ require 'bundler'
 Bundler.require
 
 require 'scheduler'
+require 'games'
+
+# Configure the app
+SchedulerApp.set :games, Games.new
+
 run SchedulerApp

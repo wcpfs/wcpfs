@@ -13,7 +13,7 @@ server {
         }
 
 	location / {
-		root /home/ubuntu/web/scheduler;
+		root /home/ubuntu/web/wcpfs/public;
 		try_files $uri $uri/ index.html @sinatra;
 	}
 }

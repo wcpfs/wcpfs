@@ -52,7 +52,7 @@ bundle install --without test
 /usr/bin/svc -t ~/apps/$app_name
 DOC
 
-# Start svscan
+# Start svscan; Not sure why, but this doesn't seem to work.
 ssh $server <<DOC
 chmod +x ~/git/$app_name.git/hooks/post-receive
 if ! pgrep svscan; then
