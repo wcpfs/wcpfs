@@ -7,7 +7,7 @@ class Games
       access_key_id: ENV['AWS_ACCESS_KEY'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
     })
-    @table_name = ENV["GAMES_TABLE"] || 'wcpfs-games-test'
+    @table_name = ENV["GAMES_TABLE_NAME"] || 'wcpfs-games-test'
   end
 
   def create game_info
@@ -26,5 +26,8 @@ class Games
       @games = @client.scan(table_name: "wcpfs-games-test").items
     end
     return @games
+  end
+
+  def signup game_id, email
   end
 end

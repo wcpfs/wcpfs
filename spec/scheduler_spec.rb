@@ -26,6 +26,12 @@ describe SchedulerApp do
     expect(JSON.parse(last_response.body)).to eq game_list
   end
 
+  it "allows cross origin requests" do
+    allow(games).to receive(:all) { [] }
+    get '/games', {}, {"HTTP_ORIGIN" => "http://myapp.com"}
+    expect(last_response.headers).to include({ "Access-Control-Allow-Origin" => "http://myapp.com"})
+  end
+
   it "redirects to login when accessing GM content" do
     expect(Rack::OpenID).to receive(:build_header).with({
       :identifier => "https://www.google.com/accounts/o8/id",

@@ -44,4 +44,8 @@ describe Games do
     expect(client).to receive(:scan) { spy('resp') }
     games.all
   end
+
+  it "can sign up for a game" do
+
+  end
 end

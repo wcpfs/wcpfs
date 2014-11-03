@@ -3,6 +3,7 @@ gem 'thin'
 gem 'sinatra'
 gem 'rack-openid'
 gem 'aws-sdk', ">= 2.0.5.pre"
+gem "sinatra-cross_origin", "~> 0.3.1"
 
 group :test do
   gem 'guard'

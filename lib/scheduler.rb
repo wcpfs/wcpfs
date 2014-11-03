@@ -1,17 +1,20 @@
 $LOAD_PATH << File.join(Dir.getwd, 'lib')
 
 require 'sinatra'
+require 'sinatra/cross_origin'
 require 'json'
 require 'rack/openid'
 require 'games'
 
 class SchedulerApp < Sinatra::Base
+
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
   use Rack::OpenID
 
   set :bind, '0.0.0.0'
 
-  configure do # could also just be :production
+  configure do 
+    register Sinatra::CrossOrigin
     set :logging, true
   end
 
@@ -39,6 +42,10 @@ class SchedulerApp < Sinatra::Base
     end
   end
 
+  before '/games/*' do
+    cross_origin
+  end
+
   get '/games/subscribe' do
     "Subscribed #{params[:email]}"
   end
@@ -48,6 +55,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/games' do
+    cross_origin
     content_type :json
     settings.games.all.to_json
   end
