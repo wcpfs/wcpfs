@@ -2,8 +2,12 @@ require 'aws-sdk'
 
 class Games
   def initialize
-    @client = Aws::DynamoDB::Client.new( :region => 'us-east-1' )
-    @table_name = 'wcpfs-games-test'
+    @client = Aws::DynamoDB::Client.new({
+      :region => 'us-east-1',
+      access_key_id: ENV['AWS_ACCESS_KEY'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+    })
+    @table_name = ENV["GAMES_TABLE"] || 'wcpfs-games-test'
   end
 
   def create game_info

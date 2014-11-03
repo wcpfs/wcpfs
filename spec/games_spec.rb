@@ -10,9 +10,14 @@ describe Games do
 
   it "can create a new game" do
     allow(client).to receive :put_item
+    expect(SecureRandom).to receive(:uuid) { "abc123" }
     item = { GM: "benrady@gmail.com", date: "2014-11-05" }
     games.create(item)
-    expect(client).to have_received(:put_item).with({table_name: "wcpfs-games-test", item: item})
+    expect(client).to have_received(:put_item).with(hash_including({
+      table_name: "wcpfs-games-test", 
+      item: item,
+      gameId: "abc123"
+    }))
   end
 
   it "can list the existing games" do

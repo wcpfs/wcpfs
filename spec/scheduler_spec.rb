@@ -62,9 +62,14 @@ describe SchedulerApp do
         GM: "benrady@gmail.com", 
         datetime: 123456789000, 
         title: "Title", 
-        notes: "My Notes"})
+        notes: "My Notes"}).
+        and_return( {gameId: 'abc123'} )
+
       post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
-      expect(last_response.status).to eq 302
+      expect(last_response.status).to eq 200
+      expect(JSON.parse(last_response.body)).to include({
+        "gameId" => "abc123"
+      })
     end
   end
 end

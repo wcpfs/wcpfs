@@ -15,23 +15,6 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
   end
 
-  get '/games/subscribe' do
-    "Subscribed #{params[:email]}"
-  end
-
-  get '/games/unsubscribe' do
-    "Unsubscribed #{params[:email]}"
-  end
-
-  get '/games' do
-    content_type :json
-    settings.games.all.to_json
-  end
-  
-  get '/ping' do
-    "pong"
-  end
-
   before '/gm/*' do
     if resp = request.env["rack.openid.response"]
       if resp.status == :success
@@ -56,6 +39,23 @@ class SchedulerApp < Sinatra::Base
     end
   end
 
+  get '/games/subscribe' do
+    "Subscribed #{params[:email]}"
+  end
+
+  get '/games/unsubscribe' do
+    "Unsubscribed #{params[:email]}"
+  end
+
+  get '/games' do
+    content_type :json
+    settings.games.all.to_json
+  end
+  
+  get '/ping' do
+    "pong"
+  end
+
   get '/gm/info' do
     if session[:user]
       session[:user].to_json
@@ -72,8 +72,9 @@ class SchedulerApp < Sinatra::Base
       title: params[:title],
       notes: params[:notes]
     }
-    settings.games.create game_info
-    redirect '/games?id=abc123'
+    item = settings.games.create game_info
+    content_type :json
+    item.to_json
   end
 
   private
