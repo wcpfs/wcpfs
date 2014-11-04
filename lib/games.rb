@@ -14,7 +14,7 @@ class Games
     @games = nil
     item = game_info.merge(gameId: SecureRandom.uuid, seats: [])
     params = {
-      table_name: "wcpfs-games-test",
+      table_name: @table_name,
       item: item
     }
     @client.put_item(params)
@@ -23,7 +23,7 @@ class Games
 
   def all
     if @games.nil?
-      @games = @client.scan(table_name: "wcpfs-games-test").items
+      @games = @client.scan(table_name: @table_name).items
     end
     return @games
   end
