@@ -15,7 +15,7 @@ describe Games do
     games.create(item)
     expect(client).to have_received(:put_item).with(hash_including({
       table_name: "wcpfs-games-test", 
-      item: item.merge(gameId: "abc123")
+      item: item.merge(gameId: "abc123", seats: [])
     }))
   end
 

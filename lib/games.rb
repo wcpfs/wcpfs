@@ -12,7 +12,7 @@ class Games
 
   def create game_info
     @games = nil
-    item = game_info.merge(gameId: SecureRandom.uuid)
+    item = game_info.merge(gameId: SecureRandom.uuid, seats: [])
     params = {
       table_name: "wcpfs-games-test",
       item: item
