@@ -1,4 +1,4 @@
   #templates { display: none; }
-  body {
-    font-size: 1em;
+  .bottom-padding-md {
+    padding-bottom: 21px;
   }
