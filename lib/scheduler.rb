@@ -12,6 +12,7 @@ class SchedulerApp < Sinatra::Base
   use Rack::OpenID
 
   set :bind, '0.0.0.0'
+  set :public_folder, File.dirname(__FILE__) + '/../public'
 
   configure do 
     register Sinatra::CrossOrigin

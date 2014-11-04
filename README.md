@@ -9,6 +9,10 @@ To run tests:
 
 $ bundle exec guard
 
+To test the web app, create a symlink like so:
+
+$ ln -s ../wcpfs/public
+
 # Deployment
 
   0. Get the wcpfs.pem file from someone who has it. Copy it to ~/.ssh/

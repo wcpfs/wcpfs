@@ -15,8 +15,7 @@ describe Games do
     games.create(item)
     expect(client).to have_received(:put_item).with(hash_including({
       table_name: "wcpfs-games-test", 
-      item: item,
-      gameId: "abc123"
+      item: item.merge(gameId: "abc123")
     }))
   end
 
@@ -27,6 +26,10 @@ describe Games do
     allow(client).to receive(:scan) { resp }
     expect(games.all).to eq items
   end
+
+  it "removes domain names from emails"
+
+  it "ensures the datetime field is an integer"
 
   it "caches the game list" do
     allow(client).to receive(:scan) { spy ('resp') }
@@ -43,9 +46,5 @@ describe Games do
 
     expect(client).to receive(:scan) { spy('resp') }
     games.all
-  end
-
-  it "can sign up for a game" do
-
   end
 end
