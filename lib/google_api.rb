@@ -1,8 +1,9 @@
 require 'google/api_client'
 
+# Wraps the Google Services API, which uses OAuth2
+#
+# https://developers.google.com/accounts/docs/OAuth2WebServer
 class GoogleApi
-  attr_reader :client
-
   def initialize
     @client = Google::APIClient.new(application_name: "Windy City Pathfinder", application_version: "v1")
     @client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]

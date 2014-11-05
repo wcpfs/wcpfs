@@ -3,15 +3,18 @@ ENV["RACK_ENV"] = 'test'
 
 require 'scheduler'
 require 'rack/test'
+require 'google_api'
 
 describe SchedulerApp do
   include Rack::Test::Methods
 
   let (:games) { double Games}
+  let (:google) { double GoogleApi}
   let (:app) { SchedulerApp.new }
 
   before( :each ) do
     SchedulerApp.set :games, games
+    SchedulerApp.set :google, google
   end
   
   it "can play ping pong" do
@@ -33,11 +36,14 @@ describe SchedulerApp do
   end
 
   it "redirects to login when accessing GM content" do
+    expect(google).to receive(:auth_url) { "http://google/auth" }
     get '/gm/info'
     expect(last_response.status).to be 302
     follow_redirect!
     expect(last_request.url).to eq 'http://example.org/login'
   end
+
+  it "/login redirects to / if a user is already authenticated"
 
   describe 'when a GM is authenticated' do
     let(:env){ Hash.new }
