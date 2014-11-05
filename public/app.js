@@ -18,8 +18,14 @@ function homeView() {
       _.each(game, function(v, k) {  
         gameItem.find('.' + k).text(v);
       });
+      gameItem.find('.gm_profile_pic').attr('src', game.gm_pic)
       gameItem.find('.when').text(formatDate(game.datetime));
       gameItem.find('.seats-available').text(6 - game.seats.length);
+      var playerList = gameItem.find('.player-list');
+      _.each(game.seats, function (seat) {
+        var playerItem = $('<li>').text(seat.name)
+        playerList.append(playerItem);
+      });
       list.append(gameItem);
     })
   }
