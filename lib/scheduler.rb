@@ -3,44 +3,7 @@ $LOAD_PATH << File.join(Dir.getwd, 'lib')
 require 'sinatra'
 require 'sinatra/cross_origin'
 require 'json'
-require 'google/api_client'
 require 'games'
-
-class GoogleApi
-  attr_reader :client
-
-  def initialize
-    @client = Google::APIClient.new(application_name: "Windy City Pathfinder", application_version: "v1")
-    @client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]
-    @client.authorization.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
-    @client.authorization.scope = 'profile'
-    @plus = @client.discovered_api('plus')
-  end
-
-  def profile(session)
-    auth = @client.authorization.dup
-    auth.update_token!(session)
-    result = @client.execute(:api_method => @plus.people.get,
-                            :parameters => {'userId' => 'me'},
-                            :authorization => auth)
-    result.data.to_hash
-  end
-
-  def save_credentials(session, code)
-    auth = @client.authorization.dup
-    auth.code = code if code
-    auth.fetch_access_token!
-    session[:access_token] = auth.access_token
-    session[:refresh_token] = auth.refresh_token
-    session[:expires_in] = auth.expires_in
-    session[:issued_at] = auth.issued_at
-  end
-
-  def auth_url(redirect_uri)
-    @client.authorization.redirect_uri = redirect_uri
-    @client.authorization.authorization_uri.to_s
-  end
-end
 
 class SchedulerApp < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
@@ -51,27 +14,10 @@ class SchedulerApp < Sinatra::Base
   configure do 
     register Sinatra::CrossOrigin
     set :logging, true
-
-    google_api = GoogleApi.new
-
-    set :google, google_api
   end
 
   def google
     settings.google
-  end
-
-  def user_credentials
-    # They say: "Build a per-request oauth credential based on token stored in session
-    # which allows us to use a shared API client."
-    #
-    # I don't get how storing this thing allows multiple users to log in.
-    @authorization ||= (
-      auth = google.client.authorization.dup
-      auth.redirect_uri = to('/oauth2callback')
-      auth.update_token!(session)
-      auth
-    )
   end
 
   before '/gm/*' do
@@ -89,7 +35,7 @@ class SchedulerApp < Sinatra::Base
       redirect google.auth_url(to('/oauth2callback')), 303
     end
     unless session[:user]
-      session[:user] = google.profile(user_credentials)
+      session[:user] = google.profile(session)
     end
     redirect to('/')
   end
