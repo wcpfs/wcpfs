@@ -6,6 +6,17 @@ require 'json'
 require 'google/api_client'
 require 'games'
 
+class GoogleApi
+  attr_reader :client
+
+  def initialize
+    @client = Google::APIClient.new(application_name: "Windy City Pathfinder", application_version: "v1")
+    client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]
+    client.authorization.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
+    client.authorization.scope = 'profile'
+  end
+end
+
 class SchedulerApp < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
 
@@ -16,22 +27,19 @@ class SchedulerApp < Sinatra::Base
     register Sinatra::CrossOrigin
     set :logging, true
 
-    client = Google::APIClient.new
-    client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]
-    client.authorization.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
-    client.authorization.scope = 'profile'
-    oauth2_api = client.discovered_api('plus')
+    google_api = GoogleApi.new
+    plus = google_api.client.discovered_api('plus')
 
-    set :api_client, client
-    set :oauth2_api, oauth2_api
+    set :api_client, google_api.client
+    set :plus, plus
   end
 
   def api_client
     settings.api_client
   end
 
-  def oauth2_api
-    settings.oauth2_api
+  def plus
+    settings.plus
   end
 
   def user_credentials
@@ -62,7 +70,7 @@ class SchedulerApp < Sinatra::Base
       redirect to('/oauth2authorize')
     end
     unless session[:user]
-      result = api_client.execute(:api_method => oauth2_api.people.get,
+      result = api_client.execute(:api_method => plus.people.get,
                               :parameters => {'userId' => 'me'},
                               :authorization => user_credentials)
       puts session[:user] = result.data.to_hash
