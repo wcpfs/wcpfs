@@ -11,9 +11,17 @@ class GoogleApi
 
   def initialize
     @client = Google::APIClient.new(application_name: "Windy City Pathfinder", application_version: "v1")
-    client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]
-    client.authorization.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
-    client.authorization.scope = 'profile'
+    @client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]
+    @client.authorization.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
+    @client.authorization.scope = 'profile'
+    @plus = @client.discovered_api('plus')
+  end
+
+  def profile(user_credentials)
+    result = @client.execute(:api_method => @plus.people.get,
+                            :parameters => {'userId' => 'me'},
+                            :authorization => user_credentials)
+    result.data.to_hash
   end
 end
 
@@ -28,18 +36,12 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
 
     google_api = GoogleApi.new
-    plus = google_api.client.discovered_api('plus')
 
-    set :api_client, google_api.client
-    set :plus, plus
+    set :google, google_api
   end
 
-  def api_client
-    settings.api_client
-  end
-
-  def plus
-    settings.plus
+  def google
+    settings.google
   end
 
   def user_credentials
@@ -48,7 +50,7 @@ class SchedulerApp < Sinatra::Base
     #
     # I don't get how storing this thing allows multiple users to log in.
     @authorization ||= (
-      auth = api_client.authorization.dup
+      auth = google.client.authorization.dup
       auth.redirect_uri = to('/oauth2callback')
       auth.update_token!(session)
       auth
@@ -70,10 +72,7 @@ class SchedulerApp < Sinatra::Base
       redirect to('/oauth2authorize')
     end
     unless session[:user]
-      result = api_client.execute(:api_method => plus.people.get,
-                              :parameters => {'userId' => 'me'},
-                              :authorization => user_credentials)
-      puts session[:user] = result.data.to_hash
+      session[:user] = google.profile(user_credentials)
     end
     redirect to('/')
   end
