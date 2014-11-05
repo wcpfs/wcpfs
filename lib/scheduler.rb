@@ -68,18 +68,13 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/login' do
-    unless user_credentials.access_token || request.path_info =~ /^\/oauth2/
-      redirect to('/oauth2authorize')
+    unless user_credentials.access_token 
+      redirect user_credentials.authorization_uri.to_s, 303
     end
     unless session[:user]
       session[:user] = google.profile(user_credentials)
     end
     redirect to('/')
-  end
-
-  get '/oauth2authorize' do
-    # I don't think this URL ever changes
-    redirect user_credentials.authorization_uri.to_s, 303
   end
 
   get '/oauth2callback' do
@@ -90,6 +85,9 @@ class SchedulerApp < Sinatra::Base
     session[:refresh_token] = user_credentials.refresh_token
     session[:expires_in] = user_credentials.expires_in
     session[:issued_at] = user_credentials.issued_at
+    session[:user] = google.profile(user_credentials)
+
+    # Could create a redirect loop
     redirect to('/login')
   end
 
