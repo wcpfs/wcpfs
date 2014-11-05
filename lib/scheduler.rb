@@ -35,8 +35,10 @@ class SchedulerApp < Sinatra::Base
   end
 
   def user_credentials
-    # Build a per-request oauth credential based on token stored in session
-    # which allows us to use a shared API client.
+    # They say: "Build a per-request oauth credential based on token stored in session
+    # which allows us to use a shared API client."
+    #
+    # I don't get how storing this thing allows multiple users to log in.
     @authorization ||= (
       auth = api_client.authorization.dup
       auth.redirect_uri = to('/oauth2callback')
@@ -48,14 +50,6 @@ class SchedulerApp < Sinatra::Base
   before '/gm/*' do
     # Ensure user has authorized the app
     redirect to('/login') unless session[:user]
-  end
-
-  after do
-    # Serialize the access/refresh token to the session
-    session[:access_token] = user_credentials.access_token
-    session[:refresh_token] = user_credentials.refresh_token
-    session[:expires_in] = user_credentials.expires_in
-    session[:issued_at] = user_credentials.issued_at
   end
 
   get '/' do
@@ -77,6 +71,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/oauth2authorize' do
+    # I don't think this URL ever changes
     redirect user_credentials.authorization_uri.to_s, 303
   end
 
@@ -84,6 +79,10 @@ class SchedulerApp < Sinatra::Base
     # Exchange token
     user_credentials.code = params[:code] if params[:code]
     user_credentials.fetch_access_token!
+    session[:access_token] = user_credentials.access_token
+    session[:refresh_token] = user_credentials.refresh_token
+    session[:expires_in] = user_credentials.expires_in
+    session[:issued_at] = user_credentials.issued_at
     redirect to('/login')
   end
 
