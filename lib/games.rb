@@ -13,6 +13,7 @@ class Games
   def create game_info
     @games = nil
     item = game_info.merge(gameId: SecureRandom.uuid, seats: [])
+    item.delete(:notes) if item[:notes].nil? or item[:notes].length == 0
     params = {
       table_name: @table_name,
       item: item
