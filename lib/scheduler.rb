@@ -17,11 +17,28 @@ class GoogleApi
     @plus = @client.discovered_api('plus')
   end
 
-  def profile(user_credentials)
+  def profile(session)
+    auth = @client.authorization.dup
+    auth.update_token!(session)
     result = @client.execute(:api_method => @plus.people.get,
                             :parameters => {'userId' => 'me'},
-                            :authorization => user_credentials)
+                            :authorization => auth)
     result.data.to_hash
+  end
+
+  def save_credentials(session, code)
+    auth = @client.authorization.dup
+    auth.code = code if code
+    auth.fetch_access_token!
+    session[:access_token] = auth.access_token
+    session[:refresh_token] = auth.refresh_token
+    session[:expires_in] = auth.expires_in
+    session[:issued_at] = auth.issued_at
+  end
+
+  def auth_url(redirect_uri)
+    @client.authorization.redirect_uri = redirect_uri
+    @client.authorization.authorization_uri.to_s
   end
 end
 
@@ -68,8 +85,8 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/login' do
-    unless user_credentials.access_token 
-      redirect user_credentials.authorization_uri.to_s, 303
+    unless session[:access_token]
+      redirect google.auth_url(to('/oauth2callback')), 303
     end
     unless session[:user]
       session[:user] = google.profile(user_credentials)
@@ -78,14 +95,8 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/oauth2callback' do
-    # Exchange token
-    user_credentials.code = params[:code] if params[:code]
-    user_credentials.fetch_access_token!
-    session[:access_token] = user_credentials.access_token
-    session[:refresh_token] = user_credentials.refresh_token
-    session[:expires_in] = user_credentials.expires_in
-    session[:issued_at] = user_credentials.issued_at
-    session[:user] = google.profile(user_credentials)
+    google.save_credentials(session, params[:code])
+    session[:user] = google.profile(session)
 
     # Could create a redirect loop
     redirect to('/login')
