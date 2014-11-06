@@ -89,10 +89,9 @@ describe SchedulerApp do
         and_return( {gameId: 'abc123'} )
 
       post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
-      expect(last_response.status).to eq 200
-      expect(JSON.parse(last_response.body)).to include({
-        "gameId" => "abc123"
-      })
+      expect(last_response.status).to eq 302
+      follow_redirect!
+      expect(last_request.url).to eq 'http://example.org/'
     end
   end
 end

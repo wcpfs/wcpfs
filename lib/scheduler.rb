@@ -53,11 +53,13 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/games/subscribe' do
-    "Subscribed #{params[:email]}"
+    #"Subscribed #{params[:email]}"
+    redirect to("/#subscribed")
   end
 
   get '/games/unsubscribe' do
-    "Unsubscribed #{params[:email]}"
+    #"Unsubscribed #{params[:email]}"
+    redirect to("/#unsubscribed")
   end
 
   get '/games' do
@@ -86,6 +88,6 @@ class SchedulerApp < Sinatra::Base
     }
     item = settings.games.create game_info
     content_type :json
-    item.to_json
+    redirect('/')
   end
 end
