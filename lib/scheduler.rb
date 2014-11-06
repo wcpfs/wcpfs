@@ -19,6 +19,7 @@ class SchedulerApp < Sinatra::Base
   before '/gm/*' do
     # Ensure user has authorized the app
     redirect to('/login') unless session[:user]
+    # FIXME Need to check for expired auth token here
   end
 
   get '/' do

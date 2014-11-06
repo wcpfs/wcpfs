@@ -54,23 +54,25 @@ describe SchedulerApp do
   describe 'when a user is authenticated' do
     let(:env){ Hash.new }
     let(:google_profile) {{
-      "kind"=>"plus#person", 
-      "etag"=>"\"MoxPKeu0NQD8g5Gtts3ebh50504/d_d3uSVxv_l3CdC82BuxhNOI9sU\"", 
-      "occupation"=>"Senior Software Developer", 
-      "gender"=>"male", 
-      "urls"=>[], 
-      "objectType"=>"person", 
-      "id"=>"113769764833315172586", 
-      "displayName"=>"Ben Rady", 
-      "name"=>{"familyName"=>"Rady", "givenName"=>"Ben"}, 
-      "aboutMe"=>"", 
-      "url"=>"https://plus.google.com/+BenRady", 
-      "image"=>{
-        "url"=>"https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50", "isDefault"=>false
-      }, 
-      "isPlusUser"=>true, 
-      "language"=>"en", 
-      "verified"=>false, "cover"=>{}
+      "kind" => "plus#person",
+      "etag" => "\"MoxPKeu0NQD8g5Gtts3ebh50504/2fOz_vnkSPUUKdUqR8k0qy6axpQ\"",
+      "occupation" => "Senior Software Developer",
+      "gender" => "male",
+      "emails" => [{"value" => "benrady@gmail.com","type" => "account"}],
+      "urls" => [],
+      "objectType" => "person",
+      "id" => "113769764833315172586",
+      "displayName" => "Ben Rady",
+      "name" => {"familyName" => "Rady","givenName" => "Ben"},
+      "aboutMe" => "...",
+      "url" => "https://plus.google.com/+BenRady",
+      "image" => {
+        "url" => "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
+        "isDefault" => false},
+      "isPlusUser" => true,
+      "language" => "en",
+      "verified" => false,
+      "cover" => {}
     }}
 
     before :each do

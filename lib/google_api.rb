@@ -8,11 +8,20 @@ class GoogleApi
     @client = Google::APIClient.new(application_name: "Windy City Pathfinder", application_version: "v1")
     @client.authorization.client_id = ENV["GOOGLE_CLIENT_ID"]
     @client.authorization.client_secret = ENV["GOOGLE_CLIENT_SECRET"]
-    @client.authorization.scope = 'profile'
+    @client.authorization.scope = ['profile', 'email']
     @plus = @client.discovered_api('plus')
   end
 
   def profile(session)
+    auth = @client.authorization.dup
+    auth.update_token!(session)
+    result = @client.execute(:api_method => @plus.people.get,
+                            :parameters => {'userId' => 'me'},
+                            :authorization => auth)
+    result.data.to_hash
+  end
+
+  def email(session)
     auth = @client.authorization.dup
     auth.update_token!(session)
     result = @client.execute(:api_method => @plus.people.get,
