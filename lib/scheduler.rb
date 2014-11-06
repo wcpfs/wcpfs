@@ -16,10 +16,6 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
   end
 
-  def google
-    settings.google
-  end
-
   before '/gm/*' do
     # Ensure user has authorized the app
     redirect to('/login') unless session[:user]
@@ -31,11 +27,8 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/login' do
-    unless session[:access_token]
-      redirect google.auth_url(to('/oauth2callback')), 303
-    end
     unless session[:user]
-      session[:user] = google.profile(session)
+      redirect google.auth_url(to('/oauth2callback')), 303
     end
     redirect to('/')
   end
@@ -76,18 +69,41 @@ class SchedulerApp < Sinatra::Base
     session[:user].to_json
   end
 
+  get '/gm/joinGame' do
+    games.signup(params[:gameId], {
+      name: user_name
+      #email: user_email
+    })
+    redirect to('/')
+  end
+
   # ?title=My%20Game&datetime=123456789000&notes=These%20Are%20My%20Notes
   post '/gm/createGame' do
     game_info = {
-      gm_name: session[:user]["displayName"],
+      gm_name: user_name,
       gm_pic: session[:user]["image"]["url"],
       gm_id: session[:user]["id"],
       datetime: params[:datetime].to_i,
       title: params[:title],
       notes: params[:notes]
     }
-    item = settings.games.create game_info
+    item = games.create game_info
     content_type :json
     redirect('/')
   end
+
+  private
+
+  def google
+    settings.google
+  end
+
+  def games
+    settings.games
+  end
+
+  def user_name
+    session[:user]["displayName"]
+  end
+
 end

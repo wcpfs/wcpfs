@@ -16,6 +16,12 @@ describe SchedulerApp do
     SchedulerApp.set :games, games
     SchedulerApp.set :google, google
   end
+
+  def expect_redirect_to path
+    expect(last_response.status).to eq 302
+    follow_redirect!
+    expect(last_request.url).to eq "http://example.org#{path}"
+  end
   
   it "can play ping pong" do
     get '/ping'
@@ -45,7 +51,7 @@ describe SchedulerApp do
 
   it "/login redirects to / if a user is already authenticated"
 
-  describe 'when a GM is authenticated' do
+  describe 'when a user is authenticated' do
     let(:env){ Hash.new }
     let(:google_profile) {{
       "kind"=>"plus#person", 
@@ -89,9 +95,13 @@ describe SchedulerApp do
         and_return( {gameId: 'abc123'} )
 
       post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
-      expect(last_response.status).to eq 302
-      follow_redirect!
-      expect(last_request.url).to eq 'http://example.org/'
+      expect_redirect_to '/'
+    end
+
+    it "can instantly join a game" do
+      expect(games).to receive(:signup).with("abc123", {name: "Ben Rady"})
+      get '/gm/joinGame', {gameId: 'abc123'}, env
+      expect_redirect_to '/'
     end
   end
 end

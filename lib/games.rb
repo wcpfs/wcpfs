@@ -11,15 +11,9 @@ class Games
   end
 
   def create game_info
-    @games = nil
-    item = game_info.merge(gameId: SecureRandom.uuid, seats: [])
-    item.delete(:notes) if item[:notes].nil? or item[:notes].length == 0
-    params = {
-      table_name: @table_name,
-      item: item
-    }
-    @client.put_item(params)
-    item
+    game = game_info.merge(gameId: SecureRandom.uuid, seats: [])
+    game.delete(:notes) if game[:notes].nil? or game[:notes].length == 0
+    save(game)
   end
 
   def all
@@ -29,6 +23,23 @@ class Games
     return @games
   end
 
-  def signup game_id, email
+  def signup game_id, player_info
+    game = all.find {|g| g["gameId"] == game_id}
+    if game
+      game["seats"] << player_info
+      save(game)
+    end
+  end
+
+  private
+
+  def save(game)
+    params = {
+      table_name: @table_name,
+      item: game
+    }
+    @client.put_item(params)
+    @games = nil
+    game
   end
 end
