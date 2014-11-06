@@ -26,6 +26,12 @@ function homeView() {
         var playerItem = $('<li>').text(seat.name)
         playerList.append(playerItem);
       });
+      var joinButton = gameItem.find('.join-button');
+      if (game.seats.length < 6) {
+        joinButton.attr('href', '/gm/joinGame?gameId=' + game.gameId);
+      } else {
+        joinButton.prop('disabled', true).removeClass('btn-success').addClass('btn-danger').text("Game Full!");
+      }
       list.append(gameItem);
     })
   }
