@@ -90,3 +90,10 @@ describe("New Game View", function() {
     expect(view.find('input.datetime-hidden').val()).toEqual('1234566000000');
   });
 });
+
+describe('Message View', function() {
+  it('shows a message', function() {
+    var view = messageView("Hello World");
+    expect(view.find('.message').text()).toEqual("Hello World");
+  });
+});

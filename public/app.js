@@ -1,8 +1,15 @@
 function routes() { 
   return { 
+    message: messageView,
     newGame: newGame,
     home: homeView
   };
+}
+
+function messageView(msg) {
+  var view = $('#templates .message-view').clone();
+  view.find('.message').text(msg);
+  return view;
 }
 
 function homeView() {
