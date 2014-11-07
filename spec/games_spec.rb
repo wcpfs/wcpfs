@@ -1,12 +1,12 @@
 require 'games'
+require 'aws-sdk'
 
 describe Games do
-  let (:client) { double 'client' }
-  let (:games) { Games.new }
+  let (:client) { double Aws::DynamoDB::Client }
+  let (:games) { Games.new client, 'games-table' }
 
   before( :each ) do
     allow(SecureRandom).to receive(:uuid) { "abc123" }
-    allow(Aws::DynamoDB::Client).to receive(:new) { client }
     allow(client).to receive :put_item
   end
 
@@ -15,7 +15,7 @@ describe Games do
       item = { GM: "benrady@gmail.com", date: "2014-11-05" }
       games.create(item)
       expect(client).to have_received(:put_item).with(hash_including({
-        table_name: "wcpfs-games-test", 
+        table_name: "games-table", 
         item: item.merge(gameId: "abc123", seats: [])
       }))
     end
@@ -24,7 +24,7 @@ describe Games do
       item = { notes: '' }
       games.create(item)
       expect(client).to have_received(:put_item).with(hash_including({
-        table_name: "wcpfs-games-test", 
+        table_name: "games-table", 
         item: {gameId: "abc123", seats: []}
       }))
     end
@@ -41,7 +41,7 @@ describe Games do
       allow(client).to receive(:scan) { resp }
       games.signup('abc123', {name: "Bob"})
       expect(client).to have_received(:put_item).with({
-        table_name: "wcpfs-games-test", 
+        table_name: "games-table", 
         item: {"gameId" => "abc123", "seats" => [{:name => "Bob"}]}
       })
     end

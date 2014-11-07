@@ -4,17 +4,22 @@ ENV["RACK_ENV"] = 'test'
 require 'scheduler'
 require 'rack/test'
 require 'google_api'
+require 'users'
+require 'games'
+require 'google_api'
 
 describe SchedulerApp do
   include Rack::Test::Methods
 
-  let (:games) { double Games}
-  let (:google) { double GoogleApi}
+  let (:games) { double Games }
+  let (:users) { double Users } 
+  let (:google) { double GoogleApi }
   let (:app) { SchedulerApp.new }
 
   before( :each ) do
     SchedulerApp.set :games, games
     SchedulerApp.set :google, google
+    SchedulerApp.set :users, users
   end
 
   def expect_redirect_to path
@@ -44,53 +49,34 @@ describe SchedulerApp do
   it "redirects to login when accessing GM content" do
     expect(google).to receive(:auth_url) { "http://google/auth" }
     get '/gm/info'
-    expect(last_response.status).to be 302
-    follow_redirect!
-    expect(last_request.url).to eq 'http://example.org/login'
+    expect_redirect_to '/login'
   end
-
-  it "/login redirects to / if a user is already authenticated"
 
   describe 'when a user is authenticated' do
     let(:env){ Hash.new }
-    let(:google_profile) {{
-      "kind" => "plus#person",
-      "etag" => "\"MoxPKeu0NQD8g5Gtts3ebh50504/2fOz_vnkSPUUKdUqR8k0qy6axpQ\"",
-      "occupation" => "Senior Software Developer",
-      "gender" => "male",
-      "emails" => [{"value" => "benrady@gmail.com","type" => "account"}],
-      "urls" => [],
-      "objectType" => "person",
-      "id" => "113769764833315172586",
-      "displayName" => "Ben Rady",
-      "name" => {"familyName" => "Rady","givenName" => "Ben"},
-      "aboutMe" => "...",
-      "url" => "https://plus.google.com/+BenRady",
-      "image" => {
-        "url" => "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
-        "isDefault" => false},
-      "isPlusUser" => true,
-      "language" => "en",
-      "verified" => false,
-      "cover" => {}
+    let (:user_info) {{
+      email: 'benrady@gmail.com',
+      name: "Ben Rady",
+      pic: "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
+      id: "google-113769764833315172586"
     }}
 
     before :each do
-      env['rack.session'] = { :user => google_profile}
+      env['rack.session'] = { :user => user_info}
     end
 
     it "can return the GM's info object as json" do
       get '/gm/info', {}, env
       expect(JSON.parse(last_response.body)).to include({
-        "displayName" => "Ben Rady"
+        "name" => "Ben Rady"
       })
     end
 
     it "can create a new game" do
       expect(games).to receive(:create).with({
         gm_name: "Ben Rady", 
-        gm_id: "113769764833315172586",
-        gm_pic: google_profile["image"]["url"],
+        gm_id: "google-113769764833315172586",
+        gm_pic: user_info[:pic],
         datetime: 123456789000, 
         title: "Title", 
         notes: "My Notes"}).
@@ -101,8 +87,14 @@ describe SchedulerApp do
     end
 
     it "can instantly join a game" do
-      expect(games).to receive(:signup).with("abc123", {name: "Ben Rady"})
+      expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
       get '/gm/joinGame', {gameId: 'abc123'}, env
+      expect_redirect_to '/'
+    end
+
+    it "redirects /login to /" do
+      expect(google).not_to receive(:auth_url)
+      get '/login', {}, env
       expect_redirect_to '/'
     end
   end

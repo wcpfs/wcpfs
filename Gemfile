@@ -1,10 +1,11 @@
 source 'https://rubygems.org'
 gem 'thin'
 gem 'sinatra'
-gem 'rack-openid'
 gem 'aws-sdk', ">= 2.0.5.pre"
 gem "sinatra-cross_origin", "~> 0.3.1"
 gem "google-api-client"
+gem "mailfactory"
+gem 'nokogiri'
 
 group :test do
   gem 'guard'

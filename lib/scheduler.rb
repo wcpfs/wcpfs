@@ -36,7 +36,8 @@ class SchedulerApp < Sinatra::Base
 
   get '/oauth2callback' do
     google.save_credentials(session, params[:code])
-    session[:user] = google.profile(session)
+    profile = google.profile(session)
+    session[:user] = users.ensure(profile)
 
     # Could create a redirect loop
     redirect to('/login')
@@ -48,12 +49,12 @@ class SchedulerApp < Sinatra::Base
 
   get '/games/subscribe' do
     #"Subscribed #{params[:email]}"
-    redirect to("/#subscribed")
+    message("You are subscribed to new game notifications.")
   end
 
   get '/games/unsubscribe' do
     #"Unsubscribed #{params[:email]}"
-    redirect to("/#unsubscribed")
+    message("You are unsubscribed from new game notifications.")
   end
 
   get '/games' do
@@ -72,8 +73,8 @@ class SchedulerApp < Sinatra::Base
 
   get '/gm/joinGame' do
     games.signup(params[:gameId], {
-      name: user_name
-      #email: user_email
+      name: user[:name],
+      email: user[:email]
     })
     redirect to('/')
   end
@@ -81,19 +82,24 @@ class SchedulerApp < Sinatra::Base
   # ?title=My%20Game&datetime=123456789000&notes=These%20Are%20My%20Notes
   post '/gm/createGame' do
     game_info = {
-      gm_name: user_name,
-      gm_pic: session[:user]["image"]["url"],
-      gm_id: session[:user]["id"],
+      gm_name: user[:name],
+      gm_pic: user[:pic],
+      gm_id: user[:id],
       datetime: params[:datetime].to_i,
       title: params[:title],
       notes: params[:notes]
     }
     item = games.create game_info
+    #mail_client.send_new_game(game)
     content_type :json
     redirect('/')
   end
 
   private
+
+  def message(msg)
+    redirect to("/#message-#{URI.encode(msg)}")
+  end
 
   def google
     settings.google
@@ -103,8 +109,11 @@ class SchedulerApp < Sinatra::Base
     settings.games
   end
 
-  def user_name
-    session[:user]["displayName"]
+  def users
+    settings.users
   end
 
+  def user
+    session[:user]
+  end
 end
