@@ -4,8 +4,8 @@ class Games
   include AWSEntity
 
   def create game_info
-    game = game_info.merge(gameId: SecureRandom.uuid, seats: [])
-    game.delete(:notes) if game[:notes].nil? or game[:notes].length == 0
+    game = game_info.merge('gameId' => SecureRandom.uuid, 'seats' => [])
+    game.delete('notes') if game['notes'].nil? or game['notes'].length == 0
     save(game)
   end
 

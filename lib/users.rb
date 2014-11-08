@@ -8,16 +8,20 @@ class Users
     user = all.find {|u| u["email"] == email }
     return user if user
     save({
-      email: email["value"],
-      name: profile["displayName"],
-      pic: profile["image"]["url"],
-      id: "google-" + profile["id"]
+      "email" => email["value"],
+      "name" => profile["displayName"],
+      "pic" => profile["image"]["url"],
+      "id" => "google-" + profile["id"]
     })
   end
 
   def subscribe(email)
-    #user = all.find {|u| u["email"] == email}
-    #user.subscribed = true
-    #save(user)
+    user = all.find {|u| u["email"] == email}
+    user["subscribed"] = true
+    save(user)
+  end
+
+  def subscriptions
+    all.select {|u| u["subscribed"]}
   end
 end

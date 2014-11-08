@@ -37,12 +37,35 @@ describe Users do
 
   it "can ensure a user is in the database" do
     expect(client).to receive(:put_item).with(hash_including(item: {
-      email: 'benrady@gmail.com',
-      name: 'Ben Rady',
-      pic: pic_url,
-      id: "google-" + profile["id"]
+      "email" => 'benrady@gmail.com',
+      "name" => 'Ben Rady',
+      "pic" => pic_url,
+      "id" => "google-" + profile["id"]
     }))
     users.ensure(profile)
   end
   
+  describe "after a user is added" do
+    before( :each ) do
+      items << {
+        "email" => 'benrady@gmail.com',
+        "name" => 'Ben Rady',
+        "pic" => pic_url,
+        "id" => "google-" + profile["id"]
+      }
+    end
+
+    it "can subscribe a user to new game updates" do
+      expect(users).to receive(:save).with(hash_including({
+        "email" => 'benrady@gmail.com',
+        "subscribed" => true
+      }))
+      users.subscribe('benrady@gmail.com')
+    end
+
+    it "can get the list of subscribed users" do
+      items[0]["subscribed"] = true
+      expect(users.subscriptions.first).to include "email" => 'benrady@gmail.com'
+    end
+  end
 end

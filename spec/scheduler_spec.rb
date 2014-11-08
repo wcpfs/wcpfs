@@ -6,6 +6,7 @@ require 'rack/test'
 require 'google_api'
 require 'users'
 require 'games'
+require 'mail_client'
 require 'google_api'
 
 describe SchedulerApp do
@@ -14,12 +15,14 @@ describe SchedulerApp do
   let (:games) { double Games }
   let (:users) { double Users } 
   let (:google) { double GoogleApi }
+  let (:mail_client) { double MailClient }
   let (:app) { SchedulerApp.new }
 
   before( :each ) do
     SchedulerApp.set :games, games
     SchedulerApp.set :google, google
     SchedulerApp.set :users, users
+    SchedulerApp.set :mail_client, mail_client
   end
 
   def expect_redirect_to path
@@ -66,29 +69,48 @@ describe SchedulerApp do
     end
 
     it "can return the GM's info object as json" do
-      get '/gm/info', {}, env
+      get '/user/info', {}, env
       expect(JSON.parse(last_response.body)).to include({
         "name" => "Ben Rady"
       })
     end
 
-    it "can create a new game" do
-      expect(games).to receive(:create).with({
-        gm_name: "Ben Rady", 
-        gm_id: "google-113769764833315172586",
-        gm_pic: user_info[:pic],
-        datetime: 123456789000, 
-        title: "Title", 
-        notes: "My Notes"}).
-        and_return( {gameId: 'abc123'} )
-
-      post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
-      expect_redirect_to '/'
+    it "can subscribe to new game updates" do
+      expect(users).to receive(:subscribe).with('benrady@gmail.com')
+      get '/user/subscribe', {}, env
     end
+
+    describe "when creating a game" do
+      before( :each ) do
+        allow(users).to receive(:subscriptions) { [:fake_user_list] }
+      end
+      
+      it "saves the game to the DB" do
+        allow(mail_client).to receive(:send_new_game)
+        expect(games).to receive(:create).with({
+          'gm_name' => "Ben Rady", 
+          'gm_id' => "google-113769764833315172586",
+          'gm_pic' => user_info[:pic],
+          'datetime' => 123456789000, 
+          'title' => "Title", 
+          'notes' => "My Notes"}).
+          and_return( {gameId: 'abc123'} )
+
+        post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
+        expect_redirect_to '/'
+      end
+
+      it "notifies subscribed players" do
+        allow(games).to receive(:create)
+        expect(mail_client).to receive(:send_new_game).with(hash_including('notes' => 'My Notes'), [:fake_user_list])
+        post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
+      end
+    end
+
 
     it "can instantly join a game" do
       expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
-      get '/gm/joinGame', {gameId: 'abc123'}, env
+      get '/user/joinGame', {gameId: 'abc123'}, env
       expect_redirect_to '/'
     end
 

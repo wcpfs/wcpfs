@@ -12,20 +12,20 @@ describe Games do
 
   describe "when creating games" do
     it "saves them to DynamoDB" do
-      item = { GM: "benrady@gmail.com", date: "2014-11-05" }
+      item = { 'title' => "Fake Game" }
       games.create(item)
       expect(client).to have_received(:put_item).with(hash_including({
         table_name: "games-table", 
-        item: item.merge(gameId: "abc123", seats: [])
+        item: item.merge('gameId' => "abc123", 'seats' => [])
       }))
     end
 
     it "removes notes field if empty" do
-      item = { notes: '' }
+      item = { 'notes' => '' }
       games.create(item)
       expect(client).to have_received(:put_item).with(hash_including({
         table_name: "games-table", 
-        item: {gameId: "abc123", seats: []}
+        item: {'gameId' => "abc123", 'seats' => []}
       }))
     end
 

@@ -1,8 +1,9 @@
 require 'eventmachine' 
 require 'mailfactory' 
+require 'nokogiri'
 
 class MailClient
-  def send_new_game(game)
+  def send_new_game(game, users)
     body = create_body(game)
     send_mail_to('benrady@gmail.com', game['title'], body)
   end
@@ -30,14 +31,12 @@ class MailClient
     mail.html = body
 
     email = EM::P::SmtpClient.send(
-      :from=>mail.from,
       :to=>mail.to,
       :content=>"#{mail.to_s}\r\n.\r\n",
       :header=> {"Subject" => mail.subject},
       :domain=>"windycitypathfinder.com",
       :host=>'mail.windycitypathfinder.com',
       :port=>587,   
-      :starttls=>true,  
       :auth => {
         :type=>:plain, 
         :username=>"scheduler@windycitypathfinder.com", 
