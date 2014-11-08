@@ -43,7 +43,7 @@ describe('Home View', function() {
     });
 
     it('includes the button to join the game', function() {
-      expect(item.find('.join-button').attr('href')).toEqual("/gm/joinGame?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa");
+      expect(item.find('.join-button').attr('href')).toEqual("/user/joinGame?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa");
     });
 
     it('marks the game as full when there are 6 players', function() {
