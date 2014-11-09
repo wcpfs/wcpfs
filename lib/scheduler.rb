@@ -20,7 +20,7 @@ class SchedulerApp < Sinatra::Base
     redirect to('/login') unless session[:user]
   end
 
-  before '/users/*' do
+  before '/user/*' do
     redirect to('/login') unless session[:user]
   end
 

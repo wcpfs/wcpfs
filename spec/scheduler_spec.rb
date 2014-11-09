@@ -51,7 +51,13 @@ describe SchedulerApp do
 
   it "redirects to login when accessing GM content" do
     expect(google).to receive(:auth_url) { "http://google/auth" }
-    get '/gm/info'
+    get '/gm/createGame'
+    expect_redirect_to '/login'
+  end
+
+  it "redirects to login when accessing user content" do
+    expect(google).to receive(:auth_url) { "http://google/auth" }
+    get '/user/info'
     expect_redirect_to '/login'
   end
 
