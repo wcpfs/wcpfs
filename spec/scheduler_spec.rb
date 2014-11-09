@@ -64,10 +64,10 @@ describe SchedulerApp do
   describe 'when a user is authenticated' do
     let(:env){ Hash.new }
     let (:user_info) {{
-      email: 'benrady@gmail.com',
-      name: "Ben Rady",
-      pic: "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
-      id: "google-113769764833315172586"
+      'email' => 'benrady@gmail.com',
+      'name' => "Ben Rady",
+      'pic' => "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
+      'id' => "google-113769764833315172586"
     }}
 
     before :each do
@@ -77,7 +77,8 @@ describe SchedulerApp do
     it "can return the GM's info object as json" do
       get '/user/info', {}, env
       expect(JSON.parse(last_response.body)).to include({
-        "name" => "Ben Rady"
+        "name" => "Ben Rady",
+        "email" => "benrady@gmail.com"
       })
     end
 
@@ -96,7 +97,7 @@ describe SchedulerApp do
         expect(games).to receive(:create).with({
           'gm_name' => "Ben Rady", 
           'gm_id' => "google-113769764833315172586",
-          'gm_pic' => user_info[:pic],
+          'gm_pic' => user_info['pic'],
           'datetime' => 123456789000, 
           'title' => "Title", 
           'notes' => "My Notes"}).
