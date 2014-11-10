@@ -15,7 +15,7 @@ function messageView(msg) {
 function homeView() {
   function formatDate(timestamp) {
     date = new Date(+timestamp); // FIXME server should ensure this is a number
-    return date.format("{Weekday} {d} {Month}, {yyyy} @ {12hr}:{mm}{tt}")
+    return date.format("{Weekday}, {Month} {ord}")
   }
 
   function addGames(games) {

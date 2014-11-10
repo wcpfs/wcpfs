@@ -39,7 +39,7 @@ describe('Home View', function() {
     });
 
     it('includes the date', function() {
-      expect(item.find('.when').text()).toEqual("Wednesday 5 November, 2014 @ 3:00pm");
+      expect(item.find('.when').text()).toEqual("Wednesday, November 5th");
     });
 
     it('includes the button to join the game', function() {
