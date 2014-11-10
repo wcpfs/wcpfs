@@ -71,9 +71,9 @@ describe SchedulerApp do
 
     it "sets a redirect URL when redirecting to login" do
       expect(google).to receive(:auth_url) { "http://google/auth" }
-      get '/user/info', {}, env
+      get '/user/info?key=value', {}, env
       expect_redirect_to '/login'
-      expect(last_request.env['rack.session'][:redirect_path]).to eq("/user/info")
+      expect(last_request.env['rack.session'][:redirect_path]).to eq("/user/info?key=value")
     end
 
     describe "when authenticating" do

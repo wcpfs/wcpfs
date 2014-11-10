@@ -31,7 +31,7 @@ class SchedulerApp < Sinatra::Base
 
   def login_check
     if session[:user].nil?
-      session[:redirect_path] = request.path
+      session[:redirect_path] = request.fullpath
       redirect to('/login') 
     end
   end
