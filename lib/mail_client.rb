@@ -9,13 +9,14 @@ class MailClient
   end
 
   def create_body(game_info)
-    date = game_info["date"]
+    date = game_info["datetime"]
     body_node = Nokogiri::HTML::DocumentFragment.parse File.read('mail_templates/new_game.html')
                               
     game_info.each do |k, v|
       content_node = body_node.at_css('.' + k)
       content_node.content = v if content_node
     end
+    body_node.at_css('.date').content = Date.new(date).strftime("%A, %B %-d")
     body_node.at_css('.gm_profile_pic')['src'] = game_info['gm_pic']
     body_node.to_html
   end

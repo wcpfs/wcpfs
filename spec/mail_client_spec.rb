@@ -9,7 +9,6 @@ describe MailClient do
     "gm_name" => "Ben Rady",
     "gm_pic" => "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
     "gm_id" => 123456,
-    "date" => "Sunday June 3rd",
     "datetime" => 123456789000,
     "title" => "City of Golden Death!",
     "notes" => "Notes notes notes!"
@@ -23,7 +22,7 @@ describe MailClient do
     end
 
     it "fills in the date" do
-      expect(body.css('.date').text).to eq("Sunday June 3rd")
+      expect(body.css('.date').text).to eq("Wednesday, January 1")
     end
 
     it "fills in the GM pic" do

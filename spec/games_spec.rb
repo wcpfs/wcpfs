@@ -33,17 +33,30 @@ describe Games do
   end
 
   describe "after a game is created" do
-    it "can sign up for that game" do
+    let (:item) {{ "gameId" => 'abc123', "seats" => [] }}
+
+    before( :each ) do
       resp = spy('resp')
-      item = { "gameId" => 'abc123', "seats" => [] }
       items = [item]
       expect(resp).to receive(:items) { items }
       allow(client).to receive(:scan) { resp }
+    end
+
+    it "can sign up for that game" do
       games.signup('abc123', {name: "Bob"})
       expect(client).to have_received(:put_item).with({
         table_name: "games-table", 
         item: {"gameId" => "abc123", "seats" => [{:name => "Bob"}]}
       })
+    end
+
+    it "will not sign up for the game if already signed up" do
+      games.signup('abc123', {name: "Bob"})
+      expect(client).to have_received(:put_item).with({
+        table_name: "games-table", 
+        item: {"gameId" => "abc123", "seats" => [{:name => "Bob"}]}
+      })
+
     end
   end
 
