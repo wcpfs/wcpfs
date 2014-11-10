@@ -55,13 +55,19 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/login' do
-    unless session[:user]
-      if params[:redirect_path]
-        session[:redirect_path] = params[:redirect_path] 
-      end
-      redirect google.auth_url(to('/oauth2callback')), 303
+    if params[:redirect_path]
+      session[:redirect_path] = params[:redirect_path] 
     end
-    redirect to('/')
+    if session[:user]
+      if session[:redirect_path]
+        redirect to(session[:redirect_path])
+      else
+        redirect to('/')
+      end
+    else
+      redirect google.auth_url(to('/oauth2callback')), 303
+      redirect to('/')
+    end
   end
 
   get '/oauth2callback' do

@@ -129,6 +129,11 @@ describe SchedulerApp do
       })
     end
 
+    it "/login will redirect to the specified url" do
+      get '/login', {:redirect_path => '/%23newGame'}, env
+      expect_redirect_to '/%23newGame'
+    end
+
     it "can subscribe to new game updates" do
       expect(users).to receive(:subscribe).with('benrady@gmail.com')
       get '/user/subscribe', {}, env
