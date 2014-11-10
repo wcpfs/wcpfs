@@ -11,9 +11,15 @@ class Games
 
   def signup game_id, player_info
     game = all.find {|g| g["gameId"] == game_id}
-    if game
+    if game and not_joined(game, player_info) 
       game["seats"] << player_info
       save(game)
     end
+  end
+
+  private
+
+  def not_joined(game, player_info)
+    not game["seats"].map{|p| p['email']}.include?(player_info['email'])
   end
 end

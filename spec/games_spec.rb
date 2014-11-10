@@ -28,8 +28,6 @@ describe Games do
         item: {'gameId' => "abc123", 'seats' => []}
       }))
     end
-
-    it "ensures the datetime field is an integer"
   end
 
   describe "after a game is created" do
@@ -51,12 +49,9 @@ describe Games do
     end
 
     it "will not sign up for the game if already signed up" do
-      games.signup('abc123', {name: "Bob"})
-      expect(client).to have_received(:put_item).with({
-        table_name: "games-table", 
-        item: {"gameId" => "abc123", "seats" => [{:name => "Bob"}]}
-      })
-
+      item['seats'] << {'name' => "Bob", 'email' => 'bob@bob.com'}
+      games.signup('abc123', {'name' => "Bob", 'email' => 'bob@bob.com'})
+      expect(client).not_to have_received(:put_item)
     end
   end
 
@@ -68,10 +63,6 @@ describe Games do
       allow(client).to receive(:scan) { resp }
       expect(games.all).to eq items
     end
-
-    it "removes domain names from emails"
-
-    it "ensures datetime field is an integer"
   end
 
   it "caches the game list" do
