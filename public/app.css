@@ -16,6 +16,13 @@
 }
 
 .jumbotron {
-  background-color: rgb(164,213,240);
+  color: white;
+}
+
+.field-color {
+  background-color: rgb(137, 201, 236);
+}
+
+.accent-color {
   color: rgb(216, 61, 61);
 }
