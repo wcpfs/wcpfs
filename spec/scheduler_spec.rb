@@ -25,8 +25,8 @@ describe SchedulerApp do
     SchedulerApp.set :mail_client, mail_client
   end
 
-  def expect_redirect_to path
-    expect(last_response.status).to eq 302
+  def expect_redirect_to path, code=302
+    expect(last_response.status).to eq code
     follow_redirect!
     expect(last_request.url).to eq "http://example.org#{path}"
   end
@@ -55,12 +55,6 @@ describe SchedulerApp do
     expect_redirect_to '/login'
   end
 
-  it "redirects to login when accessing user content" do
-    expect(google).to receive(:auth_url) { "http://google/auth" }
-    get '/user/info'
-    expect_redirect_to '/login'
-  end
-
   describe "with a session" do
     let(:env){ Hash.new }
     let (:session) { Hash.new }
@@ -74,6 +68,12 @@ describe SchedulerApp do
       get '/user/info?key=value', {}, env
       expect_redirect_to '/login'
       expect(last_request.env['rack.session'][:redirect_path]).to eq("/user/info?key=value")
+    end
+
+    it "/login can set a redirect_path param" do
+      expect(google).to receive(:auth_url) { "http://google/auth" }
+      get '/login', {:redirect_path => '/user/info%3Fkey%3Dvalue'}, env
+      expect(last_request.env['rack.session'][:redirect_path]).to eq("/user/info%3Fkey%3Dvalue")
     end
 
     describe "when authenticating" do
