@@ -16,16 +16,24 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
   end
 
+
   before '/gm/*' do
-    redirect to('/login') unless session[:user]
+    login_check
   end
 
   before '/user/*' do
-    redirect to('/login') unless session[:user]
+    login_check
   end
 
   before '/games/*' do
     cross_origin
+  end
+
+  def login_check
+    if session[:user].nil?
+      session[:redirect_path] = request.path
+      redirect to('/login') 
+    end
   end
 
   get '/testmail' do
@@ -58,8 +66,11 @@ class SchedulerApp < Sinatra::Base
     profile = google.profile(session)
     session[:user] = users.ensure(profile)
 
-    # Could create a redirect loop
-    redirect to('/login')
+    if session[:redirect_path]
+      redirect to(session[:redirect_path]) 
+    else
+      redirect to('/')
+    end
   end
 
   get '/user/subscribe' do

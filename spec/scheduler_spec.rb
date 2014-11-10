@@ -61,6 +61,53 @@ describe SchedulerApp do
     expect_redirect_to '/login'
   end
 
+  describe "with a session" do
+    let(:env){ Hash.new }
+    let (:session) { Hash.new }
+
+    before :each do
+      env['rack.session'] = session
+    end
+
+    it "sets a redirect URL when redirecting to login" do
+      expect(google).to receive(:auth_url) { "http://google/auth" }
+      get '/user/info', {}, env
+      expect_redirect_to '/login'
+      expect(last_request.env['rack.session'][:redirect_path]).to eq("/user/info")
+    end
+
+    describe "when authenticating" do
+      before( :each ) do
+        allow(google).to receive(:save_credentials)
+        allow(google).to receive(:profile)
+        allow(users).to receive(:ensure)
+      end
+
+      it "saves the api code to the session" do
+        expect(google).to receive(:save_credentials).with(hash_including(:session_id), 'abc123')
+        get '/oauth2callback', {:code => 'abc123'}, env
+      end
+
+      it "save the user profile to dynamo" do
+        profile = {}
+        allow(google).to receive(:profile) {profile}
+        expect(users).to receive(:ensure).with(profile)
+        get '/oauth2callback', {:code => 'abc123'}, env
+      end
+      
+      it "redirects to saved redirect path when login complete" do
+        session[:redirect_path] = '/foo'
+        get '/oauth2callback', {}, env
+        expect_redirect_to '/foo'
+      end
+
+      it "redirects to root if no redirect path set" do
+        get '/oauth2callback', {}, env
+        expect_redirect_to '/'
+      end
+    end
+  end
+
   describe 'when a user is authenticated' do
     let(:env){ Hash.new }
     let (:user_info) {{
