@@ -108,8 +108,8 @@ describe SchedulerApp do
       end
 
       it "notifies subscribed players" do
-        allow(games).to receive(:create)
-        expect(mail_client).to receive(:send_new_game).with(hash_including('notes' => 'My Notes'), [:fake_user_list])
+        allow(games).to receive(:create) {{ "gameId" => "abc123" }}
+        expect(mail_client).to receive(:send_new_game).with(hash_including("gameId" => "abc123"), [:fake_user_list])
         post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
       end
     end

@@ -93,7 +93,7 @@ class SchedulerApp < Sinatra::Base
       'notes' => params[:notes]
     }
     item = games.create game_info
-    mail_client.send_new_game(game_info, users.subscriptions)
+    mail_client.send_new_game(item, users.subscriptions)
     content_type :json
     redirect('/')
   end
