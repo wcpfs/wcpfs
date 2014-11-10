@@ -1,8 +1,21 @@
-  #templates { display: none; }
-  .bottom-padding-md {
-    padding-bottom: 21px;
-  }
+#templates { display: none; }
+.bottom-padding-md {
+  padding-bottom: 21px;
+}
 
-  .margin-top-md {
-    margin-top: 21px;
-  }
+.margin-top-md {
+  margin-top: 21px;
+}
+
+.title-font {
+  font-family: Futura,"Trebuchet MS",Arial,sans-serif
+}
+
+.title-img {
+  background: url("/img/flag.svg") no-repeat right center; 
+}
+
+.jumbotron {
+  background-color: rgb(164,213,240);
+  color: rgb(216, 61, 61);
+}
