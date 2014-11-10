@@ -3,6 +3,10 @@ require 'mailfactory'
 require 'nokogiri'
 
 class MailClient
+  def initialize
+    @base_url = 'http://beta.windycitypathfinder.com'
+  end
+
   def send_new_game(game, users)
     body = create_body(game)
     send_mail_to('benrady@gmail.com', game['title'], body)
@@ -16,8 +20,11 @@ class MailClient
       content_node = body_node.at_css('.' + k)
       content_node.content = v if content_node
     end
+
     body_node.at_css('.date').content = Date.new(date).strftime("%A, %B %-d")
     body_node.at_css('.gm_profile_pic')['src'] = game_info['gm_pic']
+    body_node.at_css('.join-link')['href'] = @base_url + '/user/joinGame?gameId=' + game_info["gameId"]
+
     body_node.to_html
   end
 

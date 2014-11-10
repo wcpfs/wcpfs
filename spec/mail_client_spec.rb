@@ -26,7 +26,11 @@ describe MailClient do
     end
 
     it "fills in the GM pic" do
-      expect(body.css('.gm_profile_pic').attr('src')).to match(/\.jpg/)
+      expect(body.css('.gm_profile_pic').attr('src').text).to match(/\.jpg/)
+    end
+
+    it "fills in the join link" do
+      expect(body.css('.join-link').attr('href').text).to eq('http://beta.windycitypathfinder.com/user/joinGame?gameId=abc123')
     end
   end
 end
