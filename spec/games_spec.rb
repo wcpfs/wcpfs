@@ -31,6 +31,7 @@ describe Games do
   end
 
   describe "after a game is created" do
+    let (:player_info) { {:email => "bob@bob.com", :name => 'Bob'}}
     let (:item) {{ "gameId" => 'abc123', "seats" => [] }}
 
     before( :each ) do
@@ -41,16 +42,16 @@ describe Games do
     end
 
     it "can sign up for that game" do
-      games.signup('abc123', {name: "Bob"})
+      games.signup('abc123', player_info)
       expect(client).to have_received(:put_item).with({
         table_name: "games-table", 
-        item: {"gameId" => "abc123", "seats" => [{:name => "Bob"}]}
+        item: {"gameId" => "abc123", "seats" => [player_info]}
       })
     end
 
     it "will not sign up for the game if already signed up" do
       item['seats'] << {'name' => "Bob", 'email' => 'bob@bob.com'}
-      games.signup('abc123', {'name' => "Bob", 'email' => 'bob@bob.com'})
+      games.signup('abc123', player_info)
       expect(client).not_to have_received(:put_item)
     end
   end

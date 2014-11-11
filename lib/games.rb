@@ -20,6 +20,8 @@ class Games
   private
 
   def not_joined(game, player_info)
-    not game["seats"].map{|p| p['email']}.include?(player_info['email'])
+    not game["seats"].any? do |seat|
+      seat['email'] == player_info[:email]
+    end
   end
 end
