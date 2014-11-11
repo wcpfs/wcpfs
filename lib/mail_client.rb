@@ -9,7 +9,9 @@ class MailClient
 
   def send_new_game(game, users)
     body = create_body(game)
-    send_mail_to('benrady@gmail.com', game['title'], body)
+    users.each do |user|
+      send_mail_to(user['email'], game['title'], body)
+    end
   end
 
   def create_body(game_info)
@@ -31,7 +33,6 @@ class MailClient
   private
 
   def send_mail_to(to_addr, title, body)
-    # Untested
     mail = MailFactory.new
     mail.to = to_addr
     mail.from = 'scheduler@windycitypathfinder.com'
@@ -53,10 +54,11 @@ class MailClient
       :verbose => true
     )
     email.callback{
-      puts 'Email sent!'
+      puts "Email sent to #{to_addr}"
     }
     email.errback{ |e|
-      puts 'Email failed!'
+      puts "Email failed to send to #{to_addr}"
+      puts e
     }
   end
 
