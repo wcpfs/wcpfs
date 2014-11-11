@@ -24,7 +24,7 @@ Go to localhost:9292 to see the app
   0. Add an entry to your ~/.ssh/config file that looks like this:
 
   ```
-  Host beta.windycitypathfinder
+  Host beta.windycitypathfinder.com
     # EC2 Host IP
     HostName beta.windycitypathfinder.com
     user ubuntu
