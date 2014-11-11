@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Redirect STDERR to STDOUT
+exec 2>&1
+
+source .env
+if [[ -z $RACK_SECRET ]]; then
+  echo "FATAL: Need to set RACK_SECRET environment variable in .env"
+  exit 1
+fi
+exec bundle exec thin -R config.ru start -p 8080 -e production

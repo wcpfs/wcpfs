@@ -1,8 +1,19 @@
-# Dev Environment
+# Development 
 
-  * Run ./bin/server to start a local webserver
-  * Go to localhost:8000 to see the app
-  * Go to localhost:8000/tests to run the tests. You can use the http://tin.cr/ plugin to run them automatically.
+To get a dev server going:
+
+$ bundle install
+$ rackup
+
+Go to localhost:9292 to see the app
+
+### To run Ruby tests
+
+$ bundle exec guard
+
+### To run JavaScript tests
+  * Start the server and go to localhost:9292/tests to run the tests. 
+  * You can use the http://tin.cr/ plugin to run them automatically.
 
 # Deployment
 
@@ -10,9 +21,9 @@
   0. Add an entry to your ~/.ssh/config file that looks like this:
 
   ```
-  Host scheduler
+  Host beta.windycitypathfinder
     # EC2 Host IP
-    HostName scheduler.windycitypathfinder.com
+    HostName beta.windycitypathfinder.com
     user ubuntu
     IdentityFile ~/.ssh/wcpfs.pem
   ```
