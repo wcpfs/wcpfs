@@ -8,7 +8,7 @@ app_name=`basename $root_dir`
 server=${1:-beta.windycitypathfinder.com}
 
 if [[ ! -n $(git status --porcelain) ]]; then
-  echo "Deploying to $remote_deploy_url"
+  echo "Deploying to $server"
   git push $server:git/$app_name.git master
 else
   git status
