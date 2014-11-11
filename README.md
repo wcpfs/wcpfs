@@ -2,14 +2,17 @@
 
 To get a dev server going:
 
-$ bundle install
-$ rackup
-
+  ```
+  $ bundle install
+  $ rackup
+  ```
 Go to localhost:9292 to see the app
 
 ### To run Ruby tests
 
-$ bundle exec guard
+  ```
+  $ bundle exec guard
+  ```
 
 ### To run JavaScript tests
   * Start the server and go to localhost:9292/tests to run the tests. 
