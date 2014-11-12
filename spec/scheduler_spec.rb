@@ -37,10 +37,10 @@ describe SchedulerApp do
   end
 
   it "can get a list of games" do
-    game_list = [{"title" => "My Game"}]
+    game_list = [{title: "My Game"}]
     allow(games).to receive(:all) { game_list }
     get '/games'
-    expect(JSON.parse(last_response.body)).to eq game_list
+    expect(JSON.parse(last_response.body, :symbolize_names => true)).to eq game_list
   end
 
   it "allows cross origin requests" do
@@ -110,12 +110,7 @@ describe SchedulerApp do
 
   describe 'when a user is authenticated' do
     let(:env){ Hash.new }
-    let (:user_info) {{
-      'email' => 'benrady@gmail.com',
-      'name' => "Ben Rady",
-      'pic' => "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
-      'id' => "google-113769764833315172586"
-    }}
+    let (:user_info) {fake_user_info}
 
     before :each do
       env['rack.session'] = { :user => user_info}
@@ -123,9 +118,9 @@ describe SchedulerApp do
 
     it "can return the GM's info object as json" do
       get '/user/info', {}, env
-      expect(JSON.parse(last_response.body)).to include({
-        "name" => "Ben Rady",
-        "email" => "benrady@gmail.com"
+      expect(JSON.parse(last_response.body, :symbolize_names => true)).to include({
+        name: "Ben Rady",
+        email: "benrady@gmail.com"
       })
     end
 
@@ -146,14 +141,7 @@ describe SchedulerApp do
       
       it "saves the game to the DB" do
         allow(mail_client).to receive(:send_new_game)
-        expect(games).to receive(:create).with({
-          'gm_name' => "Ben Rady", 
-          'gm_id' => "google-113769764833315172586",
-          'gm_pic' => user_info['pic'],
-          'datetime' => 123456789000, 
-          'title' => "Title", 
-          'notes' => "My Notes"}).
-          and_return( {gameId: 'abc123'} )
+        expect(games).to receive(:create).with(fake_new_game).and_return( {gameId: 'abc123'} )
 
         post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
         expect_redirect_to '/'

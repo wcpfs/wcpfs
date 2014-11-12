@@ -1,10 +1,11 @@
 require 'users'
-require 'aws-sdk'
+require 'aws_client'
 
 describe Users do
+  let (:client) { double AwsClient::Connection }
+  let (:table) { double AwsClient::Table }
   let (:items) { [] }
-  let (:client) { double Aws::DynamoDB::Client }
-  let (:users) { Users.new client, 'users-table' }
+  let (:users) { Users.new client }
   let (:pic_url) { "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50" }
   let(:profile) {{
     "kind" => "plus#person",
@@ -29,43 +30,28 @@ describe Users do
   }}
 
   before( :each ) do
-    allow(client).to receive :put_item
-    resp = spy('resp')
-    allow(resp).to receive(:items) { items }
-    allow(client).to receive(:scan) { resp }
+    allow(client).to receive(:table) { table }
+    allow(table).to receive(:all) { items }
   end
 
   it "can ensure a user is in the database" do
-    expect(client).to receive(:put_item).with(hash_including(item: {
-      "email" => 'benrady@gmail.com',
-      "name" => 'Ben Rady',
-      "pic" => pic_url,
-      "id" => "google-" + profile["id"]
-    }))
+    expect(table).to receive(:save).with(fake_user_info)
     users.ensure(profile)
   end
   
   describe "after a user is added" do
     before( :each ) do
-      items << {
-        "email" => 'benrady@gmail.com',
-        "name" => 'Ben Rady',
-        "pic" => pic_url,
-        "id" => "google-" + profile["id"]
-      }
+      items << fake_user_info 
     end
 
     it "can subscribe a user to new game updates" do
-      expect(users).to receive(:save).with(hash_including({
-        "email" => 'benrady@gmail.com',
-        "subscribed" => true
-      }))
+      expect(users).to receive(:save).with(fake_user_info.merge(subscribed: true))
       users.subscribe('benrady@gmail.com')
     end
 
     it "can get the list of subscribed users" do
-      items[0]["subscribed"] = true
-      expect(users.subscriptions.first).to include "email" => 'benrady@gmail.com'
+      items[0][:subscribed] = true
+      expect(users.subscriptions.first).to include email: 'benrady@gmail.com'
     end
   end
 end

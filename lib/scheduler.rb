@@ -16,7 +16,6 @@ class SchedulerApp < Sinatra::Base
     set :logging, true
   end
 
-
   before '/gm/*' do
     login_check
   end
@@ -83,7 +82,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/user/subscribe' do
-    users.subscribe(user['email'])
+    users.subscribe(user[:email])
     message("You are subscribed to new game notifications.")
   end
 
@@ -97,20 +96,20 @@ class SchedulerApp < Sinatra::Base
 
   get '/user/joinGame' do
     games.signup(params[:gameId], {
-      name: user['name'],
-      email: user['email']
+      name: user[:name],
+      email: user[:email]
     })
     redirect to('/')
   end
 
   post '/gm/createGame' do
     game_info = {
-      'gm_name' => user['name'],
-      'gm_pic' => user['pic'],
-      'gm_id' => user['id'],
-      'datetime' => params[:datetime].to_i,
-      'title' => params[:title],
-      'notes' => params[:notes]
+      gm_name: user[:name],
+      gm_pic: user[:pic],
+      gm_id: user[:id],
+      datetime: params[:datetime].to_i,
+      title: params[:title],
+      notes: params[:notes]
     }
     item = games.create game_info
     mail_client.send_new_game(item, users.subscriptions)

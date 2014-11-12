@@ -1,85 +1,55 @@
 require 'games'
-require 'aws-sdk'
+require 'aws_client'
 
 describe Games do
-  let (:client) { double Aws::DynamoDB::Client }
-  let (:games) { Games.new client, 'games-table' }
+  let (:client) { double AwsClient::Connection }
+  let (:table) { double AwsClient::Table }
+  let (:games) { Games.new client }
+  let (:items) { [] }
 
   before( :each ) do
     allow(SecureRandom).to receive(:uuid) { "abc123" }
-    allow(client).to receive :put_item
+    allow(client).to receive(:table) { table }
+    allow(table).to receive(:all) { items }
+  end
+
+  it "can list the existing games" do
+    expect(games.all).to be items
   end
 
   describe "when creating games" do
+    let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [])}
+
     it "saves them to DynamoDB" do
-      item = { 'title' => "Fake Game" }
-      games.create(item)
-      expect(client).to have_received(:put_item).with(hash_including({
-        table_name: "games-table", 
-        item: item.merge('gameId' => "abc123", 'seats' => [])
-      }))
+      expect(table).to receive(:save).with(fake_new_game.merge(saved_game))
+      games.create(fake_new_game)
     end
 
     it "removes notes field if empty" do
-      item = { 'notes' => '' }
-      games.create(item)
-      expect(client).to have_received(:put_item).with(hash_including({
-        table_name: "games-table", 
-        item: {'gameId' => "abc123", 'seats' => []}
-      }))
+      expect(table).to receive(:save).with(saved_game)
+      games.create(fake_new_game_no_notes.merge(notes: ''))
     end
   end
 
   describe "after a game is created" do
-    let (:player_info) { {:email => "bob@bob.com", :name => 'Bob'}}
-    let (:item) {{ "gameId" => 'abc123', "seats" => [] }}
+    let (:item) { fake_saved_game }
 
     before( :each ) do
-      resp = spy('resp')
-      items = [item]
-      expect(resp).to receive(:items) { items }
-      allow(client).to receive(:scan) { resp }
+      items << item
     end
 
     it "can sign up for that game" do
-      games.signup('abc123', player_info)
-      expect(client).to have_received(:put_item).with({
-        table_name: "games-table", 
-        item: {"gameId" => "abc123", "seats" => [player_info]}
-      })
+      expect(table).to receive(:save).with(hash_including(
+        gameId: "abc123", 
+        seats: [fake_user_info]
+      ))
+      games.signup('abc123', fake_user_info)
     end
 
     it "will not sign up for the game if already signed up" do
-      item['seats'] << {'name' => "Bob", 'email' => 'bob@bob.com'}
-      games.signup('abc123', player_info)
-      expect(client).not_to have_received(:put_item)
+      expect(client).not_to receive(:save)
+      item[:seats] << fake_user_info
+      games.signup('abc123', fake_user_info)
     end
-  end
-
-  describe "when fetching games" do
-    it "can list the existing games" do
-      resp = spy('resp')
-      items = [:items]
-      expect(resp).to receive(:items) { items }
-      allow(client).to receive(:scan) { resp }
-      expect(games.all).to eq items
-    end
-  end
-
-  it "caches the game list" do
-    allow(client).to receive(:scan) { spy ('resp') }
-    games.all
-    expect(client).to_not receive(:scan)
-    games.all
-  end
-
-  it "updating the games invalidates the cache" do
-    allow(client).to receive(:scan) { spy ('resp') }
-    allow(client).to receive(:put_item) 
-    games.all
-    games.create({})
-
-    expect(client).to receive(:scan) { spy('resp') }
-    games.all
   end
 end
