@@ -1,8 +1,9 @@
 # Development 
 
-To get a dev server going:
+To get a dev server going, first get the .env file from someone who as it. Then run these commands:
 
   ```
+  $ source .env
   $ bundle install
   $ rackup
   ```
