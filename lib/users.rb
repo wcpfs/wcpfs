@@ -19,7 +19,7 @@ class Users
   def subscribe(email)
     user = @table.all.find {|u| u[:email] == email}
     user[:subscribed] = true
-    save(user)
+    @table.save(user)
   end
 
   def subscriptions

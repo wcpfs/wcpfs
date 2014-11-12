@@ -4,16 +4,7 @@ require 'nokogiri'
 describe MailClient do
   let (:email) { double 'email' }
   let (:client) { MailClient.new }
-  let (:game) {{
-    "gameId" => 'abc123', 
-    "seats" => [],
-    "gm_name" => "Ben Rady",
-    "gm_pic" => "https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50",
-    "gm_id" => 123456,
-    "datetime" => 123456789000,
-    "title" => "City of Golden Death!",
-    "notes" => "Notes notes notes!"
-  }}
+  let (:game) { fake_saved_game }
 
   before( :each ) do
     allow(email).to receive(:callback)
@@ -22,7 +13,7 @@ describe MailClient do
 
   it "sends emails to all users" do
     expect(EM::P::SmtpClient).to receive(:send).twice { email }
-    client.send_new_game(game, [{"email" => 'benrady@gmail.com'}, {"email" => 'rene@rene.com'}])
+    client.send_new_game(game, [fake_user_info, fake_user_info_2])
   end
 
   describe "when creating the email body" do

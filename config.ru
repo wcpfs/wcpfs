@@ -28,7 +28,7 @@ end
 
 puts "Starting WCPFS in environment: #{get_env}"
 aws_connection = AwsClient.connect({
-  :region => 'us-east-1',
+  region: 'us-east-1',
   access_key_id: ENV['AWS_ACCESS_KEY'],
   secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
 }, get_env)
@@ -36,6 +36,6 @@ aws_connection = AwsClient.connect({
 SchedulerApp.set :google, GoogleApi.new
 SchedulerApp.set :games, Games.new(aws_connection)
 SchedulerApp.set :users, Users.new(aws_connection)
-SchedulerApp.set :mail_client, MailClient.new(get_env)
+SchedulerApp.set :mail_client, MailClient.new
 
 run SchedulerApp

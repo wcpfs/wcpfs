@@ -45,7 +45,7 @@ describe Users do
     end
 
     it "can subscribe a user to new game updates" do
-      expect(users).to receive(:save).with(fake_user_info.merge(subscribed: true))
+      expect(table).to receive(:save).with(fake_user_info.merge(subscribed: true))
       users.subscribe('benrady@gmail.com')
     end
 
