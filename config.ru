@@ -20,7 +20,7 @@ if ENV['AWS_ACCESS_KEY'].nil?
 end
 
 def get_env
-  return nil if 'production' == SchedulerApp.settings.environment
+  return nil if :production == SchedulerApp.settings.environment
   return 'test'
 end
 
