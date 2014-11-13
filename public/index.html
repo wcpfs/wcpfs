@@ -21,7 +21,9 @@
     </div>
     <div id='content-main' class='container'>
     </div>
+
     <div id='templates'>
+
       <li class='game-item'>
         <div class='panel panel-default'>
           <div class='panel-heading'>
@@ -30,17 +32,22 @@
           </div>
           <div class='panel-body'>
             <div class='row'>
-              <div class='col-md-6'>
+              <div class='col-md-6 col-xs-6'>
                 <h5>Game Master</h5>
                 <img class='gm_profile_pic' src="" alt="" width=50 height=50/>
                 <div><span class='gm_name'></span></div>
-                <div class='margin-top-md' ><a type="button" class='join-button btn btn-success'>Join Now!</a></div>
               </div>
-              <div class='col-md-6'>
+              <div class='col-md-6 col-xs-6'>
                 <h5>Players</h5>
                 <ul class='list-unstyled player-list'>
                 </ul>
                 <div>Seats Available: <span class='badge seats-available'></span></div>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='col-md-12 margin-top-md' >
+                <a type="button" class='detail-button btn btn-info'>Game Details</a>
+                <a type="button" class='join-button btn btn-success'>Join Now!</a>
               </div>
             </div>
           </div>
@@ -134,6 +141,38 @@
                 <a href="http://forums.windycitypathfinder.com">Member's Forum</a> 
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class='game-detail-view'>
+        <div class='panel panel-default'>
+          <div class='panel-heading'>
+            <div><span class='title lead'></span></div>
+            <div><span class='when'></span></div>
+          </div>
+          <div class='panel-body'>
+            <div class='row'>
+              <div class='col-md-12 notes'></div>
+            </div>
+            <div class='row'>
+              <div class='col-md-6 col-xs-6'>
+                <h3>Game Master</h3>
+                <img class='gm_profile_pic' src="" alt="" width=50 height=50/>
+                <div><span class='gm_name'></span></div>
+              </div>
+              <div class='col-md-6 col-xs-6'>
+                <h3>Players</h3>
+                <ol class='player-list'>
+                </ol>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='margin-top-md col-md-12' >
+                <div>Seats Available: <span class='badge seats-available'></span></div>
+                <a type="button" class='join-button btn btn-success margin-top-sm'>Join Now!</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

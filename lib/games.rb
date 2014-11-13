@@ -17,6 +17,10 @@ class Games
     end
   end
 
+  def find game_id
+    @table.all.find {|g| g[:gameId] == game_id}
+  end
+
   def all
     @table.all
   end

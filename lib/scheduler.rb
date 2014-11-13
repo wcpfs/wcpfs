@@ -48,6 +48,10 @@ class SchedulerApp < Sinatra::Base
     content_type :json
     settings.games.all.to_json
   end
+
+  get '/games/detail' do
+    games.find(params[:gameId]).to_json
+  end
   
   get '/ping' do
     "pong"

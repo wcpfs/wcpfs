@@ -17,6 +17,11 @@ describe Games do
     expect(games.all).to be items
   end
 
+  it "can find an individual game" do
+    items << fake_saved_game
+    expect(games.find(fake_saved_game[:gameId])).to eq fake_saved_game
+  end
+
   describe "when creating games" do
     let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [])}
 

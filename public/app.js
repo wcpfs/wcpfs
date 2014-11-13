@@ -2,9 +2,57 @@ function routes() {
   return { 
     message: messageView,
     newGame: newGame,
+    gameDetail: gameDetailView,
     home: homeView
   };
 }
+
+function applyValues(obj, elem) {
+  _.each(obj, function(v, k) {  
+    elem.find('.' + k).text(v);
+  });
+}
+
+function formatDate(timestamp) {
+  date = new Date(+timestamp); // FIXME server should ensure this is a number
+  return date.format("{Weekday}, {Month} {ord}")
+}
+
+function populateGameTemplate(game, elem) {
+  function updateJoinButton(button) {
+    if (game.seats.length < 6) {
+      button.attr('href', '/user/joinGame?gameId=' + game.gameId);
+    } else {
+      button.prop('disabled', true).removeClass('btn-success').addClass('btn-danger').text("Game Full!");
+    }
+  }
+
+  function updatePlayerList(playerList) {
+    _.each(game.seats, function (seat) {
+      var playerItem = $('<li>').text(seat.name)
+      playerList.append(playerItem);
+    });
+  }
+
+  applyValues(game, elem);
+  elem.find('.gm_profile_pic').attr('src', game.gm_pic)
+  elem.find('.when').text(formatDate(game.datetime));
+  elem.find('.seats-available').text(6 - game.seats.length);
+  var playerList = elem.find('.player-list');
+  updatePlayerList(playerList);
+  var joinButton = elem.find('.join-button');
+  updateJoinButton(joinButton);
+}
+
+function gameDetailView(gameId) {
+  var view = $('#templates .game-detail-view').clone();
+  function showGame(game) {
+    populateGameTemplate(game, view);
+  }
+  $.getJSON('/games/detail?gameId=' + gameId, showGame);
+  return view;
+}
+
 
 function messageView(msg) {
   var view = $('#templates .message-view').clone();
@@ -13,32 +61,12 @@ function messageView(msg) {
 }
 
 function homeView() {
-  function formatDate(timestamp) {
-    date = new Date(+timestamp); // FIXME server should ensure this is a number
-    return date.format("{Weekday}, {Month} {ord}")
-  }
-
   function addGames(games) {
     var list = view.find('.game-list').empty();
     _.each(games, function(game) {  
       var gameItem = $('#templates .game-item').clone();
-      _.each(game, function(v, k) {  
-        gameItem.find('.' + k).text(v);
-      });
-      gameItem.find('.gm_profile_pic').attr('src', game.gm_pic)
-      gameItem.find('.when').text(formatDate(game.datetime));
-      gameItem.find('.seats-available').text(6 - game.seats.length);
-      var playerList = gameItem.find('.player-list');
-      _.each(game.seats, function (seat) {
-        var playerItem = $('<li>').text(seat.name)
-        playerList.append(playerItem);
-      });
-      var joinButton = gameItem.find('.join-button');
-      if (game.seats.length < 6) {
-        joinButton.attr('href', '/user/joinGame?gameId=' + game.gameId);
-      } else {
-        joinButton.prop('disabled', true).removeClass('btn-success').addClass('btn-danger').text("Game Full!");
-      }
+      populateGameTemplate(game, gameItem);
+      gameItem.find('.detail-button').attr('href', '/#gameDetail-' + game.gameId);
       list.append(gameItem);
     })
   }

@@ -43,6 +43,13 @@ describe SchedulerApp do
     expect(JSON.parse(last_response.body, :symbolize_names => true)).to eq game_list
   end
 
+  it "can get an individual game" do
+    game = {title: "My Game"}
+    expect(games).to receive(:find).with('abc123') { game }
+    get 'games/detail', {gameId: 'abc123'}
+    expect(last_response.body).to eq game.to_json
+  end
+
   it "allows cross origin requests" do
     allow(games).to receive(:all) { [] }
     get '/games', {}, {"HTTP_ORIGIN" => "http://myapp.com"}
