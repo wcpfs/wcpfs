@@ -12,6 +12,10 @@ server {
 		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
         }
 
+	location ~* \.(php)$ {
+	    rewrite ^(.*) http://forums.windycitypathfinder.com/$1 permanent;
+	}
+
 	location / {
 		root /home/ubuntu/apps/wcpfs/public;
 		try_files $uri $uri/ index.html @sinatra;
