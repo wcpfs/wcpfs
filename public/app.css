@@ -14,15 +14,28 @@
   background: url("/img/flag.svg") no-repeat right center; 
 }
 
-.jumbotron { color: white; }
+/** Our Jumbotron replacement **/
 
-.jumbotron a {
+.banner {
+  padding: 30px;
+  margin-bottom: 30px;
+  color: inherit;
+  background-color: #eee;
   color: white;
 }
-
-.jumbotron a:hover {
-  text-decoration: none;
+.banner h1,
+.banner .h1 {
+  color: inherit;
 }
+.banner p {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.banner a { color: white; }
+.banner a:hover { text-decoration: none; }
+
+/** Site Colors **/
 
 .field-color {
   background-color: rgb(137, 201, 236);
