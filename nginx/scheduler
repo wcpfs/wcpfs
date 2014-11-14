@@ -13,7 +13,7 @@ server {
         }
 
 	location ~* \.(php)$ {
-	    rewrite ^(.*) http://forums.windycitypathfinder.com/$1 permanent;
+	    rewrite ^(.*) http://forums.windycitypathfinder.com$1 permanent;
 	}
 
 	location / {
