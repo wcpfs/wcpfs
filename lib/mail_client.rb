@@ -4,7 +4,7 @@ require 'nokogiri'
 
 class MailClient
   def initialize
-    @base_url = 'http://beta.windycitypathfinder.com'
+    @base_url = 'http://www.windycitypathfinder.com'
   end
 
   def send_new_game(game, users)

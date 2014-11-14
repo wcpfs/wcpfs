@@ -25,9 +25,9 @@ Go to localhost:9292 to see the app
   0. Add an entry to your ~/.ssh/config file that looks like this:
 
   ```
-  Host beta.windycitypathfinder.com
+  Host wcpfs www.windycitypathfinder.com
     # EC2 Host IP
-    HostName beta.windycitypathfinder.com
+    HostName www.windycitypathfinder.com
     user ubuntu
     IdentityFile ~/.ssh/wcpfs.pem
   ```

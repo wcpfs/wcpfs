@@ -5,7 +5,7 @@ bin_dir=`dirname $abspath`
 root_dir=`dirname $bin_dir`
 app_name=`basename $root_dir`
 
-server=${1:-"beta.windycitypathfinder.com"}
+server=${1:-"www.windycitypathfinder.com"}
 
 if ! ssh $server 'whoami'; then
   echo "Cannot log into server named $server. Ensure it is properly configured in ~/.ssh/config."
