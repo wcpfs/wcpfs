@@ -14,6 +14,12 @@ var gameList = [
   })
 ];
 
+it('can serve static views', function() {
+  spyOn(window, 'currentView').and.returnValue('about');
+  var view = staticView();
+  expect(view.find('h2').text()).toEqual("About Windy City Pathfinder");
+});
+
 describe('Home View', function() {
   var view;
   beforeEach(function() {

@@ -3,8 +3,14 @@ function routes() {
     message: messageView,
     newGame: newGame,
     gameDetail: gameDetailView,
+    about: staticView,
+    communityUse: staticView,
     home: homeView
   };
+}
+
+function staticView() {
+  return $('#templates .' + currentView() + "-view").clone();
 }
 
 function applyValues(obj, elem) {

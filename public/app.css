@@ -1,15 +1,10 @@
 #templates { display: none; }
-.bottom-padding-md {
-  padding-bottom: 21px;
-}
 
-.margin-top-md {
-  margin-top: 21px;
-}
-
-.margin-top-sm {
-  margin-top: 7px;
-}
+/* Style Classes */
+.bottom-padding-md { padding-bottom: 21px; }
+.margin-top-md { margin-top: 21px; } 
+.margin-top-sm { margin-top: 7px; }
+.text-center { text-align: center; }
 
 .title-font {
   font-family: Futura,"Trebuchet MS",Arial,sans-serif
@@ -19,8 +14,14 @@
   background: url("/img/flag.svg") no-repeat right center; 
 }
 
-.jumbotron {
+.jumbotron { color: white; }
+
+.jumbotron a {
   color: white;
+}
+
+.jumbotron a:hover {
+  text-decoration: none;
 }
 
 .field-color {
