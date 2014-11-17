@@ -12,6 +12,7 @@ class Users
       email: email["value"],
       name: profile["displayName"],
       pic: profile["image"]["url"],
+      subscribed: true,
       id: "google-" + profile["id"]
     })
   end
