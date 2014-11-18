@@ -78,7 +78,15 @@ describe Games do
         games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
       end
 
-      it "extracts the chronicle sheet"
+      it "extracts the chronicle sheet" do
+        expect(Docsplit).to receive(:extract_images).with('game_assets/abc123/scenario.pdf', {
+          density: 150,
+          format: :png,
+          pages: [10],
+          output: 'game_assets/abc123'
+        })
+        games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
+      end
 
       it "raises an error if the user is not the GM" do
         expect do 

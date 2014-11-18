@@ -12,7 +12,7 @@ function routes() {
 }
 
 function reloadView() {
-  changeToView(currentView(), viewData());
+  showView(currentView());
 }
 
 function applyValues(obj, elem) {
@@ -64,9 +64,16 @@ function uploadButton(gameId) {
       cache: false,
       processData: false, // Don't process the files
       contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-      success: reloadView,
-      error: reloadView
+      success: function() {
+        reloadView();
+      },
+      error: function() {  
+        changeToView('message', 'There was an error uploading your PDF');
+      }
     });
+    var progress = $('#templates .upload-progress').clone()
+    progress.find('img').attr('src', '/img/preloader.gif')
+    button.replaceWith(progress);
   }
 
   var button = $('#templates .upload-button').clone();
@@ -108,13 +115,13 @@ function staticView() {
 
 function gmDetailView(gameId) {
   var view = $('#templates .game-detail-view').clone();
-  function toGoogleIds(seat) {
-    // body...
-  }
 
   function showGame(game) {
     populateGameTemplate(game, view);
-    view.find('.game-buttons').append(uploadButton(gameId));
+    var assetsElem = $('#templates .game-assets').clone();
+    assetsElem.append(uploadButton(gameId));
+    view.append(assetsElem);
+
     //view.find('.game-buttons').append($("<div id='hangout-placeholder'>"));
     //var ids = _.map(game.seats, toGoogleIds);
     //gapi.hangout.render('hangout-placeholder', { 
