@@ -54,6 +54,7 @@ class Games
     end
     length = Docsplit.extract_length(filename)
     Docsplit.extract_images(filename, density: 150, format: :png, pages: [length], output: output_dir)
+    FileUtils.move( "#{output_dir}/scenario_#{length}.png", "#{output_dir}/chronicle.png")
   end
 
   def joined? (game, player_info)

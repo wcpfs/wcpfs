@@ -116,11 +116,20 @@ function staticView() {
 function gmDetailView(gameId) {
   var view = $('#templates .game-detail-view').clone();
 
+  function assetItem(link, text) {
+    var item = $('#templates .well-item-sm').clone();
+    item.find('a').attr('href', link).text(text);
+    return item;
+  }
   function showGame(game) {
     populateGameTemplate(game, view);
     var assetsElem = $('#templates .game-assets').clone();
     assetsElem.append(uploadButton(gameId));
     view.append(assetsElem);
+    var assetList = view.find('.asset-list');
+    if (game.chronicle) {
+      assetList.append(assetItem(game.chronicle, 'Chronicle Sheet'));
+    }
 
     //view.find('.game-buttons').append($("<div id='hangout-placeholder'>"));
     //var ids = _.map(game.seats, toGoogleIds);

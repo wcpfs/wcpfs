@@ -8,6 +8,7 @@ describe Games do
   let (:items) { [] }
 
   before( :each ) do
+    allow(FileUtils).to receive(:move)
     allow(SecureRandom).to receive(:uuid) { "abc123" }
     allow(client).to receive(:table) { table }
     allow(table).to receive(:all) { items }
@@ -85,6 +86,7 @@ describe Games do
           pages: [10],
           output: 'game_assets/abc123'
         })
+        expect(FileUtils).to receive(:move).with('game_assets/abc123/scenario_10.png', 'game_assets/abc123/chronicle.png')
         games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
       end
 
