@@ -5,7 +5,8 @@ var game = {
     "gm_pic":"http://i.imgur.com/Ic08P8Vs.jpg",
     "datetime":"0.14152212E13",
     "title":"City of Golden Death (Online)",
-    "seats": [{name: 'adisney'}, {name: 'renedq'}]
+    "seats": [{name: 'adisney'}, {name: 'renedq'}],
+    chronicle: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chroncile.png"
   };
 
 var gameList = [
@@ -17,6 +18,7 @@ var gameList = [
 
 var fakeRoutes = {
   "/games": [gameList],
+  "/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa": gameList,
   "/user/games": [{playing: [game], running: gameList}]
 }
 
@@ -116,6 +118,39 @@ describe('WCPFS', function() {
       var view = messageView("Hello World");
       expect(view.find('.message').text()).toEqual("Hello World");
     });
+  });
+
+  describe('GM Detail View', function() {
+    var view;
+    beforeEach(function() {
+      view = gmDetailView(game.gameId);
+    });
+
+    it('Adds chronicle sheet to assets', function() {
+      var item = view.find('.asset-list li:first a');
+      expect(item.text()).toEqual("Chronicle Sheet");
+      expect(item.attr('href')).toEqual(game.chronicle);
+    });
+  });
+
+  describe('Game Detail View', function() {
+    var view;
+    beforeEach(function() {
+      view = gameDetailView(game.gameId);
+    });
+
+    it('Adds the date for the game', function() {
+      expect(view.find('.when').text()).toEqual('Wednesday, November 5th');
+    });
+
+    it('Adds the notes and other fields', function() {
+      expect(view.find('.notes').text()).toEqual(game.notes);
+    });
+
+    it('Adds the join button', function() {
+      expect(view.find('.join-button').text()).toEqual('Join Now!');
+    });
+    
   });
 
   describe('profile view', function() {

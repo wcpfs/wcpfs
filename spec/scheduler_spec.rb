@@ -172,14 +172,14 @@ describe SchedulerApp do
         allow(mail_client).to receive(:send_new_game)
         expect(games).to receive(:create).with(fake_new_game).and_return( {gameId: 'abc123'} )
 
-        post '/gm/createGame', {title: "City of Golden Death!", datetime: 123456789000, notes: "My Notes" }, env
+        post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
         expect_redirect_to '/'
       end
 
       it "notifies subscribed players" do
         allow(games).to receive(:create) {{ "gameId" => "abc123" }}
         expect(mail_client).to receive(:send_new_game).with(hash_including("gameId" => "abc123"), [:fake_user_list])
-        post '/gm/createGame', {title: "City of Golden Death!", datetime: 123456789000, notes: "My Notes" }, env
+        post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
       end
     end
 

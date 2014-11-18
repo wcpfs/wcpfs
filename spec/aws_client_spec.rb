@@ -42,6 +42,13 @@ describe AwsClient do
       })
     end
 
+    it "converts BigDecimals to numbers" do
+      items << { big: BigDecimal.new(1234567890000) }
+      expect(table.all.first).to eq({
+        :big => 1234567890000
+      })
+    end
+
     it "keeps a local cache" do
       expect(client).to receive(:scan).once
       2.times {table.all}

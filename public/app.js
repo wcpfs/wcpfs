@@ -22,7 +22,7 @@ function applyValues(obj, elem) {
 }
 
 function formatDate(timestamp) {
-  date = new Date(+timestamp); // FIXME server should ensure this is a number
+  date = new Date(timestamp); 
   return date.format("{Weekday}, {Month} {ord}")
 }
 
@@ -121,6 +121,7 @@ function gmDetailView(gameId) {
     item.find('a').attr('href', link).text(text);
     return item;
   }
+
   function showGame(game) {
     populateGameTemplate(game, view);
     var assetsElem = $('#templates .game-assets').clone();

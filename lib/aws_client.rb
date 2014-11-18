@@ -1,4 +1,13 @@
 require 'aws-sdk'
+require 'bigdecimal'
+require 'json'
+
+class BigDecimal
+  # Hack to get BigDecimal to serialize properly
+  def to_json(options = nil)
+    self.to_i.to_s
+  end
+end
 
 module AwsClient
   def self.connect(opts, env=nil)

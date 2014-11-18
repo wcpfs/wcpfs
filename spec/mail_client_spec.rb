@@ -24,7 +24,7 @@ describe MailClient do
     end
 
     it "fills in the date" do
-      expect(body.css('.date').text).to eq("Wednesday, January 1")
+      expect(body.css('.date').text).to eq("Friday, February 13")
     end
 
     it "fills in the GM pic" do

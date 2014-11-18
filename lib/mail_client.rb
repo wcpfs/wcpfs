@@ -23,7 +23,7 @@ class MailClient
       content_node.content = v if content_node
     end
 
-    body_node.at_css('.date').content = Date.new(date).strftime("%A, %B %-d")
+    body_node.at_css('.date').content = Time.at(date / 1000).strftime("%A, %B %-d")
     body_node.at_css('.gm_profile_pic')['src'] = game_info[:gm_pic]
     body_node.at_css('.join-link')['href'] = @base_url + '/user/joinGame?gameId=' + game_info[:gameId]
 
