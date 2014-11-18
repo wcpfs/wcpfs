@@ -25,8 +25,8 @@ class Games
 
   def for_user(user_info)
     {
-      playing: all.select {|g| g[:gm_id] == user_info[:id]},
-      running: all.select {|g| joined?(g, user_info) }
+      running: all.select {|g| g[:gm_id] == user_info[:id]},
+      playing: all.select {|g| joined?(g, user_info) }
     }
   end
 

@@ -43,9 +43,8 @@ describe Games do
     end
 
     it "can find the games for an individual player" do
-      item[:seats] << fake_user_info
       my_games = games.for_user(fake_user_info)
-      expect(my_games[:playing]).to eq [item]
+      expect(my_games[:playing]).to eq []
       expect(my_games[:running]).to eq [item]
     end
 
@@ -79,9 +78,7 @@ describe Games do
         games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
       end
 
-      it "extracts the chronicle sheet" do
-        
-      end
+      it "extracts the chronicle sheet"
 
       it "raises an error if the user is not the GM" do
         expect do 
