@@ -76,6 +76,7 @@ describe Games do
       let (:data) { StringIO.new 'file data' }
 
       before( :each ) do
+        allow(table).to receive(:save)
         allow(Docsplit).to receive(:extract_images)
         allow(Docsplit).to receive(:extract_length) { 10 }
         allow(File).to receive(:open).and_yield f
@@ -105,6 +106,7 @@ describe Games do
       end
 
       it "updates the game assets" do
+        expect(table).to receive(:save).with(games.all.first)
         games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name')
         expect(games.all.first[:chronicle]).to eq '/game/abc123/chronicle.png'
       end
