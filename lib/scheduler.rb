@@ -56,6 +56,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/game/:gameId/:asset' do
+    content_type :png
     File.read("game_assets/#{params[:gameId]}/#{params[:asset]}")
   end
   
