@@ -3,7 +3,7 @@ var game = {
     "notes":"Tier 4-5. Playing online using Skype and MapTools.",
     "gm_name":"Ben Rady",
     "gm_pic":"http://i.imgur.com/Ic08P8Vs.jpg",
-    "datetime":"0.14152212E13",
+    "datetime":1415221200000,
     "title":"City of Golden Death (Online)",
     "seats": [{name: 'adisney'}, {name: 'renedq'}],
     chronicle: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chroncile.png"

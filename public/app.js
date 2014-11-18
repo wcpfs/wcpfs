@@ -43,7 +43,7 @@ function populateGameTemplate(game, elem) {
   }
 
   applyValues(game, elem);
-  elem.find('.gm_profile_pic').attr('src', game.gm_pic)
+  elem.find('.gm_profile_pic').attr('src', game.gm_pic);
   elem.find('.when').text(formatDate(game.datetime));
   elem.find('.seats-available').text(6 - game.seats.length);
   var playerList = elem.find('.player-list');
