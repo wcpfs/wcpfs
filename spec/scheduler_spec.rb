@@ -38,7 +38,7 @@ describe SchedulerApp do
 
   it "can get a list of games" do
     game_list = [{title: "My Game"}]
-    allow(games).to receive(:all) { game_list }
+    allow(games).to receive(:current) { game_list }
     get '/games'
     expect(JSON.parse(last_response.body, :symbolize_names => true)).to eq game_list
   end
@@ -56,7 +56,7 @@ describe SchedulerApp do
   end
 
   it "allows cross origin requests" do
-    allow(games).to receive(:all) { [] }
+    allow(games).to receive(:current) { [] }
     get '/games', {}, {"HTTP_ORIGIN" => "http://myapp.com"}
     expect(last_response.headers).to include({ "Access-Control-Allow-Origin" => "http://myapp.com"})
   end

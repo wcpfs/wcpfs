@@ -48,7 +48,7 @@ class SchedulerApp < Sinatra::Base
   get '/games' do
     cross_origin
     content_type :json
-    settings.games.all.to_json
+    settings.games.current.to_json
   end
 
   get '/games/detail' do

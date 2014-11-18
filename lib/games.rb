@@ -1,6 +1,7 @@
 require 'docsplit'
 
 class Games
+  TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
   def initialize(aws_connection)
     @table = aws_connection.table('wcpfs-games')
   end
@@ -34,6 +35,12 @@ class Games
     @table.all
   end
 
+  def current
+    @table.all.select do |game|
+      game[:datetime] > now_millis - TWENTY_FOUR_HOURS 
+    end
+  end
+
   def write_pdf(user_id, game_id, pdf_file, filename)
     game = find game_id
     if game.nil? or game[:gm_id] != user_id
@@ -61,5 +68,9 @@ class Games
     game[:seats].any? do |seat|
       seat[:email] == player_info[:email]
     end
+  end
+
+  def now_millis
+    (Time.now.to_f * 1000).to_i
   end
 end

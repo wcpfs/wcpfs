@@ -18,6 +18,14 @@ describe Games do
     expect(games.all).to be items
   end
 
+  it "can list current games" do
+    cutoff_time = (Time.now.to_f * 1000).to_i - (24 * 60 * 59 * 1000)
+    old_game = {datetime: 0}
+    new_game = {datetime: cutoff_time}
+    items.concat([old_game, new_game])
+    expect(games.current).to eq [new_game]
+  end
+
   describe "when creating games" do
     let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [])}
 
