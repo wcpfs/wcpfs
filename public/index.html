@@ -17,10 +17,12 @@
   <div id='markup'>
     <div class="banner field-color title-font">
       <div class='hidden-xs'>
+        <div class='profile-placeholder'></div>
         <h1><a href='/'>Windy City Pathfinder</a><h1>
         <p>Playing Pathfinder Society RPG in Chicago, online, and around the world.</p>
       </div>
       <div class="visible-xs-inline">
+        <div class='profile-placeholder'></div>
         <h2><a href='/'>Windy City Pathfinder</a><h2>
       </div>
     </div>
@@ -250,6 +252,13 @@
         </span>
       </div>
 
+      <div class='banner-profile pull-right'>
+        <a href="#profile">
+          <img class='img-responsive margin-auto'/>
+          <h5>My Profile</h5>
+        </a>
+      </div>
+
       <div class='upload-progress'>
         <img src='' /> Uploading
       </div>
@@ -281,6 +290,7 @@
   <script src="https://apis.google.com/js/platform.js"></script>
   <script type='text/javascript'>
     routerOnReady();
+    appOnReady();
   </script>
   <script type='text/javascript'>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

@@ -2,7 +2,7 @@ var game = {
     "gameId":"95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
     "notes":"Tier 4-5. Playing online using Skype and MapTools.",
     "gm_name":"Ben Rady",
-    "gm_pic":"http://i.imgur.com/Ic08P8Vs.jpg",
+    "gm_pic":"/img/preloader.gif",
     "datetime":1415221200000,
     "title":"City of Golden Death (Online)",
     "seats": [{name: 'adisney'}, {name: 'renedq'}],
@@ -18,6 +18,7 @@ var gameList = [
 
 var fakeRoutes = {
   "/games": [gameList],
+  "/user/info": [{pic: '/img/preloader.gif'}],
   "/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa": gameList,
   "/user/games": [{playing: [game], running: gameList}]
 }
@@ -27,6 +28,11 @@ describe('WCPFS', function() {
     spyOn($, 'getJSON').and.callFake(function(url, callback) {  
       callback.apply(this, fakeRoutes[url])
     })
+  });
+
+  it('Adds a link to the user profile when logged in', function() {
+    appOnReady();
+    expect($('.profile-placeholder img').attr('src')).toEqual('/img/preloader.gif');
   });
 
   it('can serve static views', function() {
@@ -77,7 +83,7 @@ describe('WCPFS', function() {
 
       it('include the GM', function() {
         expect(item.find('.gm_name').text()).toEqual("Ben Rady");
-        expect(item.find('.gm_profile_pic').attr('src')).toEqual('http://i.imgur.com/Ic08P8Vs.jpg');
+        expect(item.find('.gm_profile_pic').attr('src')).toEqual('/img/preloader.gif');
       });
 
       it('adds the list of players', function() {

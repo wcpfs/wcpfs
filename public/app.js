@@ -197,3 +197,11 @@ function newGame() {
   view.find('input.datetime').change(parseDate);
   return view;
 }
+
+function appOnReady() {
+  $.getJSON('/user/info', function(data) {  
+    var profile = $('#templates .banner-profile').clone();
+    profile.find('img').attr('src', data.pic);
+    $('.profile-placeholder').append(profile);
+  });
+}

@@ -5,6 +5,7 @@
 .margin-top-md { margin-top: 21px; } 
 .margin-top-sm { margin-top: 7px; }
 .text-center { text-align: center; }
+.margin-auto { margin: auto; }
 
 .title-font {
   font-family: Futura,"Trebuchet MS",Arial,sans-serif
