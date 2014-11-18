@@ -50,6 +50,11 @@ describe SchedulerApp do
     expect(last_response.body).to eq game.to_json
   end
 
+  it "can fetch a game asset" do
+    expect(File).to receive(:read).with('game_assets/abc123/chronicle.png')
+    get 'game/abc123/chronicle.png'
+  end
+
   it "allows cross origin requests" do
     allow(games).to receive(:all) { [] }
     get '/games', {}, {"HTTP_ORIGIN" => "http://myapp.com"}
@@ -131,6 +136,23 @@ describe SchedulerApp do
       })
     end
 
+    it "can return the player's games" do
+      expect(games).to receive(:for_user).with(user_info) {{
+        playing: [],
+        running: []
+      }}
+      get '/user/games', {}, env
+      expect(JSON.parse(last_response.body, :symbolize_names => true)).to eq({
+        playing: [],
+        running: []
+      })
+    end
+
+    it "can upload a scenario PDF" do
+      expect(games).to receive(:write_pdf).with(fake_user_info[:id], 'abc123', 'temp file', 'myfile.pdf')
+      post '/user/uploadPdf', {gameId: 'abc123', file: {tempfile: "temp file", filename: 'myfile.pdf'}}, env
+    end
+
     it "/login will redirect to the specified url" do
       get '/login', {:redirect_path => '/%23newGame'}, env
       expect_redirect_to '/%23newGame'
@@ -150,14 +172,14 @@ describe SchedulerApp do
         allow(mail_client).to receive(:send_new_game)
         expect(games).to receive(:create).with(fake_new_game).and_return( {gameId: 'abc123'} )
 
-        post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
+        post '/gm/createGame', {title: "City of Golden Death!", datetime: 123456789000, notes: "My Notes" }, env
         expect_redirect_to '/'
       end
 
       it "notifies subscribed players" do
         allow(games).to receive(:create) {{ "gameId" => "abc123" }}
         expect(mail_client).to receive(:send_new_game).with(hash_including("gameId" => "abc123"), [:fake_user_list])
-        post '/gm/createGame', {title: "Title", datetime: 123456789000, notes: "My Notes" }, env
+        post '/gm/createGame', {title: "City of Golden Death!", datetime: 123456789000, notes: "My Notes" }, env
       end
     end
 

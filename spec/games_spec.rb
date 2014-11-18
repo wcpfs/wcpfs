@@ -17,11 +17,6 @@ describe Games do
     expect(games.all).to be items
   end
 
-  it "can find an individual game" do
-    items << fake_saved_game
-    expect(games.find(fake_saved_game[:gameId])).to eq fake_saved_game
-  end
-
   describe "when creating games" do
     let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [])}
 
@@ -43,6 +38,17 @@ describe Games do
       items << item
     end
 
+    it "can find an individual game" do
+      expect(games.find(fake_saved_game[:gameId])).to eq fake_saved_game
+    end
+
+    it "can find the games for an individual player" do
+      item[:seats] << fake_user_info
+      my_games = games.for_user(fake_user_info)
+      expect(my_games[:playing]).to eq [item]
+      expect(my_games[:running]).to eq [item]
+    end
+
     it "can sign up for that game" do
       expect(table).to receive(:save).with(hash_including(
         gameId: "abc123", 
@@ -55,6 +61,38 @@ describe Games do
       expect(client).not_to receive(:save)
       item[:seats] << fake_user_info
       games.signup('abc123', fake_user_info)
+    end
+
+    describe 'when attaching a scenario PDF' do
+      let (:f) { double File }
+      let (:data) { StringIO.new 'file data' }
+
+      before( :each ) do
+        allow(Docsplit).to receive(:extract_images)
+        allow(Docsplit).to receive(:extract_length) { 10 }
+        allow(File).to receive(:open).and_yield f
+        allow(f).to receive(:write)
+      end
+
+      it "writes the file to disk" do
+        expect(f).to receive(:write).with('file data')
+        games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
+      end
+
+      it "extracts the chronicle sheet" do
+        
+      end
+
+      it "raises an error if the user is not the GM" do
+        expect do 
+          games.write_pdf('wrong id', nil, nil, nil)
+        end.to raise_error "Unauthorized"
+      end
+
+      it "updates the game assets" do
+        games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name')
+        expect(games.all.first[:chronicle]).to eq '/game/abc123/chronicle.png'
+      end
     end
   end
 end

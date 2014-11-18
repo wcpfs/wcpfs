@@ -5,6 +5,8 @@ require 'sinatra/cross_origin'
 require 'json'
 require 'games'
 
+require 'fileutils'
+
 class SchedulerApp < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
 
@@ -52,6 +54,10 @@ class SchedulerApp < Sinatra::Base
   get '/games/detail' do
     games.find(params[:gameId]).to_json
   end
+
+  get '/game/:gameId/:asset' do
+    File.read("game_assets/#{params[:gameId]}/#{params[:asset]}")
+  end
   
   get '/ping' do
     "pong"
@@ -98,6 +104,16 @@ class SchedulerApp < Sinatra::Base
     session[:user].to_json
   end
 
+  post '/user/uploadPdf' do
+    game_id = params[:gameId]
+    games.write_pdf(user[:id], game_id, params[:file][:tempfile], params[:file][:filename])
+    redirect to("/#gmDetail-#{game_id}")
+  end
+
+  get '/user/games' do
+    games.for_user(session[:user]).to_json
+  end
+
   get '/user/joinGame' do
     games.signup(params[:gameId], {
       name: user[:name],
@@ -117,8 +133,7 @@ class SchedulerApp < Sinatra::Base
     }
     item = games.create game_info
     mail_client.send_new_game(item, users.subscriptions)
-    content_type :json
-    redirect('/')
+    redirect("/#gmDetail-#{item[:gameId]}")
   end
 
   private

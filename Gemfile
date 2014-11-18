@@ -6,6 +6,7 @@ gem "sinatra-cross_origin", "~> 0.3.1"
 gem "google-api-client"
 gem "mailfactory"
 gem 'nokogiri'
+gem 'docsplit'
 
 group :test do
   gem 'guard'

@@ -37,28 +37,42 @@
     </div>
 
     <div id='templates'>
-      <div class='about-view'>
+      <div class='profile-view'>
+        <div class='row'>
+          <h1>My Games</h1>
+          <hr />
+          <div class='col-md-6'>
+            <h4>Playing</h4>
+            <ul class='list-unstyled games-playing'>
+            </ul>
+          </div>
+          <div class='col-md-6'>
+            <h4>Running</h4>
+            <ul class='list-unstyled games-running'>
+            </ul>
+          </div>
+        </div>
       </div>
 
       <div class='about-view'>
         <h2>About Windy City Pathfinder</h2>
         <p>We're all about Pathfinder. We created this site to grow both the local Chicago PFS community, and connect with players across the world. This site is brought to you through the volunteer efforts of the following contributors:</p>
-        <ul class='list-unstyled margin-top-md'>
+        <ul class='list-unstyled margin-top-md lead'>
           <li class='bottom-padding-md'>
           <img src='https://lh4.googleusercontent.com/-6mZ6KX6Q9C4/AAAAAAAAAAI/AAAAAAAAAV4/feXeMTAEK7Q/photo.jpg?sz=50' alt=''/>
-<span class='lead'>Rene Duquesnoy</span>
+          <span>Rene Duquesnoy</span>
           </li>
           <li class='bottom-padding-md'>
           <img src='https://lh5.googleusercontent.com/-Pv6s3xoudeE/AAAAAAAAAAI/AAAAAAAAAAA/wa9VTBF_kws/photo.jpg?sz=50' alt=''/>
-          <span class='lead'>Ben Rady</span>
+          <span>Ben Rady</span>
           </li>
           <li class='bottom-padding-md'>
           <img src='https://lh5.googleusercontent.com/-D7c1L4E9qm8/AAAAAAAAAAI/AAAAAAAAAD8/PxsMshYVmIw/photo.jpg?sz=50' alt=''/>
-          <span class='lead'>Rob Churchwell</span>
+          <span>Rob Churchwell</span>
           </li>
           <li class='bottom-padding-md'>
           <img src='https://lh5.googleusercontent.com/-DSbFZkQ4_s4/AAAAAAAAAAI/AAAAAAAAAEo/fZznrCmhNzA/photo.jpg?sz=50' alt=''/>
-          <span class='lead'>Alex Disney</span>
+          <span>Alex Disney</span>
           </li>
         </ul>
       </div>
@@ -97,6 +111,8 @@
           </div>
         </div>
       </li>
+
+      <li class='well-item-sm well well-sm'><a></a></li>
 
       <div class='message-view'>
         <div class='row text-center'>
@@ -212,13 +228,19 @@
               </div>
             </div>
             <div class='row'>
-              <div class='margin-top-md col-md-12' >
-                <div>Seats Available: <span class='badge seats-available'></span></div>
-                <a type="button" class='join-button btn btn-success margin-top-sm'>Join Now!</a>
+              <div class='margin-top-md col-md-12 game-buttons' >
+                <div class='player-option' >Seats Available: <span class='badge seats-available'></span></div>
+                <a type="button" class='player-option join-button btn btn-success margin-top-sm'>Join Now!</a>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class='upload-button'>
+        <span class='btn btn-default btn-file' title="Upload your scenario PDF and we'll extract the chronicle sheet and other game assets!">
+          Upload PDF<input class='pdf-upload-input' type="file" name='file' accept='application/pdf'>
+        </span>
       </div>
 
       <div class='new-game-view'>
@@ -245,10 +267,11 @@
     </div>
   </div>
   <script src="app.js"></script>
+  <script src="https://apis.google.com/js/platform.js"></script>
   <script type='text/javascript'>
     routerOnReady();
   </script>
-  <script>
+  <script type='text/javascript'>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
