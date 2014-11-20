@@ -1,13 +1,20 @@
 var game = {
-    "gameId":"95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
-    "notes":"Tier 4-5. Playing online using Skype and MapTools.",
-    "gm_name":"Ben Rady",
-    "gm_pic":"/img/preloader.gif",
-    "datetime":1415221200000,
-    "title":"City of Golden Death (Online)",
-    "seats": [{name: 'adisney'}, {name: 'renedq'}],
-    chronicle: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chroncile.png"
-  };
+  gameId: "95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
+  notes: "Tier 4-5. Playing online using Skype and MapTools.",
+  gm_name: "Ben Rady",
+  gm_pic: "/img/preloader.gif",
+  datetime: 1415221200000,
+  title: "City of Golden Death (Online)",
+  seats: [{name: 'adisney'}, {name: 'renedq'}],
+  chronicle: {
+    sheetUrl: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chronicle.png",
+    goldGained: 1847,
+    prestigeGained: 2,
+    xpGained: 1,
+    eventCode: 35556,
+    gmPfsNumber: 38803
+  }
+};
 
 var gameList = [
   game, 
@@ -129,13 +136,14 @@ describe('WCPFS', function() {
   describe('GM Detail View', function() {
     var view;
     beforeEach(function() {
+      spyOn(window, 'imageEditor');
       view = gmDetailView(game.gameId);
     });
 
     it('Adds chronicle sheet to assets', function() {
       var item = view.find('.asset-list li:first a');
       expect(item.text()).toEqual("Chronicle Sheet");
-      expect(item.attr('href')).toEqual(game.chronicle);
+      expect(item.attr('href')).toEqual(game.chronicle.sheetUrl);
     });
   });
 
@@ -177,6 +185,89 @@ describe('WCPFS', function() {
 
     it('Links to the GM view for games youre running', function() {
       expect(view.find('.games-running li:first a').attr('href')).toEqual('#gmDetail-' + game.gameId);
+    });
+  });
+
+  describe('Image Editor', function() {
+    var editor;
+
+    beforeEach(function() {
+      spyOn(fabric.Image, 'fromURL');
+      editor = imageEditor(game);
+    });
+
+    describe('when the chronicle image is loaded', function() {
+      var dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAAABJRU5ErkJggg==';
+      var img, canvas;
+
+      beforeEach(function() {
+        canvas = jasmine.createSpyObj('canvas', ['toDataURL', 'add', 'renderAll']);
+        canvas.toDataURL.and.returnValue(dataUrl);
+        img = {width: 628, height: 816};
+        spyOn(fabric, 'Canvas').and.returnValue(canvas);
+        spyOn(fabric, 'Text');
+        fabric.Image.fromURL.calls.argsFor(0)[1](img);
+      });
+
+      it('creates a canvas', function() {
+        expect(fabric.Canvas).toHaveBeenCalledWith(editor.find('canvas').get(0), {
+          backgroundImage: img,
+          width: 628,
+          height: 816
+        });
+      });
+
+      it('creates a download link', function() {
+        expect(editor.find('.save-btn').attr('href')).toEqual(dataUrl);
+      });
+
+      describe('filling in form values', function() {
+        var items;
+
+        beforeEach(function() {
+          items = _.map(editor.find('.chronicle-item'), $);
+        });
+
+        it('creates Text objects for each field', function() {
+          expect(fabric.Text.calls.count()).toEqual(7);
+        });
+
+        it('Adds the event code', function() {
+          expect(items[0].find('.field-name').text()).toEqual('Event Code');
+          expect(items[0].find('.field-value').val()).toEqual('35556');
+        });
+
+        it('Adds the event name (even if none)', function() {
+          expect(items[1].find('.field-name').text()).toEqual('Event Name');
+          expect(items[1].find('.field-value').val()).toEqual('');
+        });
+
+        it('Adds the Date', function() {
+          expect(items[2].find('.field-name').text()).toEqual('Date');
+          expect(items[2].find('.field-value').val()).toEqual('5 Nov 2014');
+        });
+
+        it('Adds GM PFS number', function() {
+          expect(items[3].find('.field-name').text()).toEqual('GM PFS #');
+          expect(items[3].find('.field-value').val()).toEqual('38803');
+        });
+
+        it('Adds the gold gained', function() {
+          expect(items[4].find('.field-name').text()).toEqual('Gold Gained');
+          expect(items[4].find('.field-value').val()).toEqual('1847');
+        });
+
+        it('Adds the prestige gained', function() {
+          expect(items[5].find('.field-name').text()).toEqual('Prestige Gained');
+          expect(items[5].find('.field-value').val()).toEqual('2');
+        });
+
+        it('Adds the XP gained', function() {
+          expect(items[6].find('.field-name').text()).toEqual('XP Gained');
+          expect(items[6].find('.field-value').val()).toEqual('1');
+        });
+      });
+
     });
   });
 });

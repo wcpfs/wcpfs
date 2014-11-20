@@ -49,7 +49,9 @@ class Games
     out_dir = "game_assets/#{game_id}"
     FileUtils.mkdir_p(out_dir)
     extract_assets(out_dir, pdf_file.read)
-    game[:chronicle] = "/game/#{game_id}/chronicle.png"
+    game[:chronicle] = {
+      :sheetUrl => "/game/#{game_id}/chronicle.png"
+    }
     @table.save(game)
   end
 
@@ -61,7 +63,7 @@ class Games
       f.write pdf_data
     end
     length = Docsplit.extract_length(filename)
-    Docsplit.extract_images(filename, density: 150, format: :png, pages: [length], output: output_dir)
+    Docsplit.extract_images(filename, size: '628x816', format: :png, pages: [length], output: output_dir)
     FileUtils.move( "#{output_dir}/scenario_#{length}.png", "#{output_dir}/chronicle.png")
   end
 

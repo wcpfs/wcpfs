@@ -21,6 +21,52 @@ function applyValues(obj, elem) {
   });
 }
 
+function imageEditor(game) {
+  var editor = $('#templates .image-editor').clone();
+  var canvasElem = editor.find('canvas').get(0);
+  var canvas;
+
+  function addEntry(name, value, left, top) {
+    if (value === undefined) { value = ''; }
+    var text = new fabric.Text(value.toString(), {
+      fontFamily: "Permanent Marker",
+      hasControls: false,
+      hasRotatingPoint: false,
+      fontSize: 14,
+      fontWeight: 'normal',
+      left: left,
+      top: top
+    });
+    canvas.add(text);
+    var item = $('#templates .chronicle-item').clone();
+    item.find('.field-name').text(name);
+    item.find('.field-value').val(value).change(function() {  
+      text.set({text: $(this).val()});
+      canvas.renderAll();
+    });
+    editor.find('.chronicle-form').append(item);
+  }
+
+  fabric.Image.fromURL(game.chronicle.sheetUrl, function(oImg) {
+    canvas = new fabric.Canvas(canvasElem, {
+      backgroundImage: oImg,
+      width: oImg.width,
+      height: oImg.height
+    });
+    addEntry('Event Code', game.chronicle.eventCode, 172, 745);
+    addEntry('Event Name', game.chronicle.eventName, 68, 745);
+    addEntry('Date', new Date(game.datetime).format('{d} {Mon} {yyyy}'), 235, 745);
+    addEntry('GM PFS #', game.chronicle.gmPfsNumber, 500, 745);
+
+    addEntry('Gold Gained', game.chronicle.goldGained, 510, 580);
+    addEntry('Prestige Gained', game.chronicle.prestigeGained, 510, 428);
+    addEntry('XP Gained', game.chronicle.xpGained, 510, 315);
+    editor.find('.save-btn').attr({href: canvas.toDataURL(), download: game.title + '.png'});
+    canvas.renderAll();
+  });
+  return editor;
+}
+
 function formatDate(timestamp) {
   date = new Date(timestamp); 
   return date.format("{Weekday}, {Month} {ord}")
@@ -128,16 +174,12 @@ function gmDetailView(gameId) {
     assetsElem.append(uploadButton(gameId));
     view.append(assetsElem);
     var assetList = view.find('.asset-list');
-    if (game.chronicle) {
-      assetList.append(assetItem(game.chronicle, 'Chronicle Sheet'));
-    }
 
-    //view.find('.game-buttons').append($("<div id='hangout-placeholder'>"));
-    //var ids = _.map(game.seats, toGoogleIds);
-    //gapi.hangout.render('hangout-placeholder', { 
-    //  render: 'createhangout',
-    //  invites: ids
-    //});
+    if (game.chronicle) {
+      var item = assetItem(game.chronicle.sheetUrl, 'Chronicle Sheet');
+      item.append(imageEditor(game));
+      assetList.append(item);
+    }
   }
   $.getJSON('/games/detail?gameId=' + gameId, showGame);
   view.find('.gm-option').show();

@@ -76,6 +76,7 @@ describe Games do
       let (:data) { StringIO.new 'file data' }
 
       before( :each ) do
+        allow(FileUtils).to receive('mkdir_p')
         allow(table).to receive(:save)
         allow(Docsplit).to receive(:extract_images)
         allow(Docsplit).to receive(:extract_length) { 10 }
@@ -84,13 +85,14 @@ describe Games do
       end
 
       it "writes the file to disk" do
+        expect(FileUtils).to receive(:mkdir_p).with('game_assets/abc123')
         expect(f).to receive(:write).with('file data')
         games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
       end
 
       it "extracts the chronicle sheet" do
         expect(Docsplit).to receive(:extract_images).with('game_assets/abc123/scenario.pdf', {
-          density: 150,
+          size: '628x816',
           format: :png,
           pages: [10],
           output: 'game_assets/abc123'
@@ -108,7 +110,7 @@ describe Games do
       it "updates the game assets" do
         expect(table).to receive(:save).with(games.all.first)
         games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name')
-        expect(games.all.first[:chronicle]).to eq '/game/abc123/chronicle.png'
+        expect(games.all.first[:chronicle][:sheetUrl]).to eq '/game/abc123/chronicle.png'
       end
     end
   end

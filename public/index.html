@@ -241,9 +241,38 @@
 
       <div class='game-assets'>
         <h2>Game Assets</h2>
-        <ul class='list-unstyled asset-list lead'>
+        <ul class='list-unstyled asset-list'>
         </ul>
         <p>Upload your scenario PDF and we'll extract the chronicle sheet and other game assets!</p>
+      </div>
+
+      <div class='image-editor'>
+        <div class='row'>
+          <div class='col-md-4'>
+            <p class='well'>
+            Enter the chronicle sheet values here. Use your mouse to reposition the text as necessary.
+            </p>
+            <form class="form-horizontal" role="form">
+              <div class='chronicle-form'>
+              </div>
+              <div class="chronicle-button form-group">
+                <div class="col-sm-offset-4 col-sm-8">
+                  <a class="btn btn-primary save-btn">Save Chronicle</a>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class='scrollbars'>
+            <canvas></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="chronicle-item form-group">
+        <label class="col-sm-4 control-label field-name"></label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control field-value">
+        </div>
       </div>
 
       <div class='upload-button'>
