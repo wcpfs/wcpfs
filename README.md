@@ -16,7 +16,7 @@ Go to localhost:9292 to see the app
   ```
 
 ### To run JavaScript tests
-  * Start the server and go to localhost:9292/tests to run the tests. 
+  * Start the server and go to localhost:9292/tests/index.html to run the tests. 
   * You can use the http://tin.cr/ plugin to run them automatically.
 
 # Deployment
