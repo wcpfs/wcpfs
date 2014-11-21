@@ -33,13 +33,14 @@ var fakeRoutes = {
 describe('WCPFS', function() {
   beforeEach(function() {
     spyOn($, 'getJSON').and.callFake(function(url, callback) {  
-      callback.apply(this, fakeRoutes[url])
+      if (callback) {
+        callback.apply(this, fakeRoutes[url])
+      }
     })
   });
 
-  it('Adds a link to the user profile when logged in', function() {
-    appOnReady();
-    expect($('.profile-placeholder img').attr('src')).toEqual('/img/preloader.gif');
+  it('Can use profile information in a view', function() {
+    expect(1).toEqual(2);
   });
 
   it('can serve static views', function() {
@@ -218,7 +219,7 @@ describe('WCPFS', function() {
       });
 
       it('creates a download link', function() {
-        expect(editor.find('.save-btn').attr('href')).toEqual(dataUrl);
+        expect(editor.find('.save-btn').click().attr('href')).toEqual(dataUrl);
       });
 
       describe('filling in form values', function() {
@@ -267,7 +268,6 @@ describe('WCPFS', function() {
           expect(items[6].find('.field-value').val()).toEqual('1');
         });
       });
-
     });
   });
 });

@@ -6,9 +6,9 @@
 .margin-top-sm { margin-top: 7px; }
 .text-center { text-align: center; }
 .margin-auto { margin: auto; }
-.scrollbars {
-  overflow: auto;
-}
+.scrollbars { overflow: auto; }
+.font-large { font-size: 48px; }
+.left-padding-sm { padding-left: 7px; }
 
 @font-face{
   font-family: 'Permanent Marker';

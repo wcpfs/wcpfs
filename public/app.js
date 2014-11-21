@@ -1,3 +1,5 @@
+var userInfoPromise;
+
 function routes() { 
   return { 
     message: messageView,
@@ -26,6 +28,21 @@ function imageEditor(game) {
   var canvasElem = editor.find('canvas').get(0);
   var canvas;
 
+  function addImage(url, positions) {
+    fabric.Image.fromURL(url, function(oImg) {
+      _.each(positions, function(pos) {  
+        img = fabric.util.object.clone(oImg);
+        img.set({
+          top: pos.top,
+          hasControls: false,
+          hasRotatingPoint: false,
+          left: pos.left
+        });
+        canvas.add(img);
+      });
+    });
+  }
+
   function addEntry(name, value, left, top) {
     if (value === undefined) { value = ''; }
     var text = new fabric.Text(value.toString(), {
@@ -53,15 +70,27 @@ function imageEditor(game) {
       width: oImg.width,
       height: oImg.height
     });
-    addEntry('Event Code', game.chronicle.eventCode, 172, 745);
-    addEntry('Event Name', game.chronicle.eventName, 68, 745);
-    addEntry('Date', new Date(game.datetime).format('{d} {Mon} {yyyy}'), 235, 745);
-    addEntry('GM PFS #', game.chronicle.gmPfsNumber, 500, 745);
+    addEntry('Event Code', game.chronicle.eventCode, 172, 748);
+    addEntry('Event Name', game.chronicle.eventName, 68, 748);
+    addEntry('Date', new Date(game.datetime).format('{d} {Mon} {yyyy}'), 235, 748);
+    addEntry('GM PFS #', game.chronicle.gmPfsNumber, 500, 748);
 
     addEntry('Gold Gained', game.chronicle.goldGained, 510, 580);
     addEntry('Prestige Gained', game.chronicle.prestigeGained, 510, 428);
     addEntry('XP Gained', game.chronicle.xpGained, 510, 315);
-    editor.find('.save-btn').attr({href: canvas.toDataURL(), download: game.title + '.png'});
+    /**
+    addImage('/signature.png', [{top: 745, left: 332}]);
+    addImage('/initials.png', [ 
+      {top: 315, left: 560},
+      {top: 427, left: 560},
+      {top: 580, left: 560}
+    ]);
+    **/
+
+    editor.find('.save-btn').click(function() {  
+      $(this).attr({href: canvas.toDataURL(), download: game.title + '.png'});
+    });
+
     canvas.renderAll();
   });
   return editor;
@@ -152,6 +181,11 @@ function profileView() {
     view.find('.games-running').append(_.map(games.running, gmItem));
   });
 
+  $.getJSON('/user/info', function(data) { 
+    console.log(data);
+    applyValues(data, view.find('.profile-info'));
+  })
+
   return view;
 }
 
@@ -238,12 +272,4 @@ function newGame() {
   view.find('input').change(validate);
   view.find('input.datetime').change(parseDate);
   return view;
-}
-
-function appOnReady() {
-  $.getJSON('/user/info', function(data) {  
-    var profile = $('#templates .banner-profile').clone();
-    profile.find('img').attr('src', data.pic);
-    $('.profile-placeholder').append(profile);
-  });
 }
