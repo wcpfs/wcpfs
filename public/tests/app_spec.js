@@ -25,7 +25,7 @@ var gameList = [
 
 var fakeRoutes = {
   "/games": [gameList],
-  "/user/info": [{pic: '/img/preloader.gif'}],
+  "/user/info": [{pfsNumber: 38803, name: 'Ben Rady', pic: '/img/preloader.gif'}],
   "/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa": gameList,
   "/user/games": [{playing: [game], running: gameList}]
 }
@@ -37,10 +37,6 @@ describe('WCPFS', function() {
         callback.apply(this, fakeRoutes[url])
       }
     })
-  });
-
-  it('Can use profile information in a view', function() {
-    expect(1).toEqual(2);
   });
 
   it('can serve static views', function() {
@@ -186,6 +182,25 @@ describe('WCPFS', function() {
 
     it('Links to the GM view for games youre running', function() {
       expect(view.find('.games-running li:first a').attr('href')).toEqual('#gmDetail-' + game.gameId);
+    });
+
+    it('populates the profile form fields', function() {
+      expect(view.find('.name').text()).toEqual('Ben Rady');
+    });
+
+    it('Fills in the PFS number', function() {
+      expect(view.find('.pfsNumber').val()).toEqual('38803');
+    });
+
+    it('Can save fields', function() {
+      spyOn($, 'ajax')
+      view.find('.pfsNumber').val('12345');
+      view.find('.save-btn').click();
+      expect($.ajax).toHaveBeenCalledWith({ 
+        url:'/user/info',
+        data: JSON.stringify({pfsNumber: '12345'}),
+        contentType: 'application/json'
+      });
     });
   });
 

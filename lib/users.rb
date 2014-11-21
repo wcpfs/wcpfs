@@ -17,13 +17,21 @@ class Users
     })
   end
 
-  def subscribe(email)
-    user = @table.all.find {|u| u[:email] == email}
+  def subscribe(id) 
+    user = find(id)
     user[:subscribed] = true
     @table.save(user)
   end
 
   def subscriptions
     @table.all.select {|u| u[:subscribed]}
+  end
+
+  def find(id)
+    @table.all.find {|u| u[:id] == id}
+  end
+
+  def update(id, new_info)
+    @table.save(find(id).merge! new_info)
   end
 end

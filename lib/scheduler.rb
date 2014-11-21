@@ -31,7 +31,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   def login_check
-    if session[:user].nil?
+    if session[:user_id].nil?
       session[:redirect_path] = request.fullpath
       redirect to('/login') 
     end
@@ -68,7 +68,7 @@ class SchedulerApp < Sinatra::Base
     if params[:redirect_path]
       session[:redirect_path] = params[:redirect_path] 
     end
-    if session[:user]
+    if session[:user_id]
       if session[:redirect_path]
         redirect to(session[:redirect_path])
       else
@@ -83,7 +83,7 @@ class SchedulerApp < Sinatra::Base
   get '/oauth2callback' do
     google.save_credentials(session, params[:code])
     profile = google.profile(session)
-    session[:user] = users.ensure(profile)
+    session[:user_id] = users.ensure(profile)[:id]
 
     if session[:redirect_path]
       redirect to(session[:redirect_path]) 
@@ -93,7 +93,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/user/subscribe' do
-    users.subscribe(user[:email])
+    users.subscribe(user[:id])
     message("You are subscribed to new game notifications.")
   end
 
@@ -102,7 +102,11 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/user/info' do
-    session[:user].to_json
+    user.to_json
+  end
+
+  post '/user/info' do
+    users.update(user[:id], JSON.parse(request.body.read, :symbolize_names => true)).to_json
   end
 
   post '/user/uploadPdf' do
@@ -112,7 +116,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/user/games' do
-    games.for_user(session[:user]).to_json
+    games.for_user(user).to_json
   end
 
   get '/user/joinGame' do
@@ -160,6 +164,6 @@ class SchedulerApp < Sinatra::Base
   end
 
   def user
-    session[:user]
+    users.find(session[:user_id])
   end
 end

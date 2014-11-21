@@ -92,7 +92,7 @@ describe SchedulerApp do
       before( :each ) do
         allow(google).to receive(:save_credentials)
         allow(google).to receive(:profile)
-        allow(users).to receive(:ensure)
+        allow(users).to receive(:ensure) { fake_user_info }
       end
 
       it "saves the api code to the session" do
@@ -125,7 +125,15 @@ describe SchedulerApp do
     let (:user_info) {fake_user_info}
 
     before :each do
-      env['rack.session'] = { :user => user_info}
+      allow(users).to receive(:find) { user_info }
+      env['rack.session'] = { :user_id => user_info[:id] }
+    end
+
+    it "can update user info" do
+      expect(users).to receive(:update).with(user_info[:id], {}) { {} }
+      post '/user/info', '{}', env
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq '{}'
     end
 
     it "can return the GM's info object as json" do
@@ -159,7 +167,7 @@ describe SchedulerApp do
     end
 
     it "can subscribe to new game updates" do
-      expect(users).to receive(:subscribe).with('benrady@gmail.com')
+      expect(users).to receive(:subscribe).with(user_info[:id])
       get '/user/subscribe', {}, env
     end
 

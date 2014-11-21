@@ -46,12 +46,21 @@ describe Users do
 
     it "can subscribe a user to new game updates" do
       expect(table).to receive(:save).with(fake_user_info.merge(subscribed: true))
-      users.subscribe('benrady@gmail.com')
+      users.subscribe(fake_user_info[:id])
     end
 
     it "can get the list of subscribed users" do
       items[0][:subscribed] = true
       expect(users.subscriptions.first).to include email: 'benrady@gmail.com'
     end
+
+    it "can update the fields for a user" do
+      expect(table).to receive(:save).with(hash_including(pfsNumber: 12345))
+      new_info = {:pfsNumber => 12345}
+      users.update(fake_user_info[:id], new_info)
+      expect(users.find(fake_user_info[:id])).to include pfsNumber: 12345
+    end
+
+    it "Ignores unwritable fields"
   end
 end

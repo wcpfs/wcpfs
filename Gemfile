@@ -13,4 +13,5 @@ group :test do
   gem 'guard-rspec'
   gem 'guard-bundler'
   gem 'rack-test'
+  gem 'pry-doc'
 end

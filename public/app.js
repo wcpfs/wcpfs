@@ -19,7 +19,7 @@ function reloadView() {
 
 function applyValues(obj, elem) {
   _.each(obj, function(v, k) {  
-    elem.find('.' + k).text(v);
+    elem.find('.' + k).text(v).val(v);
   });
 }
 
@@ -182,9 +182,18 @@ function profileView() {
   });
 
   $.getJSON('/user/info', function(data) { 
-    console.log(data);
     applyValues(data, view.find('.profile-info'));
   })
+
+  view.find('.save-btn').click(function() {  
+    $.ajax({
+      method: 'post',
+      url: '/user/info', 
+      data: JSON.stringify({pfsNumber: view.find('.pfsNumber').val()}),
+      contentType: 'application/json'
+    });
+    return false;
+  });
 
   return view;
 }
