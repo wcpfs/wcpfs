@@ -39,10 +39,6 @@ describe('WCPFS', function() {
     })
   });
 
-  it('Can use profile information in a view', function() {
-    expect(1).toEqual(2);
-  });
-
   it('can serve static views', function() {
     spyOn(window, 'currentView').and.returnValue('about');
     var view = staticView();
