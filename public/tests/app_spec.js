@@ -198,6 +198,7 @@ describe('WCPFS', function() {
       view.find('.save-btn').click();
       expect($.ajax).toHaveBeenCalledWith({ 
         url:'/user/info',
+        method: 'post',
         data: JSON.stringify({pfsNumber: '12345'}),
         contentType: 'application/json'
       });
