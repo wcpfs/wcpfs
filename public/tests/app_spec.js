@@ -27,8 +27,8 @@ var userInfo = {
   pfsNumber: 38803, 
   name: 'Ben Rady', 
   pic: '/img/preloader.gif',
-  signatureUrl: 'http://example.org/signature.png',
-  initialsUrl: 'http://example.org/initials.png'
+  signatureUrl: '/img/preloader.gif',
+  initialsUrl: '/img/preloader.gif#init'
 }
 
 var fakeRoutes = {
@@ -201,18 +201,18 @@ describe('WCPFS', function() {
     });
 
     it('updates the signature image when the URL is entered', function() {
-      view.find('.signatureUrl').val('http://example.org/other_signature.png').change();
-      expect(view.find('.signature-img').attr('src')).toEqual('http://example.org/other_signature.png');
+      view.find('.signatureUrl').val('/img/preloader.gif#other').change();
+      expect(view.find('.signature-img').attr('src')).toEqual('/img/preloader.gif#other');
     });
 
     it('updates the initials image when the URL is entered', function() {
-      view.find('.initialsUrl').val('http://example.org/other_initials.png').change();
-      expect(view.find('.initials-img').attr('src')).toEqual('http://example.org/other_initials.png');
+      view.find('.initialsUrl').val('/img/preloader.gif#init-other').change();
+      expect(view.find('.initials-img').attr('src')).toEqual('/img/preloader.gif#init-other');
     });
 
     it('updates URLS when loaded', function() {
-      expect(view.find('.signature-img').attr('src')).toEqual('http://example.org/signature.png');
-      expect(view.find('.initials-img').attr('src')).toEqual('http://example.org/initials.png');
+      expect(view.find('.signature-img').attr('src')).toEqual('/img/preloader.gif');
+      expect(view.find('.initials-img').attr('src')).toEqual('/img/preloader.gif#init');
     });
 
     it('Can save fields', function() {
@@ -224,8 +224,8 @@ describe('WCPFS', function() {
         method: 'post',
         data: JSON.stringify({
           pfsNumber: '12345',
-          signatureUrl: 'http://example.org/signature.png',
-          initialsUrl: 'http://example.org/initials.png',
+          signatureUrl: '/img/preloader.gif',
+          initialsUrl: '/img/preloader.gif#init',
         }),
         contentType: 'application/json'
       });
