@@ -13,6 +13,13 @@ function routes() {
   };
 }
 
+var _userInfoPromise;
+function userInfoPromise() {
+  if (_userInfoPromise) { return _userInfoPromise; }
+  _userInfoPromise = $.getJSON('/user/info');
+  return _userInfoPromise;
+}
+
 function reloadView() {
   showView(currentView());
 }
@@ -70,22 +77,22 @@ function imageEditor(game) {
       width: oImg.width,
       height: oImg.height
     });
-    addEntry('Event Code', game.chronicle.eventCode, 172, 748);
-    addEntry('Event Name', game.chronicle.eventName, 68, 748);
     addEntry('Date', new Date(game.datetime).format('{d} {Mon} {yyyy}'), 235, 748);
-    addEntry('GM PFS #', game.chronicle.gmPfsNumber, 500, 748);
-
     addEntry('Gold Gained', game.chronicle.goldGained, 510, 580);
     addEntry('Prestige Gained', game.chronicle.prestigeGained, 510, 428);
     addEntry('XP Gained', game.chronicle.xpGained, 510, 315);
-    /**
-    addImage('/signature.png', [{top: 745, left: 332}]);
-    addImage('/initials.png', [ 
-      {top: 315, left: 560},
-      {top: 427, left: 560},
-      {top: 580, left: 560}
-    ]);
-    **/
+
+    userInfoPromise().done(function(userInfo) {  
+      addEntry('Event Code', game.chronicle.eventCode, 172, 748);
+      addEntry('Event Name', game.chronicle.eventName, 68, 748);
+      addEntry('GM PFS #', userInfo.pfsNumber, 500, 748);
+      addImage(userInfo.signatureUrl, [{top: 745, left: 332}]);
+      addImage(userInfo.initialsUrl, [ 
+        {top: 315, left: 560},
+        {top: 427, left: 560},
+        {top: 580, left: 560}
+      ]);
+    })
 
     editor.find('.save-btn').click(function() {  
       $(this).attr({href: canvas.toDataURL(), download: game.title + '.png'});
@@ -189,10 +196,10 @@ function profileView() {
     view.find('.games-running').append(_.map(games.running, gmItem));
   });
 
-  $.getJSON('/user/info', function(data) { 
+  userInfoPromise().done(function(data) { 
     applyValues(data, view.find('.profile-info'));
     updateImages();
-  })
+  });
 
   function updateImages() {
     view.find('.signature-img').attr('src', profileInfo().signatureUrl);
@@ -230,16 +237,12 @@ function gmDetailView(gameId) {
 
   function showGame(game) {
     populateGameTemplate(game, view);
-    var assetsElem = $('#templates .game-assets').clone();
-    assetsElem.append(uploadButton(gameId));
-    view.append(assetsElem);
-    var assetList = view.find('.asset-list');
-
-    if (game.chronicle) {
-      var item = assetItem(game.chronicle.sheetUrl, 'Chronicle Sheet');
-      item.append(imageEditor(game));
-      assetList.append(item);
+    var chronicleSheetElem = $('#templates .chronicle-sheet').clone();
+    if (game.chronicle.sheetUrl) {
+      chronicleSheetElem.append(imageEditor(game));
     }
+    chronicleSheetElem.append(uploadButton(gameId));
+    view.append(chronicleSheetElem);
   }
   $.getJSON('/games/detail?gameId=' + gameId, showGame);
   view.find('.gm-option').show();

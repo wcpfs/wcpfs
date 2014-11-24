@@ -42,7 +42,9 @@ describe('WCPFS', function() {
   beforeEach(function() {
     spyOn($, 'getJSON').and.callFake(function(url, callback) {  
       if (callback) {
-        callback.apply(this, fakeRoutes[url])
+        callback.apply(this, fakeRoutes[url]);
+      } else {
+        return jQuery.Deferred().resolve(fakeRoutes[url][0]);
       }
     })
   });
@@ -145,17 +147,13 @@ describe('WCPFS', function() {
       view = gmDetailView(game.gameId);
     });
 
-    it('Adds chronicle sheet to assets', function() {
-      var item = view.find('.asset-list li:first a');
-      expect(item.text()).toEqual("Chronicle Sheet");
-      expect(item.attr('href')).toEqual(game.chronicle.sheetUrl);
+    it('Adds chronicle sheet editor', function() {
+      var item = view.find('.chronicle-sheet');
+      expect(item.find('h2').text()).toEqual("Chronicle Sheet");
     });
-  });
 
-  describe('Game Detail View', function() {
-    var view;
-    beforeEach(function() {
-      view = gameDetailView(game.gameId);
+    it('hides the chronicle sheet if it is not available', function() {
+      expect(view.find('.image-editor')).not.toBeVisible();
     });
 
     it('Adds the date for the game', function() {
@@ -166,8 +164,8 @@ describe('WCPFS', function() {
       expect(view.find('.notes').text()).toEqual(game.notes);
     });
 
-    it('Adds the join button', function() {
-      expect(view.find('.join-button').text()).toEqual('Join Now!');
+    it('hides the join button', function() {
+      expect(view.find('.join-button')).not.toBeVisible();
     });
     
   });
