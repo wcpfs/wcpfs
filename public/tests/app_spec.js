@@ -23,9 +23,17 @@ var gameList = [
   })
 ];
 
+var userInfo = {
+  pfsNumber: 38803, 
+  name: 'Ben Rady', 
+  pic: '/img/preloader.gif',
+  signatureUrl: 'http://example.org/signature.png',
+  initialsUrl: 'http://example.org/initials.png'
+}
+
 var fakeRoutes = {
   "/games": [gameList],
-  "/user/info": [{pfsNumber: 38803, name: 'Ben Rady', pic: '/img/preloader.gif'}],
+  "/user/info": [userInfo],
   "/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa": gameList,
   "/user/games": [{playing: [game], running: gameList}]
 }
@@ -192,6 +200,21 @@ describe('WCPFS', function() {
       expect(view.find('.pfsNumber').val()).toEqual('38803');
     });
 
+    it('updates the signature image when the URL is entered', function() {
+      view.find('.signatureUrl').val('http://example.org/other_signature.png').change();
+      expect(view.find('.signature-img').attr('src')).toEqual('http://example.org/other_signature.png');
+    });
+
+    it('updates the initials image when the URL is entered', function() {
+      view.find('.initialsUrl').val('http://example.org/other_initials.png').change();
+      expect(view.find('.initials-img').attr('src')).toEqual('http://example.org/other_initials.png');
+    });
+
+    it('updates URLS when loaded', function() {
+      expect(view.find('.signature-img').attr('src')).toEqual('http://example.org/signature.png');
+      expect(view.find('.initials-img').attr('src')).toEqual('http://example.org/initials.png');
+    });
+
     it('Can save fields', function() {
       spyOn($, 'ajax')
       view.find('.pfsNumber').val('12345');
@@ -199,7 +222,11 @@ describe('WCPFS', function() {
       expect($.ajax).toHaveBeenCalledWith({ 
         url:'/user/info',
         method: 'post',
-        data: JSON.stringify({pfsNumber: '12345'}),
+        data: JSON.stringify({
+          pfsNumber: '12345',
+          signatureUrl: 'http://example.org/signature.png',
+          initialsUrl: 'http://example.org/initials.png',
+        }),
         contentType: 'application/json'
       });
     });

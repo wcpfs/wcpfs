@@ -175,6 +175,14 @@ function profileView() {
     return gameItem(game, 'gmDetail');
   }
 
+  function profileInfo() {
+    return {
+      pfsNumber: view.find('.pfsNumber').val(),
+      signatureUrl: view.find('.signatureUrl').val(),
+      initialsUrl: view.find('.initialsUrl').val()
+    }
+  }
+
   var view = $('#templates .profile-view').clone();
   $.getJSON('/user/games', function(games) {  
     view.find('.games-playing').append(_.map(games.playing, playerItem));
@@ -183,13 +191,22 @@ function profileView() {
 
   $.getJSON('/user/info', function(data) { 
     applyValues(data, view.find('.profile-info'));
+    updateImages();
   })
+
+  function updateImages() {
+    view.find('.signature-img').attr('src', profileInfo().signatureUrl);
+    view.find('.initials-img').attr('src', profileInfo().initialsUrl);
+  }
+
+  view.find('.signatureUrl').change(updateImages);
+  view.find('.initialsUrl').change(updateImages);
 
   view.find('.save-btn').click(function() {  
     $.ajax({
       method: 'post',
       url: '/user/info', 
-      data: JSON.stringify({pfsNumber: view.find('.pfsNumber').val()}),
+      data: JSON.stringify(profileInfo()),
       contentType: 'application/json'
     });
     return false;

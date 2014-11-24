@@ -9,6 +9,10 @@
 .scrollbars { overflow: auto; }
 .font-large { font-size: 48px; }
 .left-padding-sm { padding-left: 7px; }
+.vertical-margin-md {
+  margin-top: 21px;
+  margin-bottom: 21px;
+}
 
 @font-face{
   font-family: 'Permanent Marker';

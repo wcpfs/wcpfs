@@ -1,4 +1,5 @@
 class Users
+  LEGAL_FIELDS = [:pfsNumber, :signatureUrl, :initialsUrl]
 
   def initialize(aws_connection)
     @table = aws_connection.table('wcpfs-users')
@@ -32,6 +33,10 @@ class Users
   end
 
   def update(id, new_info)
+    unless (new_info.keys.all? {|k| LEGAL_FIELDS.include? k})
+      raise "Bad User Field(s) #{new_info.keys.inspect}"
+    end
+
     @table.save(find(id).merge! new_info)
   end
 end

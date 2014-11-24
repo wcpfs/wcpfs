@@ -65,15 +65,25 @@
                   <span class="form-control email" disabled></span>
                 </div>
               </form>
-              <label>Pathfinder Society Number</label>
-              <form class="form-inline" role="form"> 
+              <form role="form"> 
                 <div class="form-group">
-                  <div class="input-group">
-                    <input class="form-control pfsNumber">
-                  </div>
+                  <label>Pathfinder Society Number</label>
+                  <input class="form-control pfsNumber">
                 </div>
-                <button class="btn btn-info save-btn">Save</button>
+                <div class="form-group">
+                  <label>Game Master Signature URL (130x25 pixels)</label>
+                  <img class='signature-img'/>
+                  <input type='url' class="form-control signatureUrl" placeholder='http://example.org/my_signature.png'>
+                </div>
+                <div class="form-group">
+                  <label>Game Master Initials URL (25x25 pixels)</label>
+                  <img class='initials-img'/>
+                  <input type='url' class="form-control initialsUrl" placeholder='http://example.org/my_initials.png'>
+                </div>
               </form>
+              <div class='vertical-margin-md'>
+                <button class="btn btn-info save-btn">Save</button>
+              </div>
             </div>
           </div>
           <div class='col-md-6'>
@@ -174,6 +184,11 @@
                 <span class='glyphicon glyphicon-phone'></span>
                 <a href='http://apps.windycitypathfinder.com/pfsExport'>PFS Session Export</a>
               </li>
+              <li class='well well-sm'>
+                <span class='glyphicon glyphicon-phone'></span>
+                <a href='http://anydice.com/'>AnyDice - Dice Calculator</a>
+              </li>
+              
               <li class='well well-sm'>
                 <span class='glyphicon glyphicon-question-sign'></span>
                 <a href='https://docs.google.com/document/d/1S5wSe5oQ0rk-9c213HTwMquTKn0Y-QUhawA_em9-YLw/edit'>Guide to Flight</a>
