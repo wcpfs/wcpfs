@@ -191,7 +191,6 @@ describe SchedulerApp do
       end
     end
 
-
     it "can instantly join a game" do
       expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
       get '/user/joinGame', {gameId: 'abc123'}, env

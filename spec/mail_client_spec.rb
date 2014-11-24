@@ -11,28 +11,44 @@ describe MailClient do
     allow(email).to receive(:errback)
   end
 
-  it "sends emails to all users" do
-    expect(EM::P::SmtpClient).to receive(:send).twice { email }
-    client.send_new_game(game, [fake_user_info, fake_user_info_2])
+  describe "on player join" do
+    it "sends an email to the joining player" do
+      expect(EM::P::SmtpClient).to receive(:send) { email }
+      client.send_join_game(game, [fake_user_info])
+    end
+
+    xit "adds the WCPFS prefix to the title" do
+      let (:mail) { double "mail" }
+      MailFactory.stub(:new).and_return(mail)
+      client.send_join_game(game, [fake_user_info])
+      expect(mail.subject).to eq "[WCPFS] Midnight Marauder"
+    end
   end
 
-  describe "when creating the email body" do
-    let (:body) { Nokogiri::HTML(client.create_body(game)) }
-
-    it "fills in the title" do
-      expect(body.css('.title').text).to eq("City of Golden Death!")
+  describe "on game create" do
+    it "sends emails to all users" do
+      expect(EM::P::SmtpClient).to receive(:send).twice { email }
+      client.send_new_game(game, [fake_user_info, fake_user_info_2])
     end
 
-    it "fills in the date" do
-      expect(body.css('.date').text).to eq("Friday, February 13")
-    end
+    describe "when creating the email body" do
+      let (:body) { Nokogiri::HTML(client.create_body(game)) }
 
-    it "fills in the GM pic" do
-      expect(body.css('.gm_profile_pic').attr('src').text).to match(/\.jpg/)
-    end
+      it "fills in the title" do
+        expect(body.css('.title').text).to eq("City of Golden Death!")
+      end
 
-    it "fills in the join link" do
-      expect(body.css('.join-link').attr('href').text).to eq('http://www.windycitypathfinder.com/user/joinGame?gameId=abc123')
+      it "fills in the date" do
+        expect(body.css('.date').text).to eq("Friday, February 13")
+      end
+
+      it "fills in the GM pic" do
+        expect(body.css('.gm_profile_pic').attr('src').text).to match(/\.jpg/)
+      end
+
+      it "fills in the join link" do
+        expect(body.css('.join-link').attr('href').text).to eq('http://www.windycitypathfinder.com/user/joinGame?gameId=abc123')
+      end
     end
   end
 end

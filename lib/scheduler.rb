@@ -38,7 +38,7 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/testmail' do
-    mail_client.send_new_game({"title" => 'test'}, [])
+    mail_client.send_join_game({:title => 'Quest for Perfection Part I', :datetime => 1234567890000, :gm_pic => "", :gameId => "8b91a3cc-8669-44ae-bf40-0dad6e11d373", :notes => "This is a note that you may care about as a player"}, {:email => "alexdisney@gmail.com"})
   end
 
   get '/' do
@@ -124,6 +124,7 @@ class SchedulerApp < Sinatra::Base
       name: user[:name],
       email: user[:email]
     })
+    mail_client.send_join_game(games.find(params[:gameId]), user)
     redirect to('/')
   end
 
