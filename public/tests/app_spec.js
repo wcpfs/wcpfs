@@ -27,8 +27,8 @@ var userInfo = {
   pfsNumber: 38803, 
   name: 'Ben Rady', 
   pic: '/img/preloader.gif',
-  signatureUrl: 'http://example.org/signature.png',
-  initialsUrl: 'http://example.org/initials.png'
+  signatureUrl: '/img/preloader.gif',
+  initialsUrl: '/img/preloader.gif#init'
 }
 
 var fakeRoutes = {
@@ -42,7 +42,9 @@ describe('WCPFS', function() {
   beforeEach(function() {
     spyOn($, 'getJSON').and.callFake(function(url, callback) {  
       if (callback) {
-        callback.apply(this, fakeRoutes[url])
+        callback.apply(this, fakeRoutes[url]);
+      } else {
+        return jQuery.Deferred().resolve(fakeRoutes[url][0]);
       }
     })
   });
@@ -145,17 +147,13 @@ describe('WCPFS', function() {
       view = gmDetailView(game.gameId);
     });
 
-    it('Adds chronicle sheet to assets', function() {
-      var item = view.find('.asset-list li:first a');
-      expect(item.text()).toEqual("Chronicle Sheet");
-      expect(item.attr('href')).toEqual(game.chronicle.sheetUrl);
+    it('Adds chronicle sheet editor', function() {
+      var item = view.find('.chronicle-sheet');
+      expect(item.find('h2').text()).toEqual("Chronicle Sheet");
     });
-  });
 
-  describe('Game Detail View', function() {
-    var view;
-    beforeEach(function() {
-      view = gameDetailView(game.gameId);
+    it('hides the chronicle sheet if it is not available', function() {
+      expect(view.find('.image-editor')).not.toBeVisible();
     });
 
     it('Adds the date for the game', function() {
@@ -166,8 +164,8 @@ describe('WCPFS', function() {
       expect(view.find('.notes').text()).toEqual(game.notes);
     });
 
-    it('Adds the join button', function() {
-      expect(view.find('.join-button').text()).toEqual('Join Now!');
+    it('hides the join button', function() {
+      expect(view.find('.join-button')).not.toBeVisible();
     });
     
   });
@@ -201,18 +199,18 @@ describe('WCPFS', function() {
     });
 
     it('updates the signature image when the URL is entered', function() {
-      view.find('.signatureUrl').val('http://example.org/other_signature.png').change();
-      expect(view.find('.signature-img').attr('src')).toEqual('http://example.org/other_signature.png');
+      view.find('.signatureUrl').val('/img/preloader.gif#other').change();
+      expect(view.find('.signature-img').attr('src')).toEqual('/img/preloader.gif#other');
     });
 
     it('updates the initials image when the URL is entered', function() {
-      view.find('.initialsUrl').val('http://example.org/other_initials.png').change();
-      expect(view.find('.initials-img').attr('src')).toEqual('http://example.org/other_initials.png');
+      view.find('.initialsUrl').val('/img/preloader.gif#init-other').change();
+      expect(view.find('.initials-img').attr('src')).toEqual('/img/preloader.gif#init-other');
     });
 
     it('updates URLS when loaded', function() {
-      expect(view.find('.signature-img').attr('src')).toEqual('http://example.org/signature.png');
-      expect(view.find('.initials-img').attr('src')).toEqual('http://example.org/initials.png');
+      expect(view.find('.signature-img').attr('src')).toEqual('/img/preloader.gif');
+      expect(view.find('.initials-img').attr('src')).toEqual('/img/preloader.gif#init');
     });
 
     it('Can save fields', function() {
@@ -224,8 +222,8 @@ describe('WCPFS', function() {
         method: 'post',
         data: JSON.stringify({
           pfsNumber: '12345',
-          signatureUrl: 'http://example.org/signature.png',
-          initialsUrl: 'http://example.org/initials.png',
+          signatureUrl: '/img/preloader.gif',
+          initialsUrl: '/img/preloader.gif#init',
         }),
         contentType: 'application/json'
       });

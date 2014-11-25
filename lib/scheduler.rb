@@ -120,11 +120,11 @@ class SchedulerApp < Sinatra::Base
   end
 
   get '/user/joinGame' do
-    games.signup(params[:gameId], {
+    success = games.signup(params[:gameId], {
       name: user[:name],
       email: user[:email]
     })
-    mail_client.send_join_game(games.find(params[:gameId]), user)
+    mail_client.send_join_game(games.find(params[:gameId]), user) if success
     redirect to('/')
   end
 

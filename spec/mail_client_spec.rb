@@ -11,20 +11,6 @@ describe MailClient do
     allow(email).to receive(:errback)
   end
 
-  describe "on player join" do
-    it "sends an email to the joining player" do
-      expect(EM::P::SmtpClient).to receive(:send) { email }
-      client.send_join_game(game, [fake_user_info])
-    end
-
-    xit "adds the WCPFS prefix to the title" do
-      let (:mail) { double "mail" }
-      MailFactory.stub(:new).and_return(mail)
-      client.send_join_game(game, [fake_user_info])
-      expect(mail.subject).to eq "[WCPFS] Midnight Marauder"
-    end
-  end
-
   describe "on game create" do
     it "sends emails to all users" do
       expect(EM::P::SmtpClient).to receive(:send).twice { email }
