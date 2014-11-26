@@ -1,4 +1,10 @@
 server {
+    listen       80;
+    server_name  windycitypathfinder.com;
+    return       301 http://www.windycitypathfinder.com$request_uri;
+}
+
+server {
         listen   80;
         server_name  www.windycitypathfinder.com;
         client_max_body_size 25M;
