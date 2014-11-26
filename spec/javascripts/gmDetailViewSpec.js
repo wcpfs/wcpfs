@@ -28,8 +28,7 @@ describe('GM Detail View', function() {
     });
 
     it('adds chronicle sheet editor', function() {
-      var item = view.find('.chronicle-sheet');
-      expect(item.find('h2').text()).toEqual("Chronicle Sheet");
+      expect(view.find('.chronicle-sheet h2').text()).toEqual('Chronicle Sheet');
     });
   });
 
@@ -42,12 +41,16 @@ describe('GM Detail View', function() {
       expect(view.find('.chronicle-sheet')).not.toBeVisible();
     });
 
+    it('adds the chronicle sheet selector, with no selection', function() {
+      expect(view.find('.scenario-selector select').val()).toEqual(null)
+    });
+
     describe('when a scenario is selected', function() {
       beforeEach(function() {
-        view.find('.scenario-selector select').change();
+        view.find('.scenario-selector select').val('PZOPSS0414E').change();
       });
       
-      it('includes the scenario selector', function() {
+      it('includes adds the chronicle sheet editor', function() {
         expect(view.find('.chronicle-sheet h2').text()).toEqual('Chronicle Sheet');
       });
 
@@ -62,10 +65,6 @@ describe('GM Detail View', function() {
 
     it('Adds the notes and other fields', function() {
       expect(view.find('.notes').text()).toEqual(game.notes);
-    });
-
-    it('hides the join button', function() {
-      expect(view.find('.join-button')).not.toBeVisible();
     });
   });
 });
