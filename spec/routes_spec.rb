@@ -43,8 +43,7 @@ describe Routes do
 
   it "can serve up a spec helper" do
     get 'SpecHelper.js'
-    expect(last_response.body).to match /describe\("WCPFS",/
-    
+    expect(last_response.body).to match /describe\('WCPFS',/
   end
 
   it "can get a list of games" do
@@ -168,13 +167,15 @@ describe Routes do
     end
 
     it "can get a list of scenarios available for gm prep" do
-      expect(File).to receive(:read).with('assets.json')
+      expect(File).to receive(:read).with('gm_prep.json')
       get '/gm/prep', {}, env
     end
 
-    it "can upload a scenario PDF" do
-      expect(games).to receive(:write_pdf).with(fake_user_info[:id], 'abc123', 'temp file', 'myfile.pdf')
-      post '/user/uploadPdf', {gameId: 'abc123', file: {tempfile: "temp file", filename: 'myfile.pdf'}}, env
+    it "can update a game" do
+      expect(games).to receive(:update).with(user_info[:id], {}) { {} }
+      post '/gm/game', '{}', env
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq '{}'
     end
 
     it "/login will redirect to the specified url" do

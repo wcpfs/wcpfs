@@ -71,46 +71,27 @@ describe Games do
       expect(games.signup('abc123', fake_user_info)).to be false
     end
 
-    describe 'when attaching a scenario PDF' do
-      let (:f) { double File }
-      let (:data) { StringIO.new 'file data' }
-
-      before( :each ) do
-        allow(FileUtils).to receive('mkdir_p')
-        allow(table).to receive(:save)
-        allow(Docsplit).to receive(:extract_images)
-        allow(Docsplit).to receive(:extract_length) { 10 }
-        allow(File).to receive(:open).and_yield f
-        allow(f).to receive(:write)
-      end
-
-      it "writes the file to disk" do
-        expect(FileUtils).to receive(:mkdir_p).with('game_assets/abc123')
-        expect(f).to receive(:write).with('file data')
-        games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
-      end
-
-      it "extracts the chronicle sheet" do
-        expect(Docsplit).to receive(:extract_images).with('game_assets/abc123/scenario.pdf', {
-          size: '628x816',
-          format: :png,
-          pages: [10],
-          output: 'game_assets/abc123'
-        })
-        expect(FileUtils).to receive(:move).with('game_assets/abc123/scenario_10.png', 'game_assets/abc123/chronicle.png')
-        games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name') 
-      end
-
-      it "raises an error if the user is not the GM" do
+    describe "when saving changes to a game" do
+      it "validates the GM id" do
         expect do 
-          games.write_pdf('wrong id', nil, nil, nil)
+          games.update('wrong id', {gameId: 'abc123'})
         end.to raise_error "Unauthorized"
       end
 
-      it "updates the game assets" do
-        expect(table).to receive(:save).with(games.all.first)
-        games.write_pdf(fake_user_info[:id], 'abc123', data, 'file name')
-        expect(games.all.first[:chronicle][:sheetUrl]).to eq '/game/abc123/chronicle.png'
+      it "validates the game id" do
+        expect do 
+          games.update(fake_user_info[:id], {gameId: 'zzz'})
+        end.to raise_error "Unknown Game"
+      end
+
+      it "saves the game" do
+        game_info = {
+          gameId: 'abc123',
+          title: 'new title',
+          chronicle: {scenarioId: 'PZ10'}
+        }
+        expect(table).to receive(:save).with(hash_including(game_info))
+        games.update(fake_user_info[:id], game_info)
       end
     end
   end

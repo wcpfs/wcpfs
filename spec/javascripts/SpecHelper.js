@@ -1,21 +1,26 @@
 //= require_tree 
-var game = {
-  gameId: "95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
-  notes: "Tier 4-5. Playing online using Skype and MapTools.",
-  gm_name: "Ben Rady",
-  gm_pic: "/img/preloader.gif",
-  datetime: 1415221200000,
-  title: "City of Golden Death (Online)",
-  seats: [{name: 'adisney'}, {name: 'renedq'}],
-  chronicle: {
-    sheetUrl: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chronicle.png",
-    goldGained: 1847,
-    prestigeGained: 2,
-    xpGained: 1,
-    eventCode: 35556,
-    gmPfsNumber: 38803
+
+function fakeGame() {
+  return {
+    gameId: "95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
+    notes: "Tier 4-5. Playing online using Skype and MapTools.",
+    gm_name: "Ben Rady",
+    gm_pic: "/img/preloader.gif",
+    datetime: 1415221200000,
+    title: "City of Golden Death (Online)",
+    seats: [{name: 'adisney'}, {name: 'renedq'}],
+    chronicle: {
+      sheetUrl: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chronicle.png",
+      goldGained: 1847,
+      prestigeGained: 2,
+      xpGained: 1,
+      eventCode: 35556,
+      gmPfsNumber: 38803
+    }
   }
-};
+}
+
+var game = fakeGame();
 
 var gameList = [
   game, 

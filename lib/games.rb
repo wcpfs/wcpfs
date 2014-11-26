@@ -43,31 +43,15 @@ class Games
     end
   end
 
-  def write_pdf(user_id, game_id, pdf_file, filename)
-    game = find game_id
-    if game.nil? or game[:gm_id] != user_id
-      raise "Unauthorized"
-    end
-    out_dir = "game_assets/#{game_id}"
-    FileUtils.mkdir_p(out_dir)
-    extract_assets(out_dir, pdf_file.read)
-    game[:chronicle] = {
-      :sheetUrl => "/game/#{game_id}/chronicle.png"
-    }
-    @table.save(game)
+  def update(user_id, game_info)
+    game = find game_info[:gameId]
+    raise "Unknown Game" if game.nil? 
+    raise "Unauthorized" if game[:gm_id] != user_id
+
+    @table.save(game.merge(game_info))
   end
 
   private
-
-  def extract_assets(output_dir, pdf_data)
-    filename = "#{output_dir}/scenario.pdf"
-    File.open(filename, 'w') do |f|
-      f.write pdf_data
-    end
-    length = Docsplit.extract_length(filename)
-    Docsplit.extract_images(filename, size: '628x816', format: :png, pages: [length], output: output_dir)
-    FileUtils.move( "#{output_dir}/scenario_#{length}.png", "#{output_dir}/chronicle.png")
-  end
 
   def joined? (game, player_info)
     game[:seats].any? do |seat|

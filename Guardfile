@@ -24,6 +24,12 @@ guard 'livereload' do
   # Rails Assets Pipeline
 end
 
+guard 'shell' do
+  watch(%r{^lib/assets/(.*)\.js$}) { 
+    `find lib/assets -name *.js | ctags -L-`
+  }
+end
+
 guard :bundler do
   watch('Gemfile')
 end

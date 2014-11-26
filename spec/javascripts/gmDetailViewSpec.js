@@ -1,17 +1,59 @@
-  describe('GM Detail View', function() {
-    var view;
+describe('GM Detail View', function() {
+  var view, gameObj;
+
+  beforeEach(function() {
+    gameObj = fakeGame();
+    var gmPrep = {
+      "PZOPSS0413E": {
+        "name": "4-13 The Fortress of the Nail",
+        "title": "PZOPSS0413E"
+      },
+      "PZOPSS0414E": {
+        "name": "4-14 My Enemy's Enemy",
+        "title": "PZOPSS0414E"
+      }
+    };
+    fakeRoutes['http://assets.windycitypathfinder.com/gm_prep.json'] = [gmPrep]
+    fakeRoutes["/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa"] = [gameObj],
+    spyOn(window, 'imageEditor');
+    spyOn(window, 'store');
+  });
+
+  describe('when a scenario has been selected', function() {
     beforeEach(function() {
-      spyOn(window, 'imageEditor');
+      gameObj.chronicle = {
+        scenarioId: 'PZOPSS0414E'
+      };
       view = gmDetailView(game.gameId);
     });
 
-    it('Adds chronicle sheet editor', function() {
+    it('adds chronicle sheet editor', function() {
       var item = view.find('.chronicle-sheet');
       expect(item.find('h2').text()).toEqual("Chronicle Sheet");
     });
+  });
 
-    it('hides the chronicle sheet if it is not available', function() {
-      expect(view.find('.image-editor')).not.toBeVisible();
+  describe('when no scenario has been selected', function() {
+    beforeEach(function() {
+      view = gmDetailView(game.gameId);
+    });
+
+    it('does not add the chronicle sheet editor', function() {
+      expect(view.find('.chronicle-sheet')).not.toBeVisible();
+    });
+
+    describe('when a scenario is selected', function() {
+      beforeEach(function() {
+        view.find('.scenario-selector select').change();
+      });
+      
+      it('includes the scenario selector', function() {
+        expect(view.find('.chronicle-sheet h2').text()).toEqual('Chronicle Sheet');
+      });
+
+      it('saves the game', function() {
+        expect(window.store).toHaveBeenCalledWith('/gm/game', gameObj);
+      });
     });
 
     it('Adds the date for the game', function() {
@@ -25,5 +67,5 @@
     it('hides the join button', function() {
       expect(view.find('.join-button')).not.toBeVisible();
     });
-    
   });
+});

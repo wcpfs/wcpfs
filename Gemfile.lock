@@ -58,6 +58,8 @@ GEM
     guard-rspec (4.3.1)
       guard (~> 2.1)
       rspec (>= 2.14, < 4.0)
+    guard-shell (0.7.0)
+      guard (>= 2.0.0)
     hike (1.2.3)
     hitimes (1.2.2)
     http_parser.rb (0.6.0)
@@ -148,6 +150,7 @@ DEPENDENCIES
   guard-bundler
   guard-livereload
   guard-rspec
+  guard-shell
   mailfactory
   nokogiri
   pry-doc

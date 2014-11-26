@@ -14,6 +14,7 @@ group :test do
   gem 'guard'
   gem 'guard-livereload'
   gem 'guard-rspec'
+  gem 'guard-shell'
   gem 'guard-bundler'
   gem 'rack-test'
   gem 'pry-doc'

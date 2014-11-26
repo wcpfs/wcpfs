@@ -10,7 +10,7 @@
   <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="/app.css" rel="stylesheet">
 
-  <script src="js/vendors.min.js"></script>
+  <script src="app.js"></script>
   <script src="bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -280,17 +280,40 @@
             </div>
             <div class='row'>
               <div class='margin-top-md col-md-12 game-buttons' >
-                <a type="button" class='player-option join-button btn btn-success'>Join Now!</a>
-                <span class='player-option'>Open Seats: <span class='badge seats-available'></span></span>
+                <a type="button" class='join-button btn btn-success'>Join Now!</a>
+                <span>Open Seats: <span class='badge seats-available'></span></span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class='scenario-selector'>
-        <select class='form-control'>
-        </select>
+      <div class='gm-detail-view'>
+        <div class='panel panel-default'>
+          <div class='panel-heading'>
+            <div><span class='title lead'></span></div>
+            <div><span class='when'></span></div>
+          </div>
+          <div class='panel-body'>
+            <div class='row'>
+              <div class='col-md-12 notes'></div>
+            </div>
+            <div class='row'>
+              <div class='col-md-6 col-xs-6'>
+                <h3>Players</h3>
+                <ol class='player-list'>
+                </ol>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='margin-top-md col-md-12 game-buttons' >
+                <div class='scenario-selector'>
+                  <h4>Select Scenario</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class='chronicle-sheet well well-sm'>
@@ -326,10 +349,6 @@
         </div>
       </div>
 
-      <div class='upload-progress'>
-        <img src='' /> Uploading
-      </div>
-
       <div class='new-game-view'>
         <h2>Create a New Game</h2>
         <form class='bottom-padding-md' role="form" action='/gm/createGame' method='post'>
@@ -353,7 +372,6 @@
       </div>
     </div>
   </div>
-  <script src="app.js"></script>
   <!-- <script src="https://apis.google.com/js/platform.js"></script> -->
   <script type='text/javascript'>
     routerOnReady();

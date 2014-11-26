@@ -137,12 +137,6 @@ class Routes < Sinatra::Base
     users.update(user[:id], JSON.parse(request.body.read, :symbolize_names => true)).to_json
   end
 
-  post '/user/uploadPdf' do
-    game_id = params[:gameId]
-    games.write_pdf(user[:id], game_id, params[:file][:tempfile], params[:file][:filename])
-    redirect to("/#gmDetail-#{game_id}")
-  end
-
   get '/user/games' do
     games.for_user(user).to_json
   end
@@ -158,7 +152,7 @@ class Routes < Sinatra::Base
 
   get '/gm/prep' do
     content_type :json
-    File.read('assets.json')
+    File.read('gm_prep.json')
   end
 
   post '/gm/createGame' do
@@ -173,6 +167,10 @@ class Routes < Sinatra::Base
     item = games.create game_info
     mail_client.send_new_game(item, users.subscriptions)
     redirect("/#gmDetail-#{item[:gameId]}")
+  end
+
+  post '/gm/game' do
+    games.update(user[:id], JSON.parse(request.body.read, :symbolize_names => true)).to_json
   end
 
   private
