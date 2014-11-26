@@ -191,11 +191,31 @@ describe SchedulerApp do
       end
     end
 
+    describe "joining" do
+      let (:game) { double "game" }
+      
+      before( :each ) do
+        allow(games).to receive(:find) { game }
+        allow(games).to receive(:signup) { true }
+        allow(mail_client).to receive(:send_join_game) {}
+      end
 
-    it "can instantly join a game" do
-      expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
-      get '/user/joinGame', {gameId: 'abc123'}, env
-      expect_redirect_to '/'
+      it "can instantly join a game" do
+        expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
+        get '/user/joinGame', {gameId: 'abc123'}, env
+        expect_redirect_to '/'
+      end
+      
+      it "sends an email to joining player on success" do
+        expect(mail_client).to receive(:send_join_game).with(game, fake_user_info)
+        get '/user/joinGame', {gameId: 'abc123'}, env
+      end
+
+      it "does not send an email on failure" do
+        allow(games).to receive(:signup) { false }
+        expect(mail_client).to_not receive(:send_join_game)
+        get '/user/joinGame', {gameId: 'abc123'}, env
+      end
     end
 
     it "redirects /login to /" do

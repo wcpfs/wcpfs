@@ -62,13 +62,13 @@ describe Games do
         gameId: "abc123", 
         seats: [fake_user_info]
       ))
-      games.signup('abc123', fake_user_info)
+      expect(games.signup('abc123', fake_user_info)).to be true
     end
 
     it "will not sign up for the game if already signed up" do
       expect(client).not_to receive(:save)
       item[:seats] << fake_user_info
-      games.signup('abc123', fake_user_info)
+      expect(games.signup('abc123', fake_user_info)).to be false
     end
 
     describe 'when attaching a scenario PDF' do

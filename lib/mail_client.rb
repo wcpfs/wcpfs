@@ -14,6 +14,10 @@ class MailClient
     end
   end
 
+  def send_join_game(game, joiner)
+    send_mail_to(joiner[:email], "[WCPFS] You joined " + game[:title], create_body(game))
+  end
+
   def create_body(game_info)
     date = game_info[:datetime]
     body_node = Nokogiri::HTML::DocumentFragment.parse File.read('mail_templates/new_game.html')

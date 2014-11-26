@@ -17,7 +17,9 @@ class Games
     if game and not joined?(game, player_info) 
       game[:seats] << player_info
       @table.save(game)
+      return true
     end
+    return false
   end
 
   def find game_id
