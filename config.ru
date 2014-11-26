@@ -8,7 +8,7 @@ Bundler.require
 require 'google_api'
 require 'aws-sdk'
 
-require 'scheduler'
+require 'routes'
 require 'games'
 require 'users'
 require 'mail_client'
@@ -20,7 +20,7 @@ if ENV['AWS_ACCESS_KEY'].nil?
 end
 
 def get_env
-  return nil if :production == SchedulerApp.settings.environment
+  return nil if :production == Routes.settings.environment
   return 'test'
 end
 
@@ -33,9 +33,9 @@ aws_connection = AwsClient.connect({
   secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
 }, get_env)
 
-SchedulerApp.set :google, GoogleApi.new
-SchedulerApp.set :games, Games.new(aws_connection)
-SchedulerApp.set :users, Users.new(aws_connection)
-SchedulerApp.set :mail_client, MailClient.new
+Routes.set :google, GoogleApi.new
+Routes.set :games, Games.new(aws_connection)
+Routes.set :users, Users.new(aws_connection)
+Routes.set :mail_client, MailClient.new
 
-run SchedulerApp
+run Routes

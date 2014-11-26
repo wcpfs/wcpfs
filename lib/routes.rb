@@ -7,7 +7,7 @@ require 'games'
 
 require 'fileutils'
 
-class SchedulerApp < Sinatra::Base
+class Routes < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
 
   set :bind, '0.0.0.0'

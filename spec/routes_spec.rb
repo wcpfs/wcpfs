@@ -1,28 +1,28 @@
 ENV["RACK_SECRET"] = 'not the real secret'
 ENV["RACK_ENV"] = 'test'
 
-require 'scheduler'
 require 'rack/test'
+require 'routes'
 require 'google_api'
 require 'users'
 require 'games'
 require 'mail_client'
 require 'google_api'
 
-describe SchedulerApp do
+describe Routes do
   include Rack::Test::Methods
 
   let (:games) { double Games }
   let (:users) { double Users } 
   let (:google) { double GoogleApi }
   let (:mail_client) { double MailClient }
-  let (:app) { SchedulerApp.new }
+  let (:app) { Routes.new }
 
   before( :each ) do
-    SchedulerApp.set :games, games
-    SchedulerApp.set :google, google
-    SchedulerApp.set :users, users
-    SchedulerApp.set :mail_client, mail_client
+    Routes.set :games, games
+    Routes.set :google, google
+    Routes.set :users, users
+    Routes.set :mail_client, mail_client
   end
 
   def expect_redirect_to path, code=302
