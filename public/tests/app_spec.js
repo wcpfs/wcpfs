@@ -275,38 +275,38 @@ describe('WCPFS', function() {
         });
 
         it('Adds the event code', function() {
-          expect(items[0].find('.field-name').text()).toEqual('Event Code');
-          expect(items[0].find('.field-value').val()).toEqual('35556');
+          expect(items[4].find('.field-name').text()).toEqual('Event Code');
+          expect(items[4].find('.field-value').val()).toEqual('35556');
         });
 
         it('Adds the event name (even if none)', function() {
-          expect(items[1].find('.field-name').text()).toEqual('Event Name');
-          expect(items[1].find('.field-value').val()).toEqual('');
+          expect(items[5].find('.field-name').text()).toEqual('Event Name');
+          expect(items[5].find('.field-value').val()).toEqual('');
         });
 
         it('Adds the Date', function() {
-          expect(items[2].find('.field-name').text()).toEqual('Date');
-          expect(items[2].find('.field-value').val()).toEqual('5 Nov 2014');
+          expect(items[0].find('.field-name').text()).toEqual('Date');
+          expect(items[0].find('.field-value').val()).toEqual('5 Nov 2014');
         });
 
         it('Adds GM PFS number', function() {
-          expect(items[3].find('.field-name').text()).toEqual('GM PFS #');
-          expect(items[3].find('.field-value').val()).toEqual('38803');
+          expect(items[6].find('.field-name').text()).toEqual('GM PFS #');
+          expect(items[6].find('.field-value').val()).toEqual('38803');
         });
 
         it('Adds the gold gained', function() {
-          expect(items[4].find('.field-name').text()).toEqual('Gold Gained');
-          expect(items[4].find('.field-value').val()).toEqual('1847');
+          expect(items[1].find('.field-name').text()).toEqual('Gold Gained');
+          expect(items[1].find('.field-value').val()).toEqual('1847');
         });
 
         it('Adds the prestige gained', function() {
-          expect(items[5].find('.field-name').text()).toEqual('Prestige Gained');
-          expect(items[5].find('.field-value').val()).toEqual('2');
+          expect(items[2].find('.field-name').text()).toEqual('Prestige Gained');
+          expect(items[2].find('.field-value').val()).toEqual('2');
         });
 
         it('Adds the XP gained', function() {
-          expect(items[6].find('.field-name').text()).toEqual('XP Gained');
-          expect(items[6].find('.field-value').val()).toEqual('1');
+          expect(items[3].find('.field-name').text()).toEqual('XP Gained');
+          expect(items[3].find('.field-value').val()).toEqual('1');
         });
       });
     });
