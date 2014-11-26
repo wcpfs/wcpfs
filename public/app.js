@@ -134,39 +134,6 @@ function populateGameTemplate(game, elem) {
   updateJoinButton(joinButton);
 }
 
-function uploadButton(gameId) {
-  function uploadFile(file) {
-    var data = new FormData();
-    data.append('file', file);
-
-    $.ajax({
-      url: '/user/uploadPdf?gameId=' + gameId,
-      type: 'POST',
-      data: data,
-      cache: false,
-      processData: false, // Don't process the files
-      contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-      success: function() {
-        reloadView();
-      },
-      error: function() {  
-        changeToView('message', 'There was an error uploading your PDF');
-      }
-    });
-    var progress = $('#templates .upload-progress').clone()
-    progress.find('img').attr('src', '/img/preloader.gif')
-    button.replaceWith(progress);
-  }
-
-  var button = $('#templates .upload-button').clone();
-  button.find('.pdf-upload-input').change(function(e) {  
-    button.prop('disabled', true);
-    uploadFile(e.target.files[0]);
-  });
-  return button;
-}
-
-
 function profileView() {
   function gameItem(game, viewName) {
     var item = $('#templates .well-item-sm').clone();
@@ -241,7 +208,6 @@ function gmDetailView(gameId) {
     if (game.chronicle.sheetUrl) {
       chronicleSheetElem.append(imageEditor(game));
     }
-    chronicleSheetElem.append(uploadButton(gameId));
     view.append(chronicleSheetElem);
   }
   $.getJSON('/games/detail?gameId=' + gameId, showGame);

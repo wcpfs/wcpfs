@@ -156,6 +156,11 @@ describe Routes do
       })
     end
 
+    it "can get a list of scenarios available for gm prep" do
+      expect(File).to receive(:read).with('assets.json')
+      get '/gm/prep', {}, env
+    end
+
     it "can upload a scenario PDF" do
       expect(games).to receive(:write_pdf).with(fake_user_info[:id], 'abc123', 'temp file', 'myfile.pdf')
       post '/user/uploadPdf', {gameId: 'abc123', file: {tempfile: "temp file", filename: 'myfile.pdf'}}, env

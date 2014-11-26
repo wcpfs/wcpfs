@@ -128,6 +128,11 @@ class Routes < Sinatra::Base
     redirect to('/')
   end
 
+  get '/gm/prep' do
+    content_type :json
+    File.read('assets.json')
+  end
+
   post '/gm/createGame' do
     game_info = {
       gm_name: user[:name],
