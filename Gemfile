@@ -12,6 +12,7 @@ gem "yui-compressor"
 
 group :test do
   gem 'guard'
+  gem 'guard-livereload'
   gem 'guard-rspec'
   gem 'guard-bundler'
   gem 'rack-test'

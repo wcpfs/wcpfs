@@ -17,6 +17,13 @@ guard :rspec, cmd: 'bundle exec rspec --color' do
   watch(/mail_templates\/(.+)\.html/)  { "spec" }
 end
 
+guard 'livereload' do
+  watch(%r{lib/assets/.+\.js})
+  watch(%r{public/index.html})
+  watch(%r{spec/javascripts/.+\.js})
+  # Rails Assets Pipeline
+end
+
 guard :bundler do
   watch('Gemfile')
 end
