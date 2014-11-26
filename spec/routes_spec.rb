@@ -36,6 +36,17 @@ describe Routes do
     expect(last_response.body).to eq "pong"
   end
 
+  it "can serve up compressed javascript" do
+    get 'app.js'
+    expect(last_response.body).to match /function homeView\(\)/
+  end
+
+  it "can serve up a spec helper" do
+    get 'SpecHelper.js'
+    expect(last_response.body).to match /describe\("WCPFS",/
+    
+  end
+
   it "can get a list of games" do
     game_list = [{title: "My Game"}]
     allow(games).to receive(:current) { game_list }

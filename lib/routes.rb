@@ -4,8 +4,9 @@ require 'sinatra'
 require 'sinatra/cross_origin'
 require 'json'
 require 'games'
-
 require 'fileutils'
+require 'sprockets'
+require "yui/compressor"
 
 class Routes < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
@@ -16,6 +17,33 @@ class Routes < Sinatra::Base
   configure do 
     register Sinatra::CrossOrigin
     set :logging, true
+    set :assets, (Sprockets::Environment.new { |env|
+      env.append_path(settings.root + "/assets/images")
+      env.append_path(settings.root + "/assets/javascripts")
+      env.append_path(settings.root + "/assets/stylesheets")
+      env.append_path("spec/javascripts")
+
+      # compress everything in production
+      if ENV["RACK_ENV"] == "production"
+        env.js_compressor  = YUI::JavaScriptCompressor.new
+        env.css_compressor = YUI::CssCompressor.new
+      end
+    })
+  end
+  
+  get "/app.js" do
+    content_type("application/javascript")
+    settings.assets["app.js"]
+  end
+
+  get "/SpecHelper.js" do
+    content_type("application/javascript")
+    settings.assets["SpecHelper.js"]
+  end
+
+  get "/app.css" do
+    content_type("text/css")
+    settings.assets["app.css"]
   end
 
   before '/gm/*' do
