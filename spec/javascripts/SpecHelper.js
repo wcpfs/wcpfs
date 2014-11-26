@@ -9,7 +9,11 @@ function fakeGame() {
     datetime: 1415221200000,
     title: "City of Golden Death (Online)",
     seats: [{name: 'adisney'}, {name: 'renedq'}],
-    chronicle: {
+  }
+}
+
+var game = fakeGame();
+game.chronicle = {
       sheetUrl: "/game/95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa/chronicle.png",
       goldGained: 1847,
       prestigeGained: 2,
@@ -17,10 +21,6 @@ function fakeGame() {
       eventCode: 35556,
       gmPfsNumber: 38803
     }
-  }
-}
-
-var game = fakeGame();
 
 var gameList = [
   game, 

@@ -20,7 +20,7 @@ ssh $server <<DOC
 if ! git help > /dev/null; then
   sudo apt-get update
   sudo apt-get -y upgrade
-  sudo apt-get -y install make g++ git daemontools build-essential ruby1.9.1-dev nginx poppler-utils imagemagick graphicsmagick
+  sudo apt-get -y install make g++ git daemontools build-essential ruby1.9.1-dev nginx openjdk-7-jre
   echo "gem: --no-rdoc --no-ri" > ~/.gemrc
   sudo gem install bundler
   git config --global user.email "wcpfs@windycitypathfinder.com"
