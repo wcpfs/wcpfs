@@ -6,15 +6,16 @@ class Users
   end
 
   def ensure(profile)
+    profile_id = "google-" + profile["id"]
     email = profile["emails"].find { |e| e["type"] == 'account' }
-    user = @table.all.find {|u| u["email"] == email }
+    user = @table.all.find {|u| u[:id] == profile_id }
     return user if user
     @table.save({
       email: email["value"],
       name: profile["displayName"],
       pic: profile["image"]["url"],
       subscribed: true,
-      id: "google-" + profile["id"]
+      id: profile_id
     })
   end
 

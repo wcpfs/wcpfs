@@ -38,6 +38,12 @@ describe Users do
     expect(table).to receive(:save).with(fake_user_info)
     users.ensure(profile)
   end
+
+  it "does not overwrite a user if they're already in the database" do
+    expect(table).not_to receive(:save)
+    items << fake_user_info
+    users.ensure(profile)
+  end
   
   describe "after a user is added" do
     before( :each ) do
