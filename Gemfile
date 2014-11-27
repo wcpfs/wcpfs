@@ -7,6 +7,7 @@ gem "google-api-client"
 gem "mailfactory"
 gem 'nokogiri'
 gem 'docsplit'
+gem 'mail'
 
 group :test do
   gem 'guard'

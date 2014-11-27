@@ -1,10 +1,18 @@
 require 'eventmachine' 
 require 'mailfactory' 
 require 'nokogiri'
+require 'mail'
 
 class MailClient
   def initialize
     @base_url = 'http://www.windycitypathfinder.com'
+    Mail.defaults do
+      retriever_method :imap, :address => "mail.windycitypathfinder.com",
+        :port       => 993,
+        :user_name  => 'scheduler@windycitypathfinder.com',
+        :password   => ENV['EMAIL_PASSWORD'],
+        :enable_ssl => true
+    end
   end
 
   def send_new_game(game, users)

@@ -1,4 +1,5 @@
 require 'mail_client'
+require 'mail'
 require 'nokogiri'
 
 describe MailClient do
@@ -9,6 +10,19 @@ describe MailClient do
   before( :each ) do
     allow(email).to receive(:callback)
     allow(email).to receive(:errback)
+  end
+
+  describe "receiving mail" do
+    it "initializes imap connection" do
+      expect(Mail).to receive(:defaults).and_call_original
+      expect(Mail::IMAP).to receive(:new).
+        with({:address => "mail.windycitypathfinder.com",
+              :port       => 993,
+              :user_name  => 'scheduler@windycitypathfinder.com',
+              :password   => ENV['EMAIL_PASSWORD'],
+              :enable_ssl => true})
+      MailClient.new
+    end
   end
 
   describe "on game create" do
