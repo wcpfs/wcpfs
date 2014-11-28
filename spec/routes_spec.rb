@@ -178,6 +178,12 @@ describe Routes do
       expect(last_response.body).to eq '{}'
     end
 
+    it "can send a chronicle sheet to the users in a game" do
+      encoded_data = Base64.encode64("Hello PNG")
+      expect(games).to receive(:send_chronicle).with(fake_user_info, 'abc123', "Hello PNG")
+      post '/gm/sendChronicle', {gameId:"abc123",imgBase64:"data:image/png;base64,#{encoded_data}"}, env
+    end
+
     it "/login will redirect to the specified url" do
       get '/login', {:redirect_path => '/%23newGame'}, env
       expect_redirect_to '/%23newGame'

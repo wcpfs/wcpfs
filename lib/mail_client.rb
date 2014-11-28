@@ -18,6 +18,10 @@ class MailClient
     send_mail_to(joiner[:email], "[WCPFS] You joined " + game[:title], create_body(game))
   end
 
+  def send_chronicle(email, title, chronicle_sheet_img)
+    send_mail_to(email, "[WCPFS] Chronicle Sheet for #{title}", "Thanks for playing!", chronicle_sheet_img)
+  end
+
   def create_body(game_info)
     date = game_info[:datetime]
     body_node = Nokogiri::HTML::DocumentFragment.parse File.read('mail_templates/new_game.html')
@@ -36,12 +40,15 @@ class MailClient
 
   private
 
-  def send_mail_to(to_addr, title, body)
+  def send_mail_to(to_addr, title, body, attachment=nil)
     mail = MailFactory.new
     mail.to = to_addr
     mail.from = 'scheduler@windycitypathfinder.com'
     mail.subject = title
     mail.html = body
+    if attachment
+      mail.add_attachment_as(StringIO.new(attachment), 'chronicle.png', 'image/png')
+    end
 
     email = EM::P::SmtpClient.send(
       :to=>mail.to,

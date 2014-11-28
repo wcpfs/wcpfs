@@ -2,8 +2,9 @@ require 'docsplit'
 
 class Games
   TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000
-  def initialize(aws_connection)
+  def initialize(aws_connection, mail_client)
     @table = aws_connection.table('wcpfs-games')
+    @mail_client = mail_client
   end
 
   def create game_info
@@ -43,15 +44,27 @@ class Games
     end
   end
 
-  def update(user_id, game_info)
-    game = find game_info[:gameId]
-    raise "Unknown Game" if game.nil? 
-    raise "Unauthorized" if game[:gm_id] != user_id
-
+  def update(gm_id, game_info)
+    game = fetch_game(gm_id, game_info[:gameId])
     @table.save(game.merge(game_info))
   end
 
+  def send_chronicle(gm_info, game_id, png_data)
+    game = fetch_game(gm_info[:id], game_id)
+    game[:seats].each do |seat|
+      @mail_client.send_chronicle(seat[:email], game[:title], png_data)
+    end
+    @mail_client.send_chronicle(gm_info[:email], game[:title], png_data)
+  end
+
   private
+
+  def fetch_game(gm_id, game_id)
+    game = find game_id
+    raise "Unknown Game" if game.nil? 
+    raise "Unauthorized" if game[:gm_id] != gm_id
+    return game
+  end
 
   def joined? (game, player_info)
     game[:seats].any? do |seat|

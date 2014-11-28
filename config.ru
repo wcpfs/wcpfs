@@ -33,9 +33,10 @@ aws_connection = AwsClient.connect({
   secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
 }, get_env)
 
+mail_client = MailClient.new
 Routes.set :google, GoogleApi.new
-Routes.set :games, Games.new(aws_connection)
+Routes.set :games, Games.new(aws_connection, mail_client)
 Routes.set :users, Users.new(aws_connection)
-Routes.set :mail_client, MailClient.new
+Routes.set :mail_client, mail_client # FIXME games and users should contain this instead
 
 run Routes

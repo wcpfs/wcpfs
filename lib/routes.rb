@@ -155,6 +155,12 @@ class Routes < Sinatra::Base
     File.read('gm_prep.json')
   end
 
+  require 'base64'
+  post '/gm/sendChronicle' do
+    png_data = Base64.decode64(params[:imgBase64].split(',')[1])
+    games.send_chronicle(user, params[:gameId], png_data)
+  end
+
   post '/gm/createGame' do
     game_info = {
       gm_name: user[:name],

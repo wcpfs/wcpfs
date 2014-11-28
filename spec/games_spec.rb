@@ -1,15 +1,18 @@
 require 'games'
 require 'aws_client'
+require 'mail_client'
 
 describe Games do
   let (:client) { double AwsClient::Connection }
+  let (:mail_client) { double MailClient }
   let (:table) { double AwsClient::Table }
-  let (:games) { Games.new client }
+  let (:games) { Games.new client, mail_client }
   let (:items) { [] }
 
   before( :each ) do
     allow(FileUtils).to receive(:move)
     allow(SecureRandom).to receive(:uuid) { "abc123" }
+    allow(mail_client).to receive(:send_chronicle)
     allow(client).to receive(:table) { table }
     allow(table).to receive(:all) { items }
   end
@@ -69,6 +72,18 @@ describe Games do
       expect(client).not_to receive(:save)
       item[:seats] << fake_user_info
       expect(games.signup('abc123', fake_user_info)).to be false
+    end
+
+    it "can send a chronicle sheet to all the players" do
+      expect(mail_client).to receive(:send_chronicle).with("rene@gmail.com", "City of Golden Death!", "ABCPNG")
+      game = items.first
+      game[:seats] << {:email => 'rene@gmail.com'}
+      games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
+    end
+
+    it "sends a chronicle sheet to the GM" do
+      expect(mail_client).to receive(:send_chronicle).with("benrady@gmail.com", "City of Golden Death!", "ABCPNG")
+      games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
     end
 
     describe "when saving changes to a game" do

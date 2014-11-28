@@ -27,8 +27,43 @@
         });
       });
 
-      it('creates a download link', function() {
-        expect(editor.find('.save-btn').click().attr('href')).toEqual(dataUrl);
+      describe('when sending the chronicle sheet', function() {
+        var promise;
+        beforeEach(function() {
+          promise = new $.Deferred();
+          spyOn($, 'ajax').and.returnValue(promise);
+        });
+
+        it('sends to players and GM', function() {
+          editor.find('.save-btn').click();
+          expect($.ajax).toHaveBeenCalledWith({
+            method: 'POST',
+            url: '/gm/sendChronicle',
+            data: {
+              gameId: game.gameId,
+              imgBase64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAAABJRU5ErkJggg=='
+            }
+          });
+        });
+
+        it('disables the button while sending', function() {
+          //promise.resolve();
+          editor.find('.save-btn').click();
+          expect(editor.find('.save-btn')).toHaveProp('disabled');
+          expect(editor.find('.save-btn')).toHaveText('Sending...');
+        });
+
+        it('Updated the button when sent', function() {
+          editor.find('.save-btn').click();
+          promise.resolve();
+          expect(editor.find('.save-btn')).toHaveText('Sent!');
+        });
+
+        it('Updated the button when sent', function() {
+          editor.find('.save-btn').click();
+          promise.reject();
+          expect(editor.find('.save-btn')).toHaveText('Failed!');
+        });
       });
 
       describe('filling in form values', function() {
