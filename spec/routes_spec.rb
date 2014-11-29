@@ -166,6 +166,12 @@ describe Routes do
       })
     end
 
+    it "can get the users signature and initals image" do
+      pending "Not sure how to test async"
+      get '/user/signature', {}, env
+      expect(last_response.headers["Content-Type"]).to equal('image/png')
+    end
+
     it "can get a list of scenarios available for gm prep" do
       expect(File).to receive(:read).with('gm_prep.json')
       get '/gm/prep', {}, env

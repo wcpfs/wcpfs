@@ -9,6 +9,8 @@ gem 'nokogiri'
 gem 'docsplit'
 gem "sprockets"
 gem "yui-compressor"
+gem 'em-http-request'
+gem 'async_sinatra'
 
 group :test do
   gem 'guard'

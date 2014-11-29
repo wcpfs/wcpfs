@@ -7,6 +7,8 @@ require 'games'
 require 'fileutils'
 require 'sprockets'
 require "yui/compressor"
+require 'sinatra/async'
+require 'em-http-request'
 
 class Routes < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV["RACK_SECRET"]
@@ -15,6 +17,7 @@ class Routes < Sinatra::Base
   set :public_folder, File.dirname(__FILE__) + '/../public'
 
   configure do 
+    register Sinatra::Async
     register Sinatra::CrossOrigin
     set :logging, true
     set :assets, (Sprockets::Environment.new { |env|
@@ -137,6 +140,14 @@ class Routes < Sinatra::Base
     users.update(user[:id], JSON.parse(request.body.read, :symbolize_names => true)).to_json
   end
 
+  aget '/user/signature' do
+    reverse_proxy(user[:signatureUrl], :png) 
+  end
+
+  aget '/user/initials' do
+    reverse_proxy(user[:initialsUrl], :png) 
+  end
+
   get '/user/games' do
     games.for_user(user).to_json
   end
@@ -180,6 +191,18 @@ class Routes < Sinatra::Base
   end
 
   private
+
+  def reverse_proxy(url, type)
+    content_type type
+    http = EventMachine::HttpRequest.new(url).get
+    http.errback do 
+      STDERR.puts "Error requesting #{url}"
+      raise "Error requesting #{url}"
+    end
+    http.callback {
+      body http.response
+    }
+  end
 
   def message(msg)
     redirect to("/#message-#{URI.encode(msg)}")
