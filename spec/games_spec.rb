@@ -30,7 +30,7 @@ describe Games do
   end
 
   describe "when creating games" do
-    let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [])}
+    let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [], email_ids: [])}
 
     it "saves them to DynamoDB" do
       expect(table).to receive(:save).with(fake_new_game.merge(saved_game))
@@ -69,7 +69,7 @@ describe Games do
     end
 
     it "will not sign up for the game if already signed up" do
-      expect(client).not_to receive(:save)
+      expect(table).not_to receive(:save)
       item[:seats] << fake_user_info
       expect(games.signup('abc123', fake_user_info)).to be false
     end
@@ -81,9 +81,29 @@ describe Games do
       games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
     end
 
-    it "sends a chronicle sheet to the GM" do
-      expect(mail_client).to receive(:send_chronicle).with("benrady@gmail.com", "City of Golden Death!", "ABCPNG")
-      games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
+    it "can add email thread ids" do
+      expect(table).to receive(:save).with(item)
+      item[:email_ids] = ['myFirstEmailId']
+      games.add_discussion_thread_id('abc123', 'myEmailId')
+    end
+
+    describe 'when attaching a scenario PDF' do
+      let (:f) { double File }
+      let (:data) { StringIO.new 'file data' }
+
+      before( :each ) do
+        allow(FileUtils).to receive('mkdir_p')
+        allow(table).to receive(:save)
+        allow(Docsplit).to receive(:extract_images)
+        allow(Docsplit).to receive(:extract_length) { 10 }
+        allow(File).to receive(:open).and_yield f
+        allow(f).to receive(:write)
+      end
+
+      it "sends a chronicle sheet to the GM" do
+        expect(mail_client).to receive(:send_chronicle).with("benrady@gmail.com", "City of Golden Death!", "ABCPNG")
+        games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
+      end
     end
 
     describe "when saving changes to a game" do

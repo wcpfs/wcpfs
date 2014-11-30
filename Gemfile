@@ -11,6 +11,7 @@ gem "sprockets"
 gem "yui-compressor"
 gem 'em-http-request'
 gem 'async_sinatra'
+gem 'mail'
 
 group :test do
   gem 'guard'

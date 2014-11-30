@@ -153,11 +153,13 @@ class Routes < Sinatra::Base
   end
 
   get '/user/joinGame' do
-    success = games.signup(params[:gameId], {
+    gameId = params[:gameId]
+    success = games.signup(gameId, {
       name: user[:name],
       email: user[:email]
     })
-    mail_client.send_join_game(games.find(params[:gameId]), user) if success
+    mail_id = mail_client.send_join_game(games.find(gameId), user).first if success
+    games.add_discussion_thread_id gameId, mail_id
     redirect to('/')
   end
 

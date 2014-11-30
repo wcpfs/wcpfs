@@ -8,7 +8,7 @@ class Games
   end
 
   def create game_info
-    game = game_info.merge(gameId: SecureRandom.uuid, seats: [])
+    game = game_info.merge(gameId: SecureRandom.uuid, seats: [], email_ids: [])
     game.delete(:notes) if game[:notes].nil? or game[:notes].length == 0
     @table.save(game)
   end
@@ -21,6 +21,14 @@ class Games
       return true
     end
     return false
+  end
+
+  def add_discussion_thread_id game_id, email_id
+    game = find game_id
+    if game
+      game[:email_ids] << email_id
+      @table.save(game)
+    end
   end
 
   def find game_id
