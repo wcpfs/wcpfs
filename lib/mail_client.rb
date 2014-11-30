@@ -7,8 +7,8 @@ class MailClient
   def initialize
     @base_url = 'http://www.windycitypathfinder.com'
     Mail.defaults do
-      retriever_method :imap, :address => "mail.windycitypathfinder.com",
-        :port       => 993,
+      retriever_method :pop3, :address => "mail.windycitypathfinder.com",
+        :port       => 995,
         :user_name  => 'scheduler@windycitypathfinder.com',
         :password   => ENV['EMAIL_PASSWORD'],
         :enable_ssl => true
@@ -18,7 +18,7 @@ class MailClient
   def send_new_game(game, users)
     body = create_body(game)
     users.each do |user|
-      send_mail_to(user[:email], game[:title], body)
+      send_mail_to(user[:email], "[WCPFS] " + game[:title], body)
     end
   end
 
@@ -65,6 +65,7 @@ class MailClient
       },
       :verbose => true
     )
+    
     email.callback{
       puts "Email sent to #{to_addr}"
     }
@@ -72,6 +73,7 @@ class MailClient
       puts "Email failed to send to #{to_addr}"
       puts e
     }
+    mail.get_header "Message-ID"
   end
 
 end

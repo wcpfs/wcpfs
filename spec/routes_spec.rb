@@ -197,7 +197,8 @@ describe Routes do
       before( :each ) do
         allow(games).to receive(:find) { game }
         allow(games).to receive(:signup) { true }
-        allow(mail_client).to receive(:send_join_game) {}
+        allow(games).to receive(:add_discussion_thread_id)
+        allow(mail_client).to receive(:send_join_game) { ['mailId'] }
       end
 
       it "can instantly join a game" do
@@ -214,6 +215,11 @@ describe Routes do
       it "does not send an email on failure" do
         allow(games).to receive(:signup) { false }
         expect(mail_client).to_not receive(:send_join_game)
+        get '/user/joinGame', {gameId: 'abc123'}, env
+      end
+
+      it "tracks sent mail ids" do
+        expect(games).to receive(:add_discussion_thread_id).with('abc123', 'mailId')
         get '/user/joinGame', {gameId: 'abc123'}, env
       end
     end

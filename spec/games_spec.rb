@@ -27,7 +27,7 @@ describe Games do
   end
 
   describe "when creating games" do
-    let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [])}
+    let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [], email_ids: [])}
 
     it "saves them to DynamoDB" do
       expect(table).to receive(:save).with(fake_new_game.merge(saved_game))
@@ -66,9 +66,15 @@ describe Games do
     end
 
     it "will not sign up for the game if already signed up" do
-      expect(client).not_to receive(:save)
+      expect(table).not_to receive(:save)
       item[:seats] << fake_user_info
       expect(games.signup('abc123', fake_user_info)).to be false
+    end
+
+    it "can add email thread ids" do
+      expect(table).to receive(:save).with(item)
+      item[:email_ids] = ['myFirstEmailId']
+      games.add_discussion_thread_id('abc123', 'myEmailId')
     end
 
     describe 'when attaching a scenario PDF' do

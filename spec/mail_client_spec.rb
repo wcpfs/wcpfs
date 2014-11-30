@@ -15,13 +15,20 @@ describe MailClient do
   describe "receiving mail" do
     it "initializes imap connection" do
       expect(Mail).to receive(:defaults).and_call_original
-      expect(Mail::IMAP).to receive(:new).
+      expect(Mail::POP3).to receive(:new).
         with({:address => "mail.windycitypathfinder.com",
-              :port       => 993,
+              :port       => 995,
               :user_name  => 'scheduler@windycitypathfinder.com',
               :password   => ENV['EMAIL_PASSWORD'],
               :enable_ssl => true})
       MailClient.new
+    end
+  end
+
+  describe "on player join" do
+    it "can send an email to one player" do
+      expect(EM::P::SmtpClient).to receive(:send) { email }
+      client.send_join_game(game, fake_user_info)
     end
   end
 
