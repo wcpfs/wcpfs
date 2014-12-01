@@ -4,14 +4,23 @@ require 'nokogiri'
 require 'mail'
 
 class MailClient
-  def initialize
+  def initialize discussion_callback
     @base_url = 'http://www.windycitypathfinder.com'
+    @discussion_callback = discussion_callback
     Mail.defaults do
-      retriever_method :pop3, :address => "mail.windycitypathfinder.com",
-        :port       => 995,
+      retriever_method :imap, :address => "mail.windycitypathfinder.com",
+        :port       => 993,
         :user_name  => 'scheduler@windycitypathfinder.com',
         :password   => ENV['EMAIL_PASSWORD'],
         :enable_ssl => true
+    end
+  end
+
+  def check_mail
+    new_mail = Mail.last
+    if new_mail
+      return { discussion: new_mail.parts[0].body.decoded,
+               in_reply_to: new_mail.header["In-Reply-To"] }
     end
   end
 

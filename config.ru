@@ -34,8 +34,16 @@ aws_connection = AwsClient.connect({
 }, get_env)
 
 mail_client = MailClient.new
+games = Games.new(aws_connection, mail_client)
+EM.next_tick do
+  EM.add_periodic_timer 30 do
+    discussion = mail_client.check_mail
+    #games.on_discussion(discussion)
+  end
+end
+
+Routes.set :games, games
 Routes.set :google, GoogleApi.new
-Routes.set :games, Games.new(aws_connection, mail_client)
 Routes.set :users, Users.new(aws_connection)
 Routes.set :mail_client, mail_client # FIXME games and users should contain this instead
 

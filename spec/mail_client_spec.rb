@@ -4,7 +4,7 @@ require 'nokogiri'
 
 describe MailClient do
   let (:email) { double 'email' }
-  let (:client) { MailClient.new }
+  let (:client) { MailClient.new({}) }
   let (:game) { fake_saved_game }
 
   before( :each ) do
@@ -13,15 +13,50 @@ describe MailClient do
   end
 
   describe "receiving mail" do
+    let (:new_mail) { double "new_mail" }
+    let (:header) { double "header" }
+    let (:message) { double "message" }
+    let (:body) { double "body" }
+
+    before( :each ) do
+      allow(Mail).to receive(:defaults)
+      allow(EM).to receive(:next_tick).and_yield
+      allow(EM).to receive(:add_periodic_timer).and_yield
+      allow(Mail).to receive(:last) { new_mail }
+      allow(new_mail).to receive(:header) { header }
+      allow(new_mail).to receive(:parts) { [message, message] }
+      allow(header).to receive(:[])
+      allow(message).to receive(:body) { body }
+      allow(body).to receive(:decoded)
+    end
+
     it "initializes imap connection" do
       expect(Mail).to receive(:defaults).and_call_original
-      expect(Mail::POP3).to receive(:new).
+      expect(Mail::IMAP).to receive(:new).
         with({:address => "mail.windycitypathfinder.com",
-              :port       => 995,
+              :port       => 993,
               :user_name  => 'scheduler@windycitypathfinder.com',
               :password   => ENV['EMAIL_PASSWORD'],
               :enable_ssl => true})
-      MailClient.new
+      MailClient.new({})
+    end
+
+    it "checks for mail" do
+      expect(Mail).to receive(:last)
+      client.check_mail
+    end
+
+    it "returns nothing if no email" do
+      allow(Mail).to receive(:last) { }
+      expect(client.check_mail).to be nil
+    end
+
+    it "can get mail details" do
+      allow(header).to receive(:[]).with("In-Reply-To") { "mailId" }
+      allow(body).to receive(:decoded) { "decoded body" }
+      received = client.check_mail
+      expect(received[:discussion]).to eq "decoded body"
+      expect(received[:in_reply_to]).to eq "mailId"
     end
   end
 

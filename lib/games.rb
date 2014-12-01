@@ -7,6 +7,13 @@ class Games
     @mail_client = mail_client
   end
 
+  def on_discussion discussion
+    game = find_by_discussion discussion[:in_reply_to]
+    game[:discussion] = discussion[:discussion]
+    game[:email_ids] << discussion[:in_reply_to]
+    @table.save(game)
+  end
+
   def create game_info
     game = game_info.merge(gameId: SecureRandom.uuid, seats: [], email_ids: [])
     game.delete(:notes) if game[:notes].nil? or game[:notes].length == 0
@@ -33,6 +40,10 @@ class Games
 
   def find game_id
     @table.all.find {|g| g[:gameId] == game_id}
+  end
+
+  def find_by_discussion email_id
+    @table.all.find {|g| g[:email_ids].include? email_id }
   end
 
   def for_user(user_info)

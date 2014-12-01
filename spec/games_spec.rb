@@ -81,10 +81,43 @@ describe Games do
       games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
     end
 
-    it "can add email thread ids" do
-      expect(table).to receive(:save).with(item)
-      item[:email_ids] = ['myFirstEmailId']
-      games.add_discussion_thread_id('abc123', 'myEmailId')
+    describe "discussion" do
+      it "can add email thread ids" do
+        expect(table).to receive(:save).with(item)
+        item[:email_ids] = ['myFirstEmailId']
+        games.add_discussion_thread_id('abc123', 'myEmailId')
+      end
+
+      it "can find a game by email id" do
+        item[:email_ids] = ["myEmailId", "otherEmailId"]
+        expect(games.find_by_discussion "myEmailId").to eq item
+      end
+
+      describe "on new message" do
+        let (:discussion) {{discussion: "new discussion", in_reply_to: "new_id"}}
+
+        before( :each ) do
+          item[:discussion] = ""
+          item[:email_ids] = ["join_email", "other_id"]
+          allow(table).to receive(:save)
+          allow(games).to receive(:find_by_discussion) {item}
+        end
+
+        it "saves the game" do
+          expect(table).to receive(:save).with(item)
+          games.on_discussion(discussion)
+        end
+
+        it "updates the game discussion on new message" do
+          games.on_discussion(discussion)
+          expect(item[:discussion]).to eq "new discussion"
+        end
+
+        it "appends the new email id" do
+          games.on_discussion(discussion)
+          expect(item[:email_ids]).to eq(["join_email", "other_id", "new_id"])
+        end
+      end
     end
 
     describe 'when attaching a scenario PDF' do
