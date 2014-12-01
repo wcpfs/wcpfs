@@ -4,7 +4,7 @@ require 'nokogiri'
 
 describe MailClient do
   let (:email) { double 'email' }
-  let (:client) { MailClient.new({}) }
+  let (:client) { MailClient.new }
   let (:game) { fake_saved_game }
 
   before( :each ) do
@@ -17,6 +17,7 @@ describe MailClient do
     let (:header) { double "header" }
     let (:message) { double "message" }
     let (:body) { double "body" }
+    let (:field) { double "field" }
 
     before( :each ) do
       allow(Mail).to receive(:defaults)
@@ -25,7 +26,8 @@ describe MailClient do
       allow(Mail).to receive(:last) { new_mail }
       allow(new_mail).to receive(:header) { header }
       allow(new_mail).to receive(:parts) { [message, message] }
-      allow(header).to receive(:[])
+      allow(header).to receive(:[]) { field }
+      allow(field).to receive(:value)
       allow(message).to receive(:body) { body }
       allow(body).to receive(:decoded)
     end
@@ -38,7 +40,7 @@ describe MailClient do
               :user_name  => 'scheduler@windycitypathfinder.com',
               :password   => ENV['EMAIL_PASSWORD'],
               :enable_ssl => true})
-      MailClient.new({})
+      MailClient.new
     end
 
     it "checks for mail" do
@@ -52,7 +54,8 @@ describe MailClient do
     end
 
     it "can get mail details" do
-      allow(header).to receive(:[]).with("In-Reply-To") { "mailId" }
+      allow(header).to receive(:[]).with("In-Reply-To") { field }
+      allow(field).to receive(:value) { "mailId" }
       allow(body).to receive(:decoded) { "decoded body" }
       received = client.check_mail
       expect(received[:discussion]).to eq "decoded body"

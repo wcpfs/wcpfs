@@ -117,6 +117,12 @@ describe Games do
           games.on_discussion(discussion)
           expect(item[:email_ids]).to eq(["join_email", "other_id", "new_id"])
         end
+
+        it "does not append the email id if already there" do
+          item[:email_ids] << "new_id"
+          games.on_discussion(discussion)
+          expect(item[:email_ids]).to eq(["join_email", "other_id", "new_id"])
+        end
       end
     end
 

@@ -36,9 +36,9 @@ aws_connection = AwsClient.connect({
 mail_client = MailClient.new
 games = Games.new(aws_connection, mail_client)
 EM.next_tick do
-  EM.add_periodic_timer 30 do
+  EM.add_periodic_timer 10 do
     discussion = mail_client.check_mail
-    #games.on_discussion(discussion)
+    games.on_discussion(discussion)
   end
 end
 

@@ -4,9 +4,8 @@ require 'nokogiri'
 require 'mail'
 
 class MailClient
-  def initialize discussion_callback
+  def initialize
     @base_url = 'http://www.windycitypathfinder.com'
-    @discussion_callback = discussion_callback
     Mail.defaults do
       retriever_method :imap, :address => "mail.windycitypathfinder.com",
         :port       => 993,
@@ -20,7 +19,7 @@ class MailClient
     new_mail = Mail.last
     if new_mail
       return { discussion: new_mail.parts[0].body.decoded,
-               in_reply_to: new_mail.header["In-Reply-To"] }
+               in_reply_to: new_mail.header["In-Reply-To"].value }
     end
   end
 

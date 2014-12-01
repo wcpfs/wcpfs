@@ -8,9 +8,10 @@ class Games
   end
 
   def on_discussion discussion
-    game = find_by_discussion discussion[:in_reply_to]
+    email_id = discussion[:in_reply_to]
+    game = find_by_discussion email_id
     game[:discussion] = discussion[:discussion]
-    game[:email_ids] << discussion[:in_reply_to]
+    game[:email_ids] << email_id if !game[:email_ids].include? email_id
     @table.save(game)
   end
 
