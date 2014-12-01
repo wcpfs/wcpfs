@@ -58,7 +58,7 @@ describe MailClient do
       allow(field).to receive(:value) { "mailId" }
       allow(body).to receive(:decoded) { "decoded body" }
       received = client.check_mail
-      expect(received[:discussion]).to eq "decoded body"
+      expect(received[:message]).to eq "decoded body"
       expect(received[:in_reply_to]).to eq "mailId"
     end
   end

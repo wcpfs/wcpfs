@@ -18,7 +18,7 @@ class MailClient
   def check_mail
     new_mail = Mail.last
     if new_mail
-      return { discussion: new_mail.parts[0].body.decoded,
+      return { message: new_mail.parts[0].body.decoded,
                in_reply_to: new_mail.header["In-Reply-To"].value }
     end
   end
