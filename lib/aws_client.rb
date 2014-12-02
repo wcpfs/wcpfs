@@ -50,26 +50,6 @@ module AwsClient
       item
     end
 
-    def update_add(key, item, value)
-      params = {
-        table_name: @table_name,
-        key: {
-          hash_key_element: {s: key}
-        },
-        attribute_updates: {
-          "#{item}" => {
-            value: {ss: [value]},
-            action: "ADD"}
-        }}
-      @client.update_item(params)
-      #puts @client.scan({:table_name => @table_name}).data
-      #puts @client.describe_table({:table_name => @table_name}).data
-      #puts @client.get_item(
-      #  {:table_name=>"wcpfs-games-test", 
-      #   :key=>{:hash_key_element => { :s => "8b91a3cc-8669-44ae-bf40-0dad6e11d373"}}})
-      @cache = nil
-    end
-
     def normalize item
       JSON.parse(item.to_json, :symbolize_names => true)
     end

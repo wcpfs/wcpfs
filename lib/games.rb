@@ -8,12 +8,13 @@ class Games
   end
 
   def on_discussion discussion
-    email_id = discussion[:in_reply_to]
-    game = find_by_discussion email_id
+    game = find_by_discussion discussion[:in_reply_to]
+    email_id = discussion[:email_id]
     if game
       game[:discussion] = discussion[:message]
       game[:email_ids] << email_id if !game[:email_ids].include? email_id
       @table.save(game)
+      @mail_client.send_discussion(game)
     end
   end
 
@@ -46,7 +47,7 @@ class Games
   end
 
   def find_by_discussion email_id
-    @table.all.find {|g| g[:email_ids].include? email_id }
+    @table.all.find {|g| g.keys.include?(:email_ids) && g[:email_ids].include?(email_id) }
   end
 
   def for_user(user_info)

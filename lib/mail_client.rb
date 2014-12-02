@@ -8,18 +8,21 @@ class MailClient
     @base_url = 'http://www.windycitypathfinder.com'
     Mail.defaults do
       retriever_method :imap, :address => "mail.windycitypathfinder.com",
-        :port       => 993,
-        :user_name  => 'scheduler@windycitypathfinder.com',
-        :password   => ENV['EMAIL_PASSWORD'],
-        :enable_ssl => true
+        :port              => 993,
+        :user_name         => 'scheduler@windycitypathfinder.com',
+        :password          => ENV['EMAIL_PASSWORD'],
+        :enable_ssl        => true,
+        :delete_after_find => true
     end
   end
 
   def check_mail
     new_mail = Mail.last
     if new_mail
+      #Mail.delete_all
       return { message: new_mail.parts[0].body.decoded,
-               in_reply_to: new_mail.header["In-Reply-To"].value }
+               in_reply_to: new_mail.header["In-Reply-To"].value,
+               email_id: new_mail.header["Message-ID"].value}
     end
   end
 
@@ -30,12 +33,30 @@ class MailClient
     end
   end
 
+  def send_discussion(game)
+    title = "[WCPFS] Discussion: " + game[:title]
+    body = create_discussion_body(game)
+    send_mail_to(game[:gm_email], title, body)
+    game[:seats].map { |seat| send_mail_to(seat[:email], title, body) }
+  end
+
   def send_join_game(game, joiner)
     send_mail_to(joiner[:email], "[WCPFS] You joined " + game[:title], create_body(game))
   end
 
   def send_chronicle(email, title, chronicle_sheet_img)
     send_mail_to(email, "[WCPFS] Chronicle Sheet for #{title}", "Thanks for playing!", chronicle_sheet_img)
+  end
+
+  def create_discussion_body(game_info)
+    body_node = Nokogiri::HTML::DocumentFragment.parse File.read('mail_templates/discussion.html')
+
+    date = game_info[:datetime] 
+    body_node.at_css('.date').content = Time.at(date / 1000).strftime("%A, %B %-d")
+    body_node.at_css('.title').content = game_info[:title]
+    body_node.at_css('.discussion').content = game_info[:discussion]
+
+    body_node.to_html
   end
 
   def create_body(game_info)

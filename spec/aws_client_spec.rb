@@ -61,19 +61,5 @@ describe AwsClient do
       })
       table.save({})
     end
-
-    it "can update an item" do
-      expect(client).to receive(:update_item).with({
-        table_name: 'mytable-test',
-        key: {
-          hash_key_element: {s: 'myGameId'}
-        },
-        attribute_updates: {
-          "email_ids" => {
-            value: {ss: ['new-mail-id']},
-            action: "ADD"}
-        }})
-      table.update_add('myGameId', 'email_ids', 'new-mail-id')
-    end
   end
 end

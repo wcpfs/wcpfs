@@ -12,6 +12,10 @@ function emptySeats(){
   aws dynamodb update-item --table-name wcpfs-games-test --key "{\"gameId\": {\"S\": \"56088e90-f894-4282-a244-b2eebd7fdaea\"}}" --attribute-updates "{\"seats\": {\"Value\": {\"L\": []}, \"Action\": \"PUT\"}}" 
 }
 
+function update_email(){
+  aws dynamodb update-item --table-name wcpfs-games-test --key "{\"gameId\": {\"S\": \"56088e90-f894-4282-a244-b2eebd7fdaea\"}}" --attribute-updates "{\"gm_email\": {\"Value\": {\"S\": \"alexdisney@gmail.com\"}, \"Action\": \"PUT\"}}" 
+}
+
 function update(){
   aws dynamodb update-item --table-name wcpfs-games-test --key "{\"gameId\": {\"S\": \"56088e90-f894-4282-a244-b2eebd7fdaea\"}}" --attribute-updates "{\"email_ids\": {\"Value\": {\"L\": []}, \"Action\": \"PUT\"}}" 
 }

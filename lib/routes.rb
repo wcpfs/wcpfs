@@ -69,7 +69,7 @@ class Routes < Sinatra::Base
   end
 
   get '/testmail' do
-    mail_client.send_join_game({:title => 'Quest for Perfection Part I', :datetime => 1234567890000, :gm_pic => "", :gameId => "8b91a3cc-8669-44ae-bf40-0dad6e11d373", :notes => "This is a note that you may care about as a player"}, {:email => "alexdisney@gmail.com"})
+    mail_client.send_discussion(games.find("56088e90-f894-4282-a244-b2eebd7fdaea"))
   end
 
   get '/' do
@@ -179,6 +179,7 @@ class Routes < Sinatra::Base
       gm_name: user[:name],
       gm_pic: user[:pic],
       gm_id: user[:id],
+      gm_email: user[:email],
       datetime: params[:datetime].to_i,
       title: params[:title],
       notes: params[:notes]

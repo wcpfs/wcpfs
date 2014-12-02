@@ -94,13 +94,14 @@ describe Games do
       end
 
       describe "on new message" do
-        let (:discussion) {{message: "new discussion", in_reply_to: "new_id"}}
+        let (:discussion) {{message: "new discussion", in_reply_to: "reply_to_id", email_id: "new_id"}}
 
         before( :each ) do
           item[:message] = ""
-          item[:email_ids] = ["join_email", "other_id"]
+          item[:email_ids] = ["join_email", "reply_to_id"]
           allow(table).to receive(:save)
           allow(games).to receive(:find_by_discussion) { item }
+          allow(mail_client).to receive(:send_discussion)
         end
 
         it "does nothing if no game found with mail id" do
@@ -117,18 +118,23 @@ describe Games do
 
         it "updates the game discussion on new message" do
           games.on_discussion(discussion)
-          expect(item[:message]).to eq "new discussion"
+          expect(item[:discussion]).to eq "new discussion"
         end
 
         it "appends the new email id" do
           games.on_discussion(discussion)
-          expect(item[:email_ids]).to eq(["join_email", "other_id", "new_id"])
+          expect(item[:email_ids]).to eq(["join_email", "reply_to_id", "new_id"])
         end
 
         it "does not append the email id if already there" do
           item[:email_ids] << "new_id"
           games.on_discussion(discussion)
-          expect(item[:email_ids]).to eq(["join_email", "other_id", "new_id"])
+          expect(item[:email_ids]).to eq(["join_email", "reply_to_id", "new_id"])
+        end
+
+        it "sends the discussion email" do
+          expect(mail_client).to receive(:send_discussion).with(item)
+          games.on_discussion(discussion)
         end
       end
     end
