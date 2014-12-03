@@ -70,7 +70,7 @@ class Routes < Sinatra::Base
 
   get '/testmail' do
     game = games.find("460acdd5-3aea-4c2d-ac44-ff1b96b89e40")
-    sent_id = mail_client.send_join_game(game, {email: "alexdisney@gmail.com"})
+    sent_id = mail_client.send_join_game(game, {email: "alexdisney@gmail.com"}).first
     games.add_discussion_thread_id(game[:gameId], sent_id)
   end
 
