@@ -69,7 +69,9 @@ class Routes < Sinatra::Base
   end
 
   get '/testmail' do
-    mail_client.send_join_game(games.find("460acdd5-3aea-4c2d-ac44-ff1b96b89e40"), {email: "alexdisney@gmail.com"})
+    game = games.find("460acdd5-3aea-4c2d-ac44-ff1b96b89e40")
+    sent_id = mail_client.send_join_game(game, {email: "alexdisney@gmail.com"})
+    games.add_discussion_thread_id(game[:gameId], sent_id)
   end
 
   get '/' do
