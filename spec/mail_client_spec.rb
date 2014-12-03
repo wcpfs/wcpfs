@@ -14,26 +14,13 @@ describe MailClient do
 
   describe "receiving mail" do
     let (:new_mail) { double "new_mail" }
-    let (:header) { double "header" }
-    let (:message) { double "message" }
-    let (:body) { double "body" }
-    let (:field) { double "field" }
-    let (:id_field) { double "id_field" }
 
     before( :each ) do
       allow(Mail).to receive(:defaults)
-      allow(Mail).to receive(:delete_all)
+      allow(Mail).to receive(:find) { [ new_mail ] }
       allow(EM).to receive(:next_tick).and_yield
       allow(EM).to receive(:add_periodic_timer).and_yield
-      allow(Mail).to receive(:last) { new_mail }
-      allow(new_mail).to receive(:header) { header }
-      allow(new_mail).to receive(:parts) { [message, message] }
-      allow(header).to receive(:[]).with("In-Reply-To") { field }
-      allow(header).to receive(:[]).with("Message-ID") { id_field }
-      allow(field).to receive(:value) { "" }
-      allow(id_field).to receive(:value) { "" }
-      allow(message).to receive(:body) { body }
-      allow(body).to receive(:decoded) { "" }
+      allow(Email).to receive(:new)
     end
 
     it "initializes imap connection" do
@@ -49,26 +36,24 @@ describe MailClient do
     end
 
     it "checks for mail" do
-      expect(Mail).to receive(:last)
+      expect(Mail).to receive(:find)
       client.check_mail
     end
 
     it "returns nothing if no mail" do
-      allow(Mail).to receive(:last) { }
+      allow(Mail).to receive(:find) { [] }
       expect(client.check_mail).to be nil
     end
 
-    it "can get mail details" do
-      allow(field).to receive(:value) { "reply_to_id" }
-      allow(id_field).to receive(:value) { "mailId" }
-      allow(body).to receive(:decoded) { "decoded body" }
-      received = client.check_mail
-      expect(received[:message]).to eq "decoded body"
-      expect(received[:in_reply_to]).to eq "reply_to_id"
-      expect(received[:email_id]).to eq "mailId"
+    it "can handle more than one email at a time" do
+      allow(Mail).to receive(:find) { [ email, email, email ] }
+      expect(client.check_mail.length).to be 3
     end
 
-    it "can handle more than one email at a time"
+    it "deletes emails after handling them" do
+      expect(Mail).to receive(:find).with({ delete_after_find: true })
+      client.check_mail
+    end
   end
 
   describe "on player join" do

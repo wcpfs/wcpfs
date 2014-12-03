@@ -7,14 +7,18 @@ class Games
     @mail_client = mail_client
   end
 
+  def same_thread?(thread_ids, reply_id)
+    thread_ids.include? reply_id
+  end
+
   def on_discussion discussion
-    game = find_by_discussion discussion[:in_reply_to]
-    email_id = discussion[:email_id]
-    if game
-      game[:discussion] = discussion[:message]
-      game[:email_ids] << email_id if !game[:email_ids].include? email_id
+    reply_id = discussion.in_reply_to
+    game = find_by_discussion reply_id
+    if game && same_thread?(game[:email_ids], reply_id)
+      game[:discussion] = discussion.message
+      ids = @mail_client.send_discussion(game)
+      ids.each { |id| game[:email_ids] << id.first if !game[:email_ids].include? id.first }
       @table.save(game)
-      @mail_client.send_discussion(game)
     end
   end
 

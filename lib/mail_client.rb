@@ -2,6 +2,7 @@ require 'eventmachine'
 require 'mailfactory' 
 require 'nokogiri'
 require 'mail'
+require 'email'
 
 class MailClient
   def initialize
@@ -17,12 +18,9 @@ class MailClient
   end
 
   def check_mail
-    new_mail = Mail.last
-    if new_mail
-      #Mail.delete_all
-      return { message: new_mail.parts[0].body.decoded,
-               in_reply_to: new_mail.header["In-Reply-To"].value,
-               email_id: new_mail.header["Message-ID"].value}
+    received_mail = Mail.find({ delete_after_find: true })
+    if received_mail.length > 0
+      return received_mail.map { | mail | Email.new(mail) }
     end
   end
 

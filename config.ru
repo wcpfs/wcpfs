@@ -37,8 +37,12 @@ mail_client = MailClient.new
 games = Games.new(aws_connection, mail_client)
 EM.next_tick do
   EM.add_periodic_timer 10 do
-    discussion = mail_client.check_mail
-    games.on_discussion(discussion)
+    emails = mail_client.check_mail
+    if emails
+      puts "Received #{emails.length} emails"
+      puts emails.inspect
+      emails.each { | email | games.on_discussion email }
+    end
   end
 end
 
