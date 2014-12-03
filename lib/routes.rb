@@ -69,7 +69,7 @@ class Routes < Sinatra::Base
   end
 
   get '/testmail' do
-    mail_client.send_join_game(games.find("56088e90-f894-4282-a244-b2eebd7fdaea"), "alexdisney@gmail.com")
+    mail_client.send_join_game(games.find("56088e90-f894-4282-a244-b2eebd7fdaea"), {email: "alexdisney@gmail.com"})
   end
 
   get '/' do
