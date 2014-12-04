@@ -15,6 +15,7 @@ class Games
     reply_id = discussion.in_reply_to
     game = find_by_discussion reply_id
     if game && same_thread?(game[:email_ids], reply_id)
+      puts "Sending message: #{discussion.inspect}"
       game[:discussion] = discussion.message
       ids = @mail_client.send_discussion(game)
       ids.each { |id| game[:email_ids] << id.first if !game[:email_ids].include? id.first }
