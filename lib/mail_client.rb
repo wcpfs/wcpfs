@@ -34,6 +34,7 @@ class MailClient
   def send_discussion(game)
     title = "[WCPFS] Discussion: " + game[:title]
     body = create_discussion_body(game)
+    puts "Created body: #{body.inspect}"
     send_mail_to(game[:gm_email], title, body)
     game[:seats].map { |seat| send_mail_to(seat[:email], title, body) }
   end

@@ -40,7 +40,6 @@ EM.next_tick do
     emails = mail_client.check_mail
     if emails
       puts "Received #{emails.length} emails"
-      puts emails.inspect
       emails.each { | email | games.on_discussion email }
     end
   end
