@@ -107,7 +107,7 @@ class MailClient
       puts "Email failed to send to #{to_addr}"
       puts e.inspect
     }
-    mail.get_header "Message-ID"
+    mail.get_header("Message-ID").first
   end
 
 end

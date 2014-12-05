@@ -227,7 +227,7 @@ describe Routes do
         allow(games).to receive(:find) { game }
         allow(games).to receive(:signup) { true }
         allow(games).to receive(:add_discussion_thread_id)
-        allow(mail_client).to receive(:send_join_game) { ['mailId'] }
+        allow(mail_client).to receive(:send_join_game) { 'mailId' }
       end
 
       it "can instantly join a game" do
