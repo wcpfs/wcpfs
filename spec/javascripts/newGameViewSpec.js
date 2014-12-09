@@ -18,5 +18,10 @@
       view.find('input.datetime').val('5pm February 13th, 2009').change();
       expect(view.find('input.datetime-hidden').val()).toEqual('1234566000000');
     });
+
+    it('Sets the time to noon if the time is midnight', function() {
+      view.find('input.datetime').val('February 13th, 2009').change();
+      expect(view.find('input.datetime-hidden').val()).toEqual('1234548000000');
+    });
   });
 
