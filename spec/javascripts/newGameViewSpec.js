@@ -10,17 +10,12 @@
 
     it('Enables the submit button when all fields are entered', function() {
       view.find('input.game-title').val('My Title').change();
-      view.find('input.datetime').val('5pm February 13th, 2009').change();
+      view.find('input.datetime').val('2009-02-13').change();
       expect(view.find('button.new-game-submit').prop('disabled')).toBeFalsy();
     });
 
-    it('parses the date and places the timestamp in a hidden field', function() {
-      view.find('input.datetime').val('5pm February 13th, 2009').change();
-      expect(view.find('input.datetime-hidden').val()).toEqual('1234566000000');
-    });
-
-    it('Sets the time to noon if the time is midnight', function() {
-      view.find('input.datetime').val('February 13th, 2009').change();
+    it('Parses the time, setting the time to noon if the time is midnight', function() {
+      view.find('input.datetime').val('2009-02-13').change();
       expect(view.find('input.datetime-hidden').val()).toEqual('1234548000000');
     });
   });
