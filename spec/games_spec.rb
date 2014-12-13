@@ -93,7 +93,7 @@ describe Games do
         expect(games.find_by_discussion "myEmailId").to eq item
       end
 
-      describe "on new message" do
+      describe "on discussion" do
         let (:email) { double "email" }
 
         before( :each ) do
@@ -101,7 +101,7 @@ describe Games do
           item[:email_ids] = ["join_email", "reply_to_id"]
           allow(table).to receive(:save)
           allow(games).to receive(:find_by_discussion) { item }
-          allow(mail_client).to receive(:send_discussion) { [ ["new_id"] ] }
+          allow(mail_client).to receive(:send_discussion) { ["new_id"] }
           allow(Email).to receive(:new) { email }
           allow(email).to receive(:message) {"new discussion"}
           allow(email).to receive(:in_reply_to) {"reply_to_id"}
@@ -116,6 +116,15 @@ describe Games do
 
         it "saves the game" do
           expect(table).to receive(:save).with(item)
+          games.on_discussion(email)
+        end
+
+        let (:message) { double "message" }
+        let (:ascii) { double "ascii" }
+        it "converts the text to UTF-8" do
+          allow(email).to receive(:message) { message }
+          expect(message).to receive(:force_encoding).with("ASCII-8BIT") { ascii }
+          expect(ascii).to receive(:encode).with("UTF-8", undef: :replace, replace: '')
           games.on_discussion(email)
         end
 

@@ -69,9 +69,9 @@ describe MailClient do
 
     it "sends to players and GM" do
       game[:seats] = [{email: "rene@rene.com", name:"Rene Duquesnoy"}, {email:"adisney@gmail.com", name:"Alex Disney"}]
-      expect(EM::P::SmtpClient).to receive(:send).once.ordered.with(hash_including(to: ["benrady@gmail.com"])) { email }
       expect(EM::P::SmtpClient).to receive(:send).once.ordered.with(hash_including(to: ["rene@rene.com"])) { email }
       expect(EM::P::SmtpClient).to receive(:send).once.ordered.with(hash_including(to: ["adisney@gmail.com"])) { email }
+      expect(EM::P::SmtpClient).to receive(:send).once.ordered.with(hash_including(to: ["benrady@gmail.com"])) { email }
       client.send_discussion(game)
     end
 
