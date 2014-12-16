@@ -32,8 +32,9 @@ describe('GM Detail View', function() {
     });
   });
 
-  describe('when no scenario has been selected', function() {
+  describe('with no selected scenario', function() {
     beforeEach(function() {
+      spyOn($, 'ajax');
       view = gmDetailView(game.id);
     });
 
@@ -43,6 +44,16 @@ describe('GM Detail View', function() {
 
     it('adds the chronicle sheet selector, with no selection', function() {
       expect(view.find('.scenario-selector select').val()).toEqual(null)
+    });
+
+    it('can cancel the game', function() {
+      view.find('.cancel-game-btn').click();
+      expect($.ajax).toHaveBeenCalledWith({
+        url: '/games/detail',
+        type: 'DELETE',
+        data: {gameId: gameObj.id},
+        success: jasmine.any(Function)
+      });
     });
 
     describe('when a scenario is selected', function() {
