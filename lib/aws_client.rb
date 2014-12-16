@@ -50,6 +50,15 @@ module AwsClient
       item
     end
 
+    def delete(id)
+      params = {
+        table_name: @table_name,
+        key: {:id => id}
+      }
+      @client.delete_item(params)
+      @cache = nil
+    end
+
     def normalize item
       JSON.parse(item.to_json, :symbolize_names => true)
     end

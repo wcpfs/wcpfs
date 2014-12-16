@@ -88,6 +88,10 @@ class Routes < Sinatra::Base
     games.find(params[:id]).to_json
   end
 
+  delete '/games/detail' do
+    games.cancel(user[:id], params[:gameId])
+  end
+
   get '/game/:id/:asset' do
     content_type :png
     File.read("game_assets/#{params[:id]}/#{params[:asset]}")

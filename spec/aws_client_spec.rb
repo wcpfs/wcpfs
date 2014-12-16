@@ -61,5 +61,13 @@ describe AwsClient do
       })
       table.save({})
     end
+
+    it "can delete an item" do
+      expect(client).to receive(:delete_item).with({
+        table_name: 'mytable-test',
+        key: { :id => 'abc123' }
+      })
+      table.delete('abc123')
+    end
   end
 end

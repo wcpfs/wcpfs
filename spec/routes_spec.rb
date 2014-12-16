@@ -146,6 +146,12 @@ describe Routes do
       expect(last_response.body).to eq '{}'
     end
 
+    it "can cancel an individual game" do
+      expect(games).to receive(:cancel).with(fake_user_info[:id], 'abc123') 
+      delete 'games/detail', {gameId: 'abc123'}
+      expect(last_response.status).to eq 200
+    end
+
     it "can return the GM's info object as json" do
       get '/user/info', {}, env
       expect(JSON.parse(last_response.body, :symbolize_names => true)).to include({

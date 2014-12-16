@@ -71,7 +71,6 @@ class Games
 
   def current
     @table.all.select do |game|
-      puts game.inspect
       game[:datetime] > now_millis - TWENTY_FOUR_HOURS 
     end
   end
@@ -79,6 +78,11 @@ class Games
   def update(gm_id, game_info)
     game = fetch_game(gm_id, game_info[:id])
     @table.save(game.merge(game_info))
+  end
+
+  def cancel(gm_id, game_id)
+    game = fetch_game(gm_id, game_id)
+    @table.delete(game[:id])
   end
 
   def send_chronicle(gm_info, game_id, png_data)

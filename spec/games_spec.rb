@@ -54,6 +54,11 @@ describe Games do
       expect(games.find(fake_saved_game[:id])).to eq fake_saved_game
     end
 
+    it "can cancel the game" do
+      expect(table).to receive(:delete).with(fake_saved_game[:id])
+      games.cancel(fake_saved_game[:gm_id], fake_saved_game[:id])
+    end
+
     it "can find the games for an individual player" do
       my_games = games.for_user(fake_user_info)
       expect(my_games[:playing]).to eq []
@@ -151,23 +156,9 @@ describe Games do
       end
     end
 
-    describe 'when attaching a scenario PDF' do
-      let (:f) { double File }
-      let (:data) { StringIO.new 'file data' }
-
-      before( :each ) do
-        allow(FileUtils).to receive('mkdir_p')
-        allow(table).to receive(:save)
-        allow(Docsplit).to receive(:extract_images)
-        allow(Docsplit).to receive(:extract_length) { 10 }
-        allow(File).to receive(:open).and_yield f
-        allow(f).to receive(:write)
-      end
-
-      it "sends a chronicle sheet to the GM" do
-        expect(mail_client).to receive(:send_chronicle).with("benrady@gmail.com", "City of Golden Death!", "ABCPNG")
-        games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
-      end
+    it "sends a chronicle sheet to the GM" do
+      expect(mail_client).to receive(:send_chronicle).with("benrady@gmail.com", "City of Golden Death!", "ABCPNG")
+      games.send_chronicle(fake_user_info, 'abc123', "ABCPNG")
     end
 
     describe "when saving changes to a game" do
