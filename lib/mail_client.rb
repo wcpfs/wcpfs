@@ -68,7 +68,7 @@ class MailClient
 
     body_node.at_css('.date').content = Time.at(date / 1000).strftime("%A, %B %-d")
     body_node.at_css('.gm_profile_pic')['src'] = game_info[:gm_pic]
-    body_node.at_css('.join-link')['href'] = @base_url + '/user/joinGame?gameId=' + game_info[:gameId]
+    body_node.at_css('.join-link')['href'] = @base_url + '/user/joinGame?id=' + game_info[:id]
 
     body_node.to_html
   end

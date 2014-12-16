@@ -1,7 +1,8 @@
 #!/bin/bash
 
 function scan(){
-  aws dynamodb scan --table-name wcpfs-games-test
+  local table_name=${1:-"wcpfs-games-test"}
+  aws dynamodb scan --table-name $table_name
 }
 
 function query(){

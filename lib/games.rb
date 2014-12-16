@@ -27,13 +27,13 @@ class Games
   end
 
   def create game_info
-    game = game_info.merge(gameId: SecureRandom.uuid, seats: [], email_ids: [])
+    game = game_info.merge(id: SecureRandom.uuid, seats: [], email_ids: [])
     game.delete(:notes) if game[:notes].nil? or game[:notes].length == 0
     @table.save(game)
   end
 
   def signup game_id, player_info
-    game = @table.all.find {|g| g[:gameId] == game_id}
+    game = @table.all.find {|g| g[:id] == game_id}
     if game and not joined?(game, player_info) 
       game[:seats] << player_info
       @table.save(game)
@@ -51,7 +51,7 @@ class Games
   end
 
   def find game_id
-    @table.all.find {|g| g[:gameId] == game_id}
+    @table.all.find {|g| g[:id] == game_id}
   end
 
   def find_by_discussion email_id
@@ -71,12 +71,13 @@ class Games
 
   def current
     @table.all.select do |game|
+      puts game.inspect
       game[:datetime] > now_millis - TWENTY_FOUR_HOURS 
     end
   end
 
   def update(gm_id, game_info)
-    game = fetch_game(gm_id, game_info[:gameId])
+    game = fetch_game(gm_id, game_info[:id])
     @table.save(game.merge(game_info))
   end
 

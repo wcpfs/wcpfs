@@ -44,7 +44,7 @@ end
 
 def fake_saved_game
   fake_new_game.merge({
-    gameId: 'abc123', 
+    id: 'abc123', 
     seats: [],
     notes: "My Notes"
   })

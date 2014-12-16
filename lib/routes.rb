@@ -71,7 +71,7 @@ class Routes < Sinatra::Base
   get '/testmail' do
     game = games.find("460acdd5-3aea-4c2d-ac44-ff1b96b89e40")
     sent_id = mail_client.send_join_game(game, {email: "alexdisney@gmail.com"})
-    games.add_discussion_thread_id(game[:gameId], sent_id)
+    games.add_discussion_thread_id(game[:id], sent_id)
   end
 
   get '/' do
@@ -85,12 +85,12 @@ class Routes < Sinatra::Base
   end
 
   get '/games/detail' do
-    games.find(params[:gameId]).to_json
+    games.find(params[:id]).to_json
   end
 
-  get '/game/:gameId/:asset' do
+  get '/game/:id/:asset' do
     content_type :png
-    File.read("game_assets/#{params[:gameId]}/#{params[:asset]}")
+    File.read("game_assets/#{params[:id]}/#{params[:asset]}")
   end
   
   get '/ping' do
@@ -155,13 +155,13 @@ class Routes < Sinatra::Base
   end
 
   get '/user/joinGame' do
-    gameId = params[:gameId]
-    success = games.signup(gameId, {
+    id = params[:id]
+    success = games.signup(id, {
       name: user[:name],
       email: user[:email]
     })
-    mail_id = mail_client.send_join_game(games.find(gameId), user) if success
-    games.add_discussion_thread_id gameId, mail_id
+    mail_id = mail_client.send_join_game(games.find(id), user) if success
+    games.add_discussion_thread_id id, mail_id
     redirect to('/')
   end
 
@@ -173,7 +173,7 @@ class Routes < Sinatra::Base
   require 'base64'
   post '/gm/sendChronicle' do
     png_data = Base64.decode64(params[:imgBase64].split(',')[1])
-    games.send_chronicle(user, params[:gameId], png_data)
+    games.send_chronicle(user, params[:id], png_data)
   end
 
   post '/gm/createGame' do
@@ -188,7 +188,7 @@ class Routes < Sinatra::Base
     }
     item = games.create game_info
     mail_client.send_new_game(item, users.subscriptions)
-    redirect("/#gmDetail-#{item[:gameId]}")
+    redirect("/#gmDetail-#{item[:id]}")
   end
 
   post '/gm/game' do

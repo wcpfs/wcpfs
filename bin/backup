@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 <table name>"
+  exit 1
+fi
+
+table_name=${1}
+
+timestamp=`date +%s`
+backup_dir=backups/$table_name
+file=$backup_dir/$timestamp.json
+mkdir -p $backup_dir
+aws dynamodb scan --table-name $table_name | jq -c .Items[] > $file
+echo "Created backup $file"

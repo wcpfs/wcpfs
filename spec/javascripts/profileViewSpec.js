@@ -15,7 +15,7 @@
     });
 
     it('Links to the GM view for games youre running', function() {
-      expect(view.find('.games-running li:first a').attr('href')).toEqual('#gmDetail-' + game.gameId);
+      expect(view.find('.games-running li:first a').attr('href')).toEqual('#gmDetail-' + game.id);
     });
 
     it('populates the profile form fields', function() {

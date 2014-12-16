@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 <backup file>"
+  exit 1
+fi
+
+backup_file=`realpath $1`
+table_name=$(basename $(dirname $backup_file))
+echo "Restoring $table_name from $backup_file"
+while read line; do
+  aws dynamodb put-item --table-name $table_name --item "$line"
+done < $backup_file

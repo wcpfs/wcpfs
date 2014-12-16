@@ -2,7 +2,7 @@
 
 function fakeGame() {
   return {
-    gameId: "95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
+    id: "95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa",
     notes: "Tier 4-5. Playing online using Skype and MapTools.",
     gm_name: "Ben Rady",
     gm_pic: "/img/preloader.gif",
@@ -40,7 +40,7 @@ var userInfo = {
 var fakeRoutes = {
   "/games": [gameList],
   "/user/info": [userInfo],
-  "/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa": gameList,
+  "/games/detail?id=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa": gameList,
   "/user/games": [{playing: [game], running: gameList}]
 }
 

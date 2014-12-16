@@ -40,7 +40,7 @@
             method: 'POST',
             url: '/gm/sendChronicle',
             data: {
-              gameId: game.gameId,
+              id: game.id,
               imgBase64: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAAABJRU5ErkJggg=='
             }
           });

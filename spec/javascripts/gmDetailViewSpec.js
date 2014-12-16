@@ -14,7 +14,7 @@ describe('GM Detail View', function() {
       }
     };
     fakeRoutes['http://assets.windycitypathfinder.com/gm_prep.json'] = [gmPrep]
-    fakeRoutes["/games/detail?gameId=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa"] = [gameObj],
+    fakeRoutes["/games/detail?id=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa"] = [gameObj],
     spyOn(window, 'imageEditor');
     spyOn(window, 'store');
   });
@@ -24,7 +24,7 @@ describe('GM Detail View', function() {
       gameObj.chronicle = {
         scenarioId: 'PZOPSS0414E'
       };
-      view = gmDetailView(game.gameId);
+      view = gmDetailView(game.id);
     });
 
     it('adds chronicle sheet editor', function() {
@@ -34,7 +34,7 @@ describe('GM Detail View', function() {
 
   describe('when no scenario has been selected', function() {
     beforeEach(function() {
-      view = gmDetailView(game.gameId);
+      view = gmDetailView(game.id);
     });
 
     it('does not add the chronicle sheet editor', function() {

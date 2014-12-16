@@ -56,7 +56,7 @@ describe Routes do
   it "can get an individual game" do
     game = {title: "My Game"}
     expect(games).to receive(:find).with('abc123') { game }
-    get 'games/detail', {gameId: 'abc123'}
+    get 'games/detail', {id: 'abc123'}
     expect(last_response.body).to eq game.to_json
   end
 
@@ -187,7 +187,7 @@ describe Routes do
     it "can send a chronicle sheet to the users in a game" do
       encoded_data = Base64.encode64("Hello PNG")
       expect(games).to receive(:send_chronicle).with(fake_user_info, 'abc123', "Hello PNG")
-      post '/gm/sendChronicle', {gameId:"abc123",imgBase64:"data:image/png;base64,#{encoded_data}"}, env
+      post '/gm/sendChronicle', {id:"abc123",imgBase64:"data:image/png;base64,#{encoded_data}"}, env
     end
 
     it "/login will redirect to the specified url" do
@@ -207,15 +207,15 @@ describe Routes do
       
       it "saves the game to the DB" do
         allow(mail_client).to receive(:send_new_game)
-        expect(games).to receive(:create).with(fake_new_game).and_return( {gameId: 'abc123'} )
+        expect(games).to receive(:create).with(fake_new_game).and_return( {id: 'abc123'} )
 
         post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
         expect_redirect_to '/'
       end
 
       it "notifies subscribed players" do
-        allow(games).to receive(:create) {{ "gameId" => "abc123" }}
-        expect(mail_client).to receive(:send_new_game).with(hash_including("gameId" => "abc123"), [:fake_user_list])
+        allow(games).to receive(:create) {{ "id" => "abc123" }}
+        expect(mail_client).to receive(:send_new_game).with(hash_including("id" => "abc123"), [:fake_user_list])
         post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
       end
     end
@@ -232,24 +232,24 @@ describe Routes do
 
       it "can instantly join a game" do
         expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
-        get '/user/joinGame', {gameId: 'abc123'}, env
+        get '/user/joinGame', {id: 'abc123'}, env
         expect_redirect_to '/'
       end
       
       it "sends an email to joining player on success" do
         expect(mail_client).to receive(:send_join_game).with(game, fake_user_info)
-        get '/user/joinGame', {gameId: 'abc123'}, env
+        get '/user/joinGame', {id: 'abc123'}, env
       end
 
       it "does not send an email on failure" do
         allow(games).to receive(:signup) { false }
         expect(mail_client).to_not receive(:send_join_game)
-        get '/user/joinGame', {gameId: 'abc123'}, env
+        get '/user/joinGame', {id: 'abc123'}, env
       end
 
       it "tracks sent mail ids" do
         expect(games).to receive(:add_discussion_thread_id).with('abc123', 'mailId')
-        get '/user/joinGame', {gameId: 'abc123'}, env
+        get '/user/joinGame', {id: 'abc123'}, env
       end
     end
 

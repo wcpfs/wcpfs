@@ -110,7 +110,7 @@ describe MailClient do
       end
 
       it "fills in the join link" do
-        expect(body.css('.join-link').attr('href').text).to eq('http://www.windycitypathfinder.com/user/joinGame?gameId=abc123')
+        expect(body.css('.join-link').attr('href').text).to eq('http://www.windycitypathfinder.com/user/joinGame?id=abc123')
       end
     end
   end

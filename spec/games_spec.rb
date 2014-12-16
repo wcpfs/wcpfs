@@ -30,7 +30,7 @@ describe Games do
   end
 
   describe "when creating games" do
-    let (:saved_game) {fake_new_game_no_notes.merge(gameId: "abc123", seats: [], email_ids: [])}
+    let (:saved_game) {fake_new_game_no_notes.merge(id: "abc123", seats: [], email_ids: [])}
 
     it "saves them to DynamoDB" do
       expect(table).to receive(:save).with(fake_new_game.merge(saved_game))
@@ -51,7 +51,7 @@ describe Games do
     end
 
     it "can find an individual game" do
-      expect(games.find(fake_saved_game[:gameId])).to eq fake_saved_game
+      expect(games.find(fake_saved_game[:id])).to eq fake_saved_game
     end
 
     it "can find the games for an individual player" do
@@ -62,7 +62,7 @@ describe Games do
 
     it "can sign up for that game" do
       expect(table).to receive(:save).with(hash_including(
-        gameId: "abc123", 
+        id: "abc123", 
         seats: [fake_user_info]
       ))
       expect(games.signup('abc123', fake_user_info)).to be true
@@ -173,19 +173,19 @@ describe Games do
     describe "when saving changes to a game" do
       it "validates the GM id" do
         expect do 
-          games.update('wrong id', {gameId: 'abc123'})
+          games.update('wrong id', {id: 'abc123'})
         end.to raise_error "Unauthorized"
       end
 
       it "validates the game id" do
         expect do 
-          games.update(fake_user_info[:id], {gameId: 'zzz'})
+          games.update(fake_user_info[:id], {id: 'zzz'})
         end.to raise_error "Unknown Game"
       end
 
       it "saves the game" do
         game_info = {
-          gameId: 'abc123',
+          id: 'abc123',
           title: 'new title',
           chronicle: {scenarioId: 'PZ10'}
         }
