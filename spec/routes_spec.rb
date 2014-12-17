@@ -209,6 +209,8 @@ describe Routes do
     describe "when creating a game" do
       before( :each ) do
         allow(users).to receive(:subscriptions) { [:fake_user_list] }
+        allow(mail_client).to receive(:send_join_game)
+        allow(games).to receive(:add_discussion_thread_id)
       end
       
       it "saves the game to the DB" do
@@ -222,6 +224,14 @@ describe Routes do
       it "notifies subscribed players" do
         allow(games).to receive(:create) {{ "id" => "abc123" }}
         expect(mail_client).to receive(:send_new_game).with(hash_including("id" => "abc123"), [:fake_user_list])
+        post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
+      end
+
+      it "sends the initial discussion email to the GM" do
+        allow(games).to receive(:create) {fake_saved_game}
+        allow(mail_client).to receive(:send_new_game)
+        expect(mail_client).to receive(:send_join_game).with(fake_saved_game, user_info) { "mailId" }
+        expect(games).to receive(:add_discussion_thread_id).with(fake_saved_game[:id], "mailId")
         post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
       end
     end

@@ -31,15 +31,19 @@ class MailClient
     end
   end
 
+  def discussion_title(game_title)
+    "[WCPFS] Discussion: " + game_title 
+  end
+
   def send_discussion(game)
-    title = "[WCPFS] Discussion: " + game[:title]
+    title = discussion_title(game[:title])
     body = create_discussion_body(game)
     sent_ids = game[:seats].map { |seat| send_mail_to(seat[:email], title, body) }
     sent_ids << send_mail_to(game[:gm_email], title, body)
   end
 
   def send_join_game(game, joiner)
-    send_mail_to(joiner[:email], "[WCPFS] You joined " + game[:title], create_body(game))
+    send_mail_to(joiner[:email], discussion_title(game[:title]), create_join_body(game))
   end
 
   def send_chronicle(email, title, chronicle_sheet_img)
@@ -55,6 +59,15 @@ class MailClient
     body_node.at_css('.discussion').content = game_info[:discussion]
 
     body_node.to_html
+  end
+
+  def create_join_body(game_info)
+    create_email = create_body(game_info)
+    body = Nokogiri::HTML::DocumentFragment.parse create_email
+    body.at_css('.discussion-header').content = "******   Reply to this email to communicate with the party"
+    body.at_css('.discussion-header')['style'] = ''
+    
+    body.to_html
   end
 
   def create_body(game_info)

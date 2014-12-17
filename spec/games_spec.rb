@@ -32,6 +32,10 @@ describe Games do
   describe "when creating games" do
     let (:saved_game) {fake_new_game_no_notes.merge(id: "abc123", seats: [], email_ids: [])}
 
+    before( :each ) do
+      allow(table).to receive(:save)
+    end
+
     it "saves them to DynamoDB" do
       expect(table).to receive(:save).with(fake_new_game.merge(saved_game))
       games.create(fake_new_game)

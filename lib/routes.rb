@@ -69,7 +69,7 @@ class Routes < Sinatra::Base
   end
 
   get '/testmail' do
-    game = games.find("460acdd5-3aea-4c2d-ac44-ff1b96b89e40")
+    game = games.find("299f127f-c8fd-457b-824d-d1d2dd882320")
     sent_id = mail_client.send_join_game(game, {email: "alexdisney@gmail.com"})
     games.add_discussion_thread_id(game[:id], sent_id)
   end
@@ -159,13 +159,13 @@ class Routes < Sinatra::Base
   end
 
   get '/user/joinGame' do
-    id = params[:id]
-    success = games.signup(id, {
+    game_id = params[:id]
+    success = games.signup(game_id, {
       name: user[:name],
       email: user[:email]
     })
-    mail_id = mail_client.send_join_game(games.find(id), user) if success
-    games.add_discussion_thread_id id, mail_id
+    mail_id = mail_client.send_join_game(games.find(game_id), user) if success
+    games.add_discussion_thread_id game_id, mail_id
     redirect to('/')
   end
 
@@ -192,6 +192,8 @@ class Routes < Sinatra::Base
     }
     item = games.create game_info
     mail_client.send_new_game(item, users.subscriptions)
+    mail_id = mail_client.send_join_game(item, user)
+    games.add_discussion_thread_id item[:id], mail_id
     redirect("/#gmDetail-#{item[:id]}")
   end
 

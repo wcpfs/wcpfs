@@ -61,6 +61,11 @@ describe MailClient do
       expect(EM::P::SmtpClient).to receive(:send) { email }
       client.send_join_game(game, fake_user_info)
     end
+
+    it "adds the instructions to the email" do
+      body = Nokogiri::HTML(client.create_join_body(game))
+      expect(body.css('.discussion-header').text).to eq("******   Reply to this email to communicate with the party")
+    end
   end
 
   describe "discussion message" do
