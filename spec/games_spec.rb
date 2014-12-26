@@ -114,6 +114,7 @@ describe Games do
           allow(Email).to receive(:new) { email }
           allow(email).to receive(:message) {"new discussion"}
           allow(email).to receive(:in_reply_to) {"reply_to_id"}
+          allow(email).to receive(:sender) {"Alex Disney"}
         end
 
         it "does nothing if no game found with mail id" do
@@ -131,15 +132,14 @@ describe Games do
         let (:message) { double "message" }
         let (:ascii) { double "ascii" }
         it "converts the text to UTF-8" do
-          allow(email).to receive(:message) { message }
           expect(message).to receive(:force_encoding).with("ASCII-8BIT") { ascii }
           expect(ascii).to receive(:encode).with("UTF-8", undef: :replace, replace: '')
-          games.on_discussion(email)
+          games.encode_message message
         end
 
         it "updates the game discussion on new message" do
           games.on_discussion(email)
-          expect(item[:discussion]).to eq "new discussion"
+          expect(item[:discussion]).to eq "Alex Disney says:\n\nnew discussion"
         end
 
         it "appends the new email id" do

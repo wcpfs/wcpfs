@@ -15,11 +15,15 @@ class Games
     message.force_encoding("ASCII-8BIT").encode('UTF-8', undef: :replace, replace: '')
   end
 
+  def sign_discussion(sender, message)
+    encode_message("#{sender} says:\n\n#{message}")
+  end
+
   def on_discussion discussion
     reply_id = discussion.in_reply_to
     game = find_by_discussion reply_id
     if game && same_thread?(game[:email_ids], reply_id)
-      game[:discussion] = encode_message discussion.message
+      game[:discussion] = sign_discussion(discussion.sender, discussion.message)
       ids = @mail_client.send_discussion(game)
       ids.each { |id| game[:email_ids] << id if !game[:email_ids].include? id }
       @table.save(game)
