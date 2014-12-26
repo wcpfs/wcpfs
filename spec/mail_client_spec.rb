@@ -35,6 +35,18 @@ describe MailClient do
       MailClient.new
     end
 
+    it "logs in with env specific account" do
+      allow(Mail).to receive(:defaults).and_call_original
+      expect(Mail::IMAP).to receive(:new).
+        with({:address           => "mail.windycitypathfinder.com",
+              :port              => 993,
+              :user_name         => 'scheduler-test@windycitypathfinder.com',
+              :password          => ENV['EMAIL_PASSWORD'],
+              :enable_ssl        => true,
+              :delete_after_find => true})
+      MailClient.new "test"
+    end
+
     it "checks for mail" do
       expect(Mail).to receive(:find)
       client.check_mail

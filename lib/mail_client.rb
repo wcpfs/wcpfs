@@ -5,12 +5,21 @@ require 'mail'
 require 'email'
 
 class MailClient
-  def initialize
+  def initialize(env=nil)
+    if env
+      @username = "scheduler-#{env}@windycitypathfinder.com"
+    else
+      @username = 'scheduler@windycitypathfinder.com'
+    end
     @base_url = 'http://www.windycitypathfinder.com'
+    receive_mail @username
+  end
+
+  def receive_mail(username)
     Mail.defaults do
       retriever_method :imap, :address => "mail.windycitypathfinder.com",
         :port              => 993,
-        :user_name         => 'scheduler@windycitypathfinder.com',
+        :user_name         => username,
         :password          => ENV['EMAIL_PASSWORD'],
         :enable_ssl        => true,
         :delete_after_find => true
@@ -91,7 +100,7 @@ class MailClient
   def send_mail_to(to_addr, title, body, attachment=nil)
     mail = MailFactory.new
     mail.to = to_addr
-    mail.from = 'scheduler@windycitypathfinder.com'
+    mail.from = @username
     mail.subject = title
     mail.html = body
     if attachment
@@ -107,7 +116,7 @@ class MailClient
       :port=>587,   
       :auth => {
         :type=>:plain, 
-        :username=>"scheduler@windycitypathfinder.com", 
+        :username=>@username,
         :password=> ENV['EMAIL_PASSWORD']
       },
       :verbose => true

@@ -33,7 +33,7 @@ aws_connection = AwsClient.connect({
   secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
 }, get_env)
 
-mail_client = MailClient.new
+mail_client = MailClient.new get_env
 games = Games.new(aws_connection, mail_client)
 EM.next_tick do
   EM.add_periodic_timer 10 do
