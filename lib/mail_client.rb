@@ -52,7 +52,7 @@ class MailClient
   end
 
   def send_join_game(game, joiner)
-    send_mail_to(joiner[:email], discussion_title(game[:title]), create_join_body(game))
+    send_mail_to(joiner[:email], discussion_title(game[:title]), create_discussion_body(game))
   end
 
   def send_chronicle(email, title, chronicle_sheet_img)
@@ -65,18 +65,9 @@ class MailClient
     date = game_info[:datetime] 
     body_node.at_css('.date').content = Time.at(date / 1000).strftime("%A, %B %-d")
     body_node.at_css('.title').content = game_info[:title]
-    body_node.at_css('.discussion').content = game_info[:discussion]
+    body_node.at_css('.discussion').content = game_info[:discussion] ? game_info[:discussion] : game_info[:notes]
 
     body_node.to_html
-  end
-
-  def create_join_body(game_info)
-    create_email = create_body(game_info)
-    body = Nokogiri::HTML::DocumentFragment.parse create_email
-    body.at_css('.discussion-header').content = "******   Reply to this email to communicate with the party"
-    body.at_css('.discussion-header')['style'] = ''
-    
-    body.to_html
   end
 
   def create_body(game_info)

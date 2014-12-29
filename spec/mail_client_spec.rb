@@ -73,11 +73,6 @@ describe MailClient do
       expect(EM::P::SmtpClient).to receive(:send) { email }
       client.send_join_game(game, fake_user_info)
     end
-
-    it "adds the instructions to the email" do
-      body = Nokogiri::HTML(client.create_join_body(game))
-      expect(body.css('.discussion-header').text).to eq("******   Reply to this email to communicate with the party")
-    end
   end
 
   describe "discussion message" do
@@ -98,6 +93,11 @@ describe MailClient do
     
     it "populates the date" do
       expect(body.css('.date').text).to eq("Friday, February 13")
+    end
+
+    it "populates the body with notes if discussion is empty" do
+      game[:discussion] = nil
+      expect(body.css('.discussion').text).to eq ("My Notes")
     end
 
     it "populates the body with discussion" do
