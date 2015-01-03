@@ -29,6 +29,14 @@ describe Games do
     expect(games.current).to eq [new_game]
   end
 
+  it "doesn't list private games" do
+    cutoff_time = (Time.now.to_f * 1000).to_i - (24 * 60 * 59 * 1000)
+    private_game = {private: true, datetime: cutoff_time}
+    public_game = {private: false, datetime: cutoff_time}
+    items.concat([private_game, public_game])
+    expect(games.current).to eq [public_game]
+  end
+
   describe "when creating games" do
     let (:saved_game) {fake_new_game_no_notes.merge(id: "abc123", seats: [], email_ids: [])}
 

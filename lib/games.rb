@@ -75,7 +75,7 @@ class Games
 
   def current
     @table.all.select do |game|
-      game[:datetime] > now_millis - TWENTY_FOUR_HOURS 
+      game[:datetime] > now_millis - TWENTY_FOUR_HOURS && !game[:private]
     end
   end
 

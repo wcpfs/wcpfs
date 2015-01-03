@@ -294,6 +294,7 @@
       </div>
 
       <div class='gm-detail-view'>
+        <div class='well'>Player page: <span class='detail-link'></span></div>
         <div class='panel panel-default'>
           <div class='panel-heading'>
             <div class='pull-right'>
@@ -374,6 +375,8 @@
             <label for="exampleInputFile">Game Info (Optional)</label>
             <textarea class="form-control" rows="3" name='notes'></textarea>
             <p>Tip: When playing online, be sure to specify the virtual tabletop (like MapTools or Roll20) and Communication methods (like Skype or Google Hangout) you plan to use. </p>
+            <input type='checkbox' class='private-checkbox' name='private'>&nbspPrivate game</input>
+            <div>*Players will only be able to join a private game after they're provided the player page link</div>
           </div>
           <button type="submit" class="btn btn-primary new-game-submit" disabled>Create Game</button>
         </form>

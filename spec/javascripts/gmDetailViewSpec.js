@@ -77,5 +77,10 @@ describe('GM Detail View', function() {
     it('Adds the notes and other fields', function() {
       expect(view.find('.notes').text()).toEqual(game.notes);
     });
+
+    it('adds the game page link', function() {
+      expect(view.find('.detail-link').text())
+        .toEqual("http://localhost:9292/#gameDetail-" + game.id);
+    });
   });
 });

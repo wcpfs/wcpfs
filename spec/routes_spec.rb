@@ -227,6 +227,12 @@ describe Routes do
         post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes" }, env
       end
 
+      it "does not send notification if private game" do
+        allow(games).to receive(:create) {{ "id" => "abc123" }}
+        expect(mail_client).to_not receive(:send_new_game).with(hash_including("id" => "abc123"), [:fake_user_list])
+        post '/gm/createGame', {title: "City of Golden Death!", datetime: 1234567890000, notes: "My Notes", private: true }, env
+      end
+
       it "sends the initial discussion email to the GM" do
         allow(games).to receive(:create) {fake_saved_game}
         allow(mail_client).to receive(:send_new_game)

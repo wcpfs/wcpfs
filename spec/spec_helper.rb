@@ -10,7 +10,8 @@ def fake_new_game_no_notes
     gm_pic: fake_user_info[:pic],
     gm_email: fake_user_info[:email],
     datetime: 1234567890000,
-    title: "City of Golden Death!" 
+    title: "City of Golden Death!",
+    private: false
   }
 end
 

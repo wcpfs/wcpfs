@@ -181,18 +181,22 @@ class Routes < Sinatra::Base
   end
 
   post '/gm/createGame' do
+    gm = user
     game_info = {
-      gm_name: user[:name],
-      gm_pic: user[:pic],
-      gm_id: user[:id],
-      gm_email: user[:email],
+      gm_name: gm[:name],
+      gm_pic: gm[:pic],
+      gm_id: gm[:id],
+      gm_email: gm[:email],
       datetime: params[:datetime].to_i,
       title: params[:title],
-      notes: params[:notes]
+      notes: params[:notes],
+      private: private_game?(params)
     }
     item = games.create game_info
-    mail_client.send_new_game(item, users.subscriptions)
-    mail_id = mail_client.send_join_game(item, user)
+    if !params[:private]
+      mail_client.send_new_game(item, users.subscriptions)
+    end
+    mail_id = mail_client.send_join_game(item, gm)
     games.add_discussion_thread_id item[:id], mail_id
     redirect("/#gmDetail-#{item[:id]}")
   end
@@ -202,6 +206,10 @@ class Routes < Sinatra::Base
   end
 
   private
+
+  def private_game?(params)
+    params[:private] ? true : false
+  end
 
   def reverse_proxy(url, type)
     content_type type
