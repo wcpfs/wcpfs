@@ -1,6 +1,7 @@
   describe('Home View', function() {
     var view;
     beforeEach(function() {
+      gameList[1].datetime = 1414221200000
       view = homeView();
     });
 
@@ -11,15 +12,16 @@
     describe('game items', function() {
       var item, fullGameItem;
       beforeEach(function() {
-        item = view.find('.game-list > li:first');
-        fullGameItem = view.find('.game-list > li:last');
+        fullGameItem = view.find('.game-list > li:first');
+        item = view.find('.game-list > li:last');
       });
 
       it('includes the title', function() {
         expect(item.find('.title').text()).toEqual("City of Golden Death (Online)");
       });
 
-      it('includes the date', function() {
+      it('are sorted by date', function() {
+        expect(fullGameItem.find('.when').text()).toEqual("Saturday, October 25th");
         expect(item.find('.when').text()).toEqual("Wednesday, November 5th");
       });
 
