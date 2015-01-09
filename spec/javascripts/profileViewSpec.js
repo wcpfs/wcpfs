@@ -18,6 +18,10 @@
       expect(view.find('.games-running li:first a').attr('href')).toEqual('#gmDetail-' + game.id);
     });
 
+    it('Adds an GM badge games youre running', function() {
+      expect(view.find('.games-running li:first span').text()).toEqual('[GM]');
+    });
+
     it('populates the profile form fields', function() {
       expect(view.find('.name').text()).toEqual('Ben Rady');
     });
