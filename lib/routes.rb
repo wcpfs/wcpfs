@@ -169,6 +169,15 @@ class Routes < Sinatra::Base
     redirect to('/')
   end
 
+  get '/user/leaveGame' do
+    game_id = params[:id]
+    success = games.leave(game_id, {
+      name: user[:name],
+      email: user[:email]
+    })
+    message("You have left the game")
+  end
+
   get '/gm/prep' do
     content_type :json
     File.read('gm_prep.json')

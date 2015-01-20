@@ -6,7 +6,7 @@
 
     it('fetches the list of games playing', function() {
       expect(view.find('.games-playing li').length).toEqual(1);
-      expect(view.find('.games-playing li:first a').text()).toEqual('City of Golden Death (Online)');
+      expect(view.find('.games-playing li:first a:first').text()).toEqual('City of Golden Death (Online)');
     });
 
     it('fetches the list of games running', function() {
@@ -20,6 +20,12 @@
 
     it('Adds an GM badge games youre running', function() {
       expect(view.find('.games-running li:first span').text()).toEqual('[GM]');
+    });
+
+    it('Adds a button to leave a game youre playing', function() {
+      var btn = view.find('.games-playing li a:last');
+      expect(btn.text()).toEqual('Leave Game');
+      expect(btn.attr('href')).toEqual('/user/leaveGame?id=' + game.id);
     });
 
     it('populates the profile form fields', function() {

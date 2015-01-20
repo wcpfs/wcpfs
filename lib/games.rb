@@ -37,13 +37,23 @@ class Games
   end
 
   def signup game_id, player_info
-    game = @table.all.find {|g| g[:id] == game_id}
+    game = all.find {|g| g[:id] == game_id}
     if game and not joined?(game, player_info) 
       game[:seats] << player_info
       @table.save(game)
       return true
     end
     return false
+  end
+
+  def leave game_id, player_info
+    game = all.find {|g| g[:id] == game_id}
+    if game
+      game[:seats].reject! do |seat|
+        seat[:email] == player_info[:email]
+      end
+      @table.save(game)
+    end
   end
 
   def add_discussion_thread_id game_id, email_id

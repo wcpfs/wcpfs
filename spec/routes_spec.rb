@@ -252,9 +252,15 @@ describe Routes do
         allow(mail_client).to receive(:send_join_game) { 'mailId' }
       end
 
-      it "can instantly join a game" do
+      it "can join a game" do
         expect(games).to receive(:signup).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
         get '/user/joinGame', {id: 'abc123'}, env
+        expect_redirect_to '/'
+      end
+
+      it "can leave a game" do
+        expect(games).to receive(:leave).with("abc123", {name: "Ben Rady", email: 'benrady@gmail.com'})
+        get '/user/leaveGame', {id: 'abc123'}, env
         expect_redirect_to '/'
       end
       

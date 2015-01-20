@@ -85,6 +85,16 @@ describe Games do
       expect(games.signup('abc123', fake_user_info)).to be true
     end
 
+    it "can leave that game" do
+      allow(table).to receive(:save)
+      games.signup('abc123', fake_user_info)
+      expect(table).to receive(:save).with(hash_including(
+        id: "abc123", 
+        seats: []
+      ))
+      games.leave('abc123', fake_user_info)
+    end
+
     it "will not sign up for the game if already signed up" do
       expect(table).not_to receive(:save)
       item[:seats] << fake_user_info
