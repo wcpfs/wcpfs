@@ -178,11 +178,6 @@ class Routes < Sinatra::Base
     message("You have left the game")
   end
 
-  get '/gm/prep' do
-    content_type :json
-    File.read('gm_prep.json')
-  end
-
   require 'base64'
   post '/gm/sendChronicle' do
     png_data = Base64.decode64(params[:imgBase64].split(',')[1])

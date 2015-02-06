@@ -3,17 +3,8 @@ describe('GM Detail View', function() {
 
   beforeEach(function() {
     gameObj = fakeGame();
-    var gmPrep = {
-      "PZOPSS0413E": {
-        "name": "4-13 The Fortress of the Nail",
-        "title": "PZOPSS0413E"
-      },
-      "PZOPSS0414E": {
-        "name": "4-14 My Enemy's Enemy",
-        "title": "PZOPSS0414E"
-      }
-    };
-    fakeRoutes['http://assets.windycitypathfinder.com/gm_prep.json'] = [gmPrep]
+    var gmPrep = '{"name": "4-13 The Fortress of the Nail", "id": "PZOPSS0413E"}\n{"name": "4-14 My Enemys Enemy", "id": "PZOPSS0414E"}\n';
+    fakeRoutes['http://assets.windycitypathfinder.com/chronicles.json'] = [gmPrep]
     fakeRoutes["/games/detail?id=95c3ff0b-ae7d-4a9f-9a82-ab5b3f6f57fa"] = [gameObj],
     spyOn(window, 'imageEditor');
     spyOn(window, 'store');

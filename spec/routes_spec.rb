@@ -178,11 +178,6 @@ describe Routes do
       expect(last_response.headers["Content-Type"]).to equal('image/png')
     end
 
-    it "can get a list of scenarios available for gm prep" do
-      expect(File).to receive(:read).with('gm_prep.json')
-      get '/gm/prep', {}, env
-    end
-
     it "can update a game" do
       expect(games).to receive(:update).with(user_info[:id], {}) { {} }
       post '/gm/game', '{}', env

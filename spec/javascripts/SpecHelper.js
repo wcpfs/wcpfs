@@ -70,11 +70,13 @@ function resetBody() {
 
 beforeEach(function () {
   resetBody();
-  spyOn($, 'getJSON').and.callFake(function(url, callback) {  
+  function fakeRequest(url, callback) {  
     if (callback) {
       callback.apply(this, fakeRoutes[url]);
     } else {
       return jQuery.Deferred().resolve(fakeRoutes[url][0]);
     }
-  })
+  }
+  spyOn($, 'getJSON').and.callFake(fakeRequest);
+  spyOn($, 'get').and.callFake(fakeRequest);
 });
