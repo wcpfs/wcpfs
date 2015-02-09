@@ -14,6 +14,11 @@
   margin-bottom: 21px;
 }
 
+.sane-preformat {
+  word-break: normal;
+  white-space: pre-line;
+}
+
 @font-face{
   font-family: 'Permanent Marker';
   src:url(/font/permanentmarker.ttf);
